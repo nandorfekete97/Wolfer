@@ -34,11 +34,23 @@ public class TrainerRepositoryTest
     }
 
     [Test]
+    public async Task GetByIdFails_IfIdNonExistent()
+    {
+        int wrongId = -1;
+
+        var result = await _repository.GetById(wrongId);
+        
+        Assert.That(result, Is.Null);
+    }
+    
+    // test getbyid separately
+    // test getbyusername separately
+
+    [Test]
     public async Task CreateTrainer_AddsTrainerSuccessfully()
     {
         TrainerEntity trainer = new TrainerEntity()
         {
-            Id = 123,
             FirstName = "Ákos",
             LastName = "Lengyel",
             Username = "wolf",
@@ -47,10 +59,10 @@ public class TrainerRepositoryTest
         };
 
         await _repository.CreateTrainer(trainer);
+        
+        var result = await _repository.GetByUserName(trainer.Username);
 
-        var result = await _repository.GetById(123);
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.FirstName, Is.EqualTo("Ákos"));
+        CompareTwoTrainerEntities(result, trainer);
     }
 
     [Test]
@@ -58,7 +70,6 @@ public class TrainerRepositoryTest
     {
         TrainerEntity trainer = new TrainerEntity
         {
-            Id = 2,
             FirstName = "Sziszi",
             LastName = "Ravasz",
             Username = "sziszi",
@@ -71,7 +82,44 @@ public class TrainerRepositoryTest
 
         var result = await _repository.GetByUserName("sziszi");
         
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.LastName, Is.EqualTo("Ravasz"));
+        CompareTwoTrainerEntities(result, trainer);
+    }
+
+    [Test]
+    public async Task UpdateTrainer_UpdatesTrainerSuccessfully()
+    {
+        TrainerEntity trainer = new TrainerEntity
+        {
+            FirstName = "Sziszi",
+            LastName = "Ravasz",
+            Username = "sziszi",
+            Password = "cornisland123",
+            Email = "sziszi@ravasz.com"
+        };
+
+        await _dbContext.Trainers.AddAsync(trainer);
+        await _dbContext.SaveChangesAsync();
+
+        TrainerEntity trainerToUpdate = await _repository.GetByUserName(trainer.Username);
+
+        string newUserName = "sziszike";
+        trainerToUpdate.Username = newUserName;
+        // research into why test is also functional with comparing to original trainer
+        // because by updating trainerToUpdate property, original trainer object is updated as well
+        await _repository.UpdateTrainer(trainerToUpdate);
+        
+        var result = await _repository.GetById(trainerToUpdate.Id);
+        CompareTwoTrainerEntities(result, trainerToUpdate);
+    }
+
+    private void CompareTwoTrainerEntities(TrainerEntity actualTrainer, TrainerEntity expected)
+    {
+        Assert.That(actualTrainer, Is.Not.Null);
+        Assert.That(actualTrainer.Id, Is.Not.Null);
+        Assert.That(actualTrainer.FirstName, Is.EqualTo(expected.FirstName));
+        Assert.That(actualTrainer.LastName, Is.EqualTo(expected.LastName));
+        Assert.That(actualTrainer.Username, Is.EqualTo(expected.Username));
+        Assert.That(actualTrainer.Password, Is.EqualTo(expected.Password));
+        Assert.That(actualTrainer.Email, Is.EqualTo(expected.Email));
     }
 }
