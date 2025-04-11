@@ -160,6 +160,30 @@ public class TrainerRepositoryTest
         CompareTwoTrainerEntities(result, trainerToUpdate);
     }
 
+    [Test]
+    public async Task DeleteTrainer_DeletesSuccessfully()
+    {
+        TrainerEntity sziszi = new TrainerEntity
+        {
+            FirstName = "Sziszi",
+            LastName = "Ravasz",
+            Username = "sziszi",
+            Password = "cornisland13",
+            Email = "sziszi@ravasz.com"
+        };
+
+        await _dbContext.Trainers.AddAsync(sziszi);
+        await _dbContext.SaveChangesAsync();
+
+        var firstResult = await _repository.GetById(sziszi.Id);
+        CompareTwoTrainerEntities(firstResult, sziszi);
+
+        await _repository.DeleteTrainer(firstResult.Id);
+
+        var afterDelete = await _repository.GetById(sziszi.Id);
+        Assert.That(afterDelete, Is.Null);
+    }
+
     private void CompareTwoTrainerEntities(TrainerEntity actualTrainer, TrainerEntity expected)
     {
         Assert.That(actualTrainer, Is.Not.Null);
