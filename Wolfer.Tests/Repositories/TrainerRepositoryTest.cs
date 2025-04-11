@@ -32,7 +32,27 @@ public class TrainerRepositoryTest
         _dbContext.Database.EnsureDeleted();
         _dbContext.Dispose();
     }
+    
+    [Test]
+    public async Task GetById_ReturnsCorrectTrainer()
+    {
+        TrainerEntity trainerEntity = new TrainerEntity
+        {
+            Email = "lengyel@akos.com",
+            FirstName = "Ákos",
+            LastName = "Lengyel",
+            Username = "wolf",
+            Password = "cornisland123"
+        };
 
+        _dbContext.Trainers.AddAsync(trainerEntity);
+        _dbContext.SaveChangesAsync();
+
+        var result = await _repository.GetById(trainerEntity.Id);
+        
+        CompareTwoTrainerEntities(result, trainerEntity);
+    }
+    
     [Test]
     public async Task GetByIdFails_IfIdNonExistent()
     {
@@ -43,13 +63,19 @@ public class TrainerRepositoryTest
         Assert.That(result, Is.Null);
     }
     
-    // test getbyid separately
-    // test getbyusername separately
-
     [Test]
-    public async Task CreateTrainer_AddsTrainerSuccessfully()
+    public async Task CreateTrainer_AddsTrainersSuccessfully()
     {
-        TrainerEntity trainer = new TrainerEntity()
+        TrainerEntity sziszi = new TrainerEntity()
+        {
+            FirstName = "Sziszi",
+            LastName = "Ravasz",
+            Username = "sziszi",
+            Password = "cornisland13",
+            Email = "sziszi@ravasz.com"
+        };
+        
+        TrainerEntity akos = new TrainerEntity()
         {
             FirstName = "Ákos",
             LastName = "Lengyel",
@@ -58,11 +84,14 @@ public class TrainerRepositoryTest
             Email = "akos@lengyel.com"
         };
 
-        await _repository.CreateTrainer(trainer);
+        await _repository.CreateTrainer(sziszi);
+        await _repository.CreateTrainer(akos);
         
-        var result = await _repository.GetByUserName(trainer.Username);
-
-        CompareTwoTrainerEntities(result, trainer);
+        var akosresult = await _repository.GetByUserName(akos.Username);
+        var szisziresult = await _repository.GetByUserName(sziszi.Username);
+        
+        CompareTwoTrainerEntities(akosresult, akos);
+        CompareTwoTrainerEntities(szisziresult, szisziresult);
     }
 
     [Test]
@@ -83,6 +112,25 @@ public class TrainerRepositoryTest
         var result = await _repository.GetByUserName("sziszi");
         
         CompareTwoTrainerEntities(result, trainer);
+    }
+
+    [Test]
+    public async Task GetByUserNameFails_IfUserNameNonExistent()
+    {
+        TrainerEntity trainer = new TrainerEntity
+        {
+            FirstName = "Sziszi",
+            LastName = "Ravasz",
+            Username = "sziszi",
+            Password = "cornisland123",
+            Email = "sziszi@ravasz.com"
+        };
+
+        await _dbContext.Trainers.AddAsync(trainer);
+        await _dbContext.SaveChangesAsync();
+
+        var result = await _repository.GetByUserName("wolf");
+        Assert.That(result, Is.Null);
     }
 
     [Test]
