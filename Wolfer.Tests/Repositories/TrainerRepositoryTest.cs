@@ -45,8 +45,8 @@ public class TrainerRepositoryTest
             Password = "cornisland123"
         };
 
-        _dbContext.Trainers.AddAsync(trainerEntity);
-        _dbContext.SaveChangesAsync();
+        await _dbContext.Trainers.AddAsync(trainerEntity);
+        await _dbContext.SaveChangesAsync();
 
         var result = await _repository.GetById(trainerEntity.Id);
         
@@ -109,7 +109,7 @@ public class TrainerRepositoryTest
         await _dbContext.Trainers.AddAsync(trainer);
         await _dbContext.SaveChangesAsync();
 
-        var result = await _repository.GetByUserName("sziszi");
+        var result = await _repository.GetByUserName(trainer.Username);
         
         CompareTwoTrainerEntities(result, trainer);
     }
