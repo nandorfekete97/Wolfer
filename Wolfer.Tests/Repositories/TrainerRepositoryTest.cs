@@ -36,7 +36,7 @@ public class TrainerRepositoryTest
     [Test]
     public async Task GetById_ReturnsCorrectTrainer()
     {
-        TrainerEntity trainerEntity = new TrainerEntity
+        TrainerEntity trainer = new TrainerEntity
         {
             Email = "lengyel@akos.com",
             FirstName = "Ákos",
@@ -45,12 +45,12 @@ public class TrainerRepositoryTest
             Password = "cornisland123"
         };
 
-        await _dbContext.Trainers.AddAsync(trainerEntity);
+        await _dbContext.Trainers.AddAsync(trainer);
         await _dbContext.SaveChangesAsync();
 
-        var result = await _repository.GetById(trainerEntity.Id);
+        var result = await _repository.GetById(trainer.Id);
         
-        CompareTwoTrainerEntities(result, trainerEntity);
+        CompareTwoTrainerEntities(result, trainer);
     }
     
     [Test]
@@ -66,7 +66,7 @@ public class TrainerRepositoryTest
     [Test]
     public async Task CreateTrainer_AddsTrainersSuccessfully()
     {
-        TrainerEntity sziszi = new TrainerEntity()
+        TrainerEntity trainer1 = new TrainerEntity()
         {
             FirstName = "Sziszi",
             LastName = "Ravasz",
@@ -75,7 +75,7 @@ public class TrainerRepositoryTest
             Email = "sziszi@ravasz.com"
         };
         
-        TrainerEntity akos = new TrainerEntity()
+        TrainerEntity trainer2 = new TrainerEntity()
         {
             FirstName = "Ákos",
             LastName = "Lengyel",
@@ -84,14 +84,14 @@ public class TrainerRepositoryTest
             Email = "akos@lengyel.com"
         };
 
-        await _repository.CreateTrainer(sziszi);
-        await _repository.CreateTrainer(akos);
+        await _repository.CreateTrainer(trainer1);
+        await _repository.CreateTrainer(trainer2);
         
-        var akosresult = await _repository.GetByUserName(akos.Username);
-        var szisziresult = await _repository.GetByUserName(sziszi.Username);
+        var result2 = await _repository.GetByUserName(trainer2.Username);
+        var result1 = await _repository.GetByUserName(trainer1.Username);
         
-        CompareTwoTrainerEntities(akosresult, akos);
-        CompareTwoTrainerEntities(szisziresult, szisziresult);
+        CompareTwoTrainerEntities(result2, trainer2);
+        CompareTwoTrainerEntities(result1, result2);
     }
 
     [Test]
@@ -163,7 +163,7 @@ public class TrainerRepositoryTest
     [Test]
     public async Task DeleteTrainer_DeletesSuccessfully()
     {
-        TrainerEntity sziszi = new TrainerEntity
+        TrainerEntity trainer = new TrainerEntity
         {
             FirstName = "Sziszi",
             LastName = "Ravasz",
@@ -172,15 +172,15 @@ public class TrainerRepositoryTest
             Email = "sziszi@ravasz.com"
         };
 
-        await _dbContext.Trainers.AddAsync(sziszi);
+        await _dbContext.Trainers.AddAsync(trainer);
         await _dbContext.SaveChangesAsync();
 
-        var firstResult = await _repository.GetById(sziszi.Id);
-        CompareTwoTrainerEntities(firstResult, sziszi);
+        var firstResult = await _repository.GetById(trainer.Id);
+        CompareTwoTrainerEntities(firstResult, trainer);
 
         await _repository.DeleteTrainer(firstResult.Id);
 
-        var afterDelete = await _repository.GetById(sziszi.Id);
+        var afterDelete = await _repository.GetById(trainer.Id);
         Assert.That(afterDelete, Is.Null);
     }
 

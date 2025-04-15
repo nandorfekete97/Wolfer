@@ -12,7 +12,7 @@ public class UserRepository : IUserRepository
     {
         _dbContext = dbContext;
     }
-
+    
     public async Task<UserEntity?> GetUserById(int userId)
     {
         return await _dbContext.Users.FirstOrDefaultAsync(userEntity => userEntity.Id == userId);
@@ -21,6 +21,11 @@ public class UserRepository : IUserRepository
     public async Task<UserEntity?> GetUserByFirstName(string firstName)
     {
         return await _dbContext.Users.FirstOrDefaultAsync(userEntity => userEntity.FirstName == firstName);
+    }
+
+    public async Task<List<UserEntity>> GetAllUsers()
+    {
+        return await _dbContext.Users.ToListAsync();
     }
 
     public async Task CreateUser(UserEntity user)
@@ -37,7 +42,7 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> DeleteUserById(int userId)
     {
-        var userToDelete = _dbContext.Users.FirstOrDefaultAsync(userEntity => userEntity.Id == userId);
+        var userToDelete = await _dbContext.Users.FirstOrDefaultAsync(userEntity => userEntity.Id == userId);
 
         if (userToDelete is not null)
         {

@@ -6,10 +6,10 @@ namespace Wolfer.Data.Entities;
 [PrimaryKey(nameof(Id))]
 public class UserEntity
 {
-    public int Id;
-    public string FirstName;
-    public string LastName;    
-    public string Username;
-    public string Password;
-    public string Email;
+    public int Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }   
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public string Email { get; set; }
 }

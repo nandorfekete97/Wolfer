@@ -39,19 +39,19 @@ public class TrainingRepositoryTest
     [Test]
     public async Task GetById_ReturnsCorrectTraining()
     {
-        TrainingType dummyType = TrainingType.CrossFit;
-        DateTime dummyDate = DateTime.Today;
+        TrainingType crossFitType = TrainingType.CrossFit;
+        DateTime today = DateTime.Today;
         
         TrainingEntity crossfit = new TrainingEntity
         {
-            Date = dummyDate,
-            TrainingType = dummyType
+            Date = today,
+            TrainingType = crossFitType
         };
 
         TrainingEntity weightLifting = new TrainingEntity
         {
-            Date = dummyDate,
-            TrainingType = dummyType
+            Date = today,
+            TrainingType = crossFitType
         };
 
         await _dbContext.Trainings.AddAsync(crossfit);
@@ -76,65 +76,65 @@ public class TrainingRepositoryTest
     [Test]
     public async Task CreateTraining_AddsTrainingSuccessfully()
     {
-        TrainingType dummyType = TrainingType.CrossFit;
-        DateTime dummyDate = DateTime.Today;
+        TrainingType crossFitType = TrainingType.CrossFit;
+        DateTime today = DateTime.Today;
         
-        TrainingEntity crossfit = new TrainingEntity
+        TrainingEntity crossfitTraining = new TrainingEntity
         {
-            Date = dummyDate,
-            TrainingType = dummyType
+            Date = today,
+            TrainingType = crossFitType
         }; 
         
-        TrainingEntity weightLifting = new TrainingEntity
+        TrainingEntity weightLiftingTraining = new TrainingEntity
         {
-            Date = dummyDate,
-            TrainingType = dummyType
+            Date = today,
+            TrainingType = crossFitType
         };
 
-        await _repository.CreateTraining(weightLifting);
-        await _repository.CreateTraining(crossfit);
+        await _repository.CreateTraining(weightLiftingTraining);
+        await _repository.CreateTraining(crossfitTraining);
 
-        var crossfitResult = await _repository.GetById(crossfit.Id);
-        var weightLiftingResult = await _repository.GetById(weightLifting.Id);
+        var crossfitResult = await _repository.GetById(crossfitTraining.Id);
+        var weightLiftingResult = await _repository.GetById(weightLiftingTraining.Id);
         
-        CompareTwoTrainingEntities(crossfitResult, crossfit);
-        CompareTwoTrainingEntities(weightLiftingResult, weightLifting);
+        CompareTwoTrainingEntities(crossfitResult, crossfitTraining);
+        CompareTwoTrainingEntities(weightLiftingResult, weightLiftingTraining);
     }
 
     [Test]
     public async Task GetTrainingsByDate_ReturnsCorrectTrainings()
     {
-        TrainingType dummyType = TrainingType.CrossFit;
+        TrainingType crossFitType = TrainingType.CrossFit;
         DateTime today = DateTime.Today;
         DateTime tomorrow = DateTime.Today.AddDays(1);
         
-        TrainingEntity crossfit = new TrainingEntity
+        TrainingEntity crossfitTraining = new TrainingEntity
         {
             Date = today,
-            TrainingType = dummyType
+            TrainingType = crossFitType
         }; 
         
-        TrainingEntity legDay = new TrainingEntity
+        TrainingEntity legDayTraining = new TrainingEntity
         {
             Date = tomorrow,
-            TrainingType = dummyType
+            TrainingType = crossFitType
         }; 
         
-        TrainingEntity weightLifting = new TrainingEntity
+        TrainingEntity weightLiftingTraining = new TrainingEntity
         {
             Date = today,
-            TrainingType = dummyType
+            TrainingType = crossFitType
         };
 
-        await _dbContext.Trainings.AddAsync(crossfit);
-        await _dbContext.Trainings.AddAsync(legDay);
-        await _dbContext.Trainings.AddAsync(weightLifting);
+        await _dbContext.Trainings.AddAsync(crossfitTraining);
+        await _dbContext.Trainings.AddAsync(legDayTraining);
+        await _dbContext.Trainings.AddAsync(weightLiftingTraining);
         await _dbContext.SaveChangesAsync();
 
         var result = await _repository.GetTrainingsByDate(DateOnly.FromDateTime(today));
         List<TrainingEntity> expected = new List<TrainingEntity>
         {
-            crossfit, weightLifting
+            crossfitTraining, weightLiftingTraining
         };
         
         Assert.That(result, Is.EquivalentTo(expected));
@@ -143,35 +143,35 @@ public class TrainingRepositoryTest
     [Test]
     public async Task GetTrainingsByType_ReturnsCorrectTrainings()
     {
-        DateTime dummyDate = DateTime.Today;
+        DateTime today = DateTime.Today;
         
-        TrainingEntity functionalBodyBuilding1 = new TrainingEntity
+        TrainingEntity functionalTraining1 = new TrainingEntity
         {
-            Date = dummyDate,
+            Date = today,
             TrainingType = TrainingType.FunctionalBodyBuilding
         }; 
         
-        TrainingEntity crossfit = new TrainingEntity
+        TrainingEntity crossfitTraining = new TrainingEntity
         {
-            Date = dummyDate,
+            Date = today,
             TrainingType = TrainingType.CrossFit
         }; 
         
-        TrainingEntity functionalBodyBuilding2 = new TrainingEntity
+        TrainingEntity functionalTraining2 = new TrainingEntity
         {
-            Date = dummyDate,
+            Date = today,
             TrainingType = TrainingType.FunctionalBodyBuilding
         };
 
-        await _dbContext.Trainings.AddAsync(functionalBodyBuilding1);
-        await _dbContext.Trainings.AddAsync(crossfit);
-        await _dbContext.Trainings.AddAsync(functionalBodyBuilding2);
+        await _dbContext.Trainings.AddAsync(functionalTraining1);
+        await _dbContext.Trainings.AddAsync(crossfitTraining);
+        await _dbContext.Trainings.AddAsync(functionalTraining2);
         await _dbContext.SaveChangesAsync();
 
         var result = await _repository.GetTrainingsByType(TrainingType.FunctionalBodyBuilding);
         List<TrainingEntity> expected = new List<TrainingEntity>
         {
-            functionalBodyBuilding1, functionalBodyBuilding2
+            functionalTraining1, functionalTraining2
         };
         
         Assert.That(result, Is.EquivalentTo(expected));
@@ -180,19 +180,19 @@ public class TrainingRepositoryTest
     [Test]
     public async Task UpdateTraining_UpdatesTrainingSuccessfully()
     {
-        TrainingEntity crossfit = new TrainingEntity
+        TrainingEntity crossfitTraining = new TrainingEntity
         {
             Date = new DateTime(2025, 4, 10),
             TrainingType = TrainingType.CrossFit
         };
 
-        await _dbContext.Trainings.AddAsync(crossfit);
+        await _dbContext.Trainings.AddAsync(crossfitTraining);
         await _dbContext.SaveChangesAsync();
 
-        TrainingEntity trainingToUpdate = await _repository.GetById(crossfit.Id);
+        TrainingEntity trainingToUpdate = await _repository.GetById(crossfitTraining.Id);
 
-        DateTime newDate = crossfit.Date.AddDays(1);
-        crossfit.Date = newDate;
+        DateTime newDate = crossfitTraining.Date.AddDays(1);
+        crossfitTraining.Date = newDate;
         await _repository.UpdateTraining(trainingToUpdate);
 
         var result = await _repository.GetById(trainingToUpdate.Id);
@@ -202,50 +202,50 @@ public class TrainingRepositoryTest
     [Test]
     public async Task DeleteTraining_DeletesSuccessfully()
     {
-        TrainingType dummyType = TrainingType.CrossFit;
-        DateTime dummyDate = DateTime.Today;
+        TrainingType crossFitType = TrainingType.CrossFit;
+        DateTime today = DateTime.Today;
         
-        TrainingEntity crossfit = new TrainingEntity
+        TrainingEntity crossfitTraining = new TrainingEntity
         {
-            Date = dummyDate,
-            TrainingType = dummyType
+            Date = today,
+            TrainingType = crossFitType
         }; 
         
-        TrainingEntity legDay = new TrainingEntity
+        TrainingEntity legDayTraining = new TrainingEntity
         {
-            Date = dummyDate,
+            Date = today,
             TrainingType = TrainingType.LegDay
         }; 
         
-        TrainingEntity weightLifting = new TrainingEntity
+        TrainingEntity weightLiftingTraining = new TrainingEntity
         {
-            Date = dummyDate,
-            TrainingType = dummyType
+            Date = today,
+            TrainingType = crossFitType
         };
 
-        await _dbContext.Trainings.AddAsync(crossfit);
-        await _dbContext.Trainings.AddAsync(legDay);
-        await _dbContext.Trainings.AddAsync(weightLifting);
+        await _dbContext.Trainings.AddAsync(crossfitTraining);
+        await _dbContext.Trainings.AddAsync(legDayTraining);
+        await _dbContext.Trainings.AddAsync(weightLiftingTraining);
         await _dbContext.SaveChangesAsync();
 
-        var firstResult = await _repository.GetTrainingsByDate(DateOnly.FromDateTime(dummyDate));
+        var firstResult = await _repository.GetTrainingsByDate(DateOnly.FromDateTime(today));
 
         List<TrainingEntity> expected = new List<TrainingEntity>
         {
-            crossfit, legDay, weightLifting
+            crossfitTraining, legDayTraining, weightLiftingTraining
         };
         
         Assert.That(firstResult, Is.EquivalentTo(expected));
 
-        TrainingEntity legDayAquired = await _repository.GetById(legDay.Id);
+        TrainingEntity legDayAquired = await _repository.GetById(legDayTraining.Id);
         
         await _repository.DeleteTraining(legDayAquired.Id);
 
-        var afterDelete = await _repository.GetTrainingsByDate(DateOnly.FromDateTime(dummyDate));
+        var afterDelete = await _repository.GetTrainingsByDate(DateOnly.FromDateTime(today));
 
         List<TrainingEntity> expectedAfterDelete = new List<TrainingEntity>
         {
-            crossfit, weightLifting
+            crossfitTraining, weightLiftingTraining
         };
         Assert.That(afterDelete, Is.EquivalentTo(expectedAfterDelete));
     }
