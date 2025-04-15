@@ -54,9 +54,9 @@ public class TrainingRepositoryTest
             TrainingType = dummyType
         };
 
-        _dbContext.Trainings.AddAsync(crossfit);
-        _dbContext.Trainings.AddAsync(weightLifting);
-        _dbContext.SaveChangesAsync();
+        await _dbContext.Trainings.AddAsync(crossfit);
+        await _dbContext.Trainings.AddAsync(weightLifting);
+        await _dbContext.SaveChangesAsync();
 
         var result = await _repository.GetById(weightLifting.Id);
 
@@ -66,15 +66,6 @@ public class TrainingRepositoryTest
     [Test]
     public async Task GetByIdFails_IfIdNonExistent()
     {
-        TrainingType dummyType = TrainingType.CrossFit;
-        DateTime dummyDate = DateTime.Today;
-        
-        TrainingEntity crossfit = new TrainingEntity
-        {
-            Date = dummyDate,
-            TrainingType = dummyType
-        };
-        
         int wrongId = -1;
 
         var result = await _repository.GetById(wrongId);
@@ -135,10 +126,10 @@ public class TrainingRepositoryTest
             TrainingType = dummyType
         };
 
-        _dbContext.Trainings.AddAsync(crossfit);
-        _dbContext.Trainings.AddAsync(legDay);
-        _dbContext.Trainings.AddAsync(weightLifting);
-        _dbContext.SaveChangesAsync();
+        await _dbContext.Trainings.AddAsync(crossfit);
+        await _dbContext.Trainings.AddAsync(legDay);
+        await _dbContext.Trainings.AddAsync(weightLifting);
+        await _dbContext.SaveChangesAsync();
 
         var result = await _repository.GetTrainingsByDate(DateOnly.FromDateTime(today));
         List<TrainingEntity> expected = new List<TrainingEntity>
@@ -172,10 +163,10 @@ public class TrainingRepositoryTest
             TrainingType = TrainingType.FunctionalBodyBuilding
         };
 
-        _dbContext.Trainings.AddAsync(functionalBodyBuilding1);
-        _dbContext.Trainings.AddAsync(crossfit);
-        _dbContext.Trainings.AddAsync(functionalBodyBuilding2);
-        _dbContext.SaveChangesAsync();
+        await _dbContext.Trainings.AddAsync(functionalBodyBuilding1);
+        await _dbContext.Trainings.AddAsync(crossfit);
+        await _dbContext.Trainings.AddAsync(functionalBodyBuilding2);
+        await _dbContext.SaveChangesAsync();
 
         var result = await _repository.GetTrainingsByType(TrainingType.FunctionalBodyBuilding);
         List<TrainingEntity> expected = new List<TrainingEntity>
@@ -232,10 +223,10 @@ public class TrainingRepositoryTest
             TrainingType = dummyType
         };
 
-        _dbContext.Trainings.AddAsync(crossfit);
-        _dbContext.Trainings.AddAsync(legDay);
-        _dbContext.Trainings.AddAsync(weightLifting);
-        _dbContext.SaveChangesAsync();
+        await _dbContext.Trainings.AddAsync(crossfit);
+        await _dbContext.Trainings.AddAsync(legDay);
+        await _dbContext.Trainings.AddAsync(weightLifting);
+        await _dbContext.SaveChangesAsync();
 
         var firstResult = await _repository.GetTrainingsByDate(DateOnly.FromDateTime(dummyDate));
 
