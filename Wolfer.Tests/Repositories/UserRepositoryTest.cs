@@ -21,7 +21,6 @@ public class UserRepositoryTest
     {
         var options = new DbContextOptionsBuilder<WolferContext>().UseInMemoryDatabase(databaseName: "WolferTestDb")
             .Options;
-
         
         _dbContext = new WolferContext(options);
 
@@ -47,8 +46,8 @@ public class UserRepositoryTest
             Username = "nanu97"
         };
 
-        _dbContext.Users.AddAsync(user);
-        _dbContext.SaveChangesAsync();
+        await _dbContext.Users.AddAsync(user);
+        await _dbContext.SaveChangesAsync();
 
         var result = await _repository.GetUserById(user.Id);
 
@@ -68,7 +67,7 @@ public class UserRepositoryTest
     [Test]
     public async Task GetUserByFirstName_ReturnsCorrectUser()
     {
-         UserEntity nanu = new UserEntity
+         UserEntity user1 = new UserEntity
          {
              Email = "nandor@fekete.com",
              FirstName = "Nándor",
@@ -77,7 +76,7 @@ public class UserRepositoryTest
              Username = "nanu97"
          };
          
-         UserEntity roli = new UserEntity
+         UserEntity user2 = new UserEntity
         {
             Email = "roli@hury.com",
             FirstName = "Roland",
@@ -86,19 +85,19 @@ public class UserRepositoryTest
             Username = "roland97"
         };
          
-         _dbContext.Users.AddAsync(nanu);
-         _dbContext.Users.AddAsync(roli);
-         _dbContext.SaveChangesAsync();   
+        await _dbContext.Users.AddAsync(user1);
+        await _dbContext.Users.AddAsync(user2);
+        await _dbContext.SaveChangesAsync();   
          
-         var result = await _repository.GetUserByFirstName("Roland");
+        var result = await _repository.GetUserByFirstName(user2.FirstName);
          
-         CompareTwoUserEntities(result, roli);
+        CompareTwoUserEntities(result, user2);
     }
     
     [Test]
     public async Task GetUserByFirstName_FailsIfNameIsNotFound()
     {
-        UserEntity nanu = new UserEntity
+        UserEntity user1 = new UserEntity
         {
             Email = "nandor@fekete.com",
             FirstName = "Nándor",
@@ -107,7 +106,7 @@ public class UserRepositoryTest
             Username = "nanu97"
         };
          
-        UserEntity roli = new UserEntity
+        UserEntity user2 = new UserEntity
         {
             Email = "roli@hury.com",
             FirstName = "Roland",
@@ -116,9 +115,9 @@ public class UserRepositoryTest
             Username = "roland97"
         };
          
-        _dbContext.Users.AddAsync(nanu);
-        _dbContext.Users.AddAsync(roli);
-        _dbContext.SaveChangesAsync();   
+        await _dbContext.Users.AddAsync(user1);
+        await _dbContext.Users.AddAsync(user2);
+        await _dbContext.SaveChangesAsync();   
          
         var result = await _repository.GetUserByFirstName("Ábel");
          
@@ -128,7 +127,7 @@ public class UserRepositoryTest
     [Test]
     public async Task GetAllUsers_ReturnsAllUsers()
     {
-        UserEntity nanu = new UserEntity
+        UserEntity user1 = new UserEntity
         {
             Email = "nandor@fekete.com",
             FirstName = "Nándor",
@@ -137,7 +136,7 @@ public class UserRepositoryTest
             Username = "nanu97"
         };
          
-        UserEntity roli = new UserEntity
+        UserEntity user2 = new UserEntity
         {
             Email = "roli@hury.com",
             FirstName = "Roland",
@@ -146,11 +145,11 @@ public class UserRepositoryTest
             Username = "roland97"
         };
 
-        List<UserEntity> users = new List<UserEntity>{nanu, roli};
+        List<UserEntity> users = new List<UserEntity>{user1, user2};
          
-        _dbContext.Users.AddAsync(nanu);
-        _dbContext.Users.AddAsync(roli);
-        _dbContext.SaveChangesAsync();   
+        await _dbContext.Users.AddAsync(user1);
+        await _dbContext.Users.AddAsync(user2);
+        await _dbContext.SaveChangesAsync();   
          
         var result = await _repository.GetAllUsers();
          
@@ -160,7 +159,7 @@ public class UserRepositoryTest
     [Test]
     public async Task CreateUser_SuccessfullyCreatesTrainer()
     {
-        UserEntity nanu = new UserEntity
+        UserEntity user = new UserEntity
         {
             Email = "nandor@fekete.com",
             FirstName = "Nándor",
@@ -168,30 +167,18 @@ public class UserRepositoryTest
             Password = "spurs97",
             Username = "nanu97"
         };
-         
-        UserEntity roli = new UserEntity
-        {
-            Email = "roli@hury.com",
-            FirstName = "Roland",
-            LastName = "Hury",
-            Password = "roli97",
-            Username = "roland97"
-        };
 
-        await _repository.CreateUser(nanu);
-        await _repository.CreateUser(roli);
+        await _repository.CreateUser(user);
 
-        var nanuresult = await _repository.GetUserById(nanu.Id);
-        var roliresult = await _repository.GetUserById(roli.Id);
+        var result = await _repository.GetUserById(user.Id);
         
-        CompareTwoUserEntities(nanuresult, nanu);
-        CompareTwoUserEntities(roliresult, roli);
+        CompareTwoUserEntities(result, user);
     }
 
     [Test]
     public async Task UpdateUser_SuccessfullyUpdates()
     {
-        UserEntity nanu = new UserEntity
+        UserEntity user = new UserEntity
         {
             Email = "nandor@fekete.com",
             FirstName = "Nándor",
@@ -200,12 +187,12 @@ public class UserRepositoryTest
             Username = "nanu97"
         };
 
-        await _dbContext.Users.AddAsync(nanu);
+        await _dbContext.Users.AddAsync(user);
         await _dbContext.SaveChangesAsync();
         
-        UserEntity userToUpdate = await _repository.GetUserById(nanu.Id);
+        UserEntity userToUpdate = await _repository.GetUserById(user.Id);
         
-        CompareTwoUserEntities(userToUpdate, nanu);
+        CompareTwoUserEntities(userToUpdate, user);
         userToUpdate.Username = "nanuel97";
         await _repository.UpdateUser(userToUpdate);
 
@@ -216,7 +203,7 @@ public class UserRepositoryTest
     [Test]
     public async Task DeleteUser_DeletesSuccessfully()
     {
-        UserEntity nanu = new UserEntity
+        UserEntity user1 = new UserEntity
         {
             Email = "nandor@fekete.com",
             FirstName = "Nándor",
@@ -225,7 +212,7 @@ public class UserRepositoryTest
             Username = "nanu97"
         };
          
-        UserEntity roli = new UserEntity
+        UserEntity user2 = new UserEntity
         {
             Email = "roli@hury.com",
             FirstName = "Roland",
@@ -234,22 +221,22 @@ public class UserRepositoryTest
             Username = "roland97"
         };
 
-        List<UserEntity> users = new List<UserEntity>{nanu, roli};
+        List<UserEntity> users = new List<UserEntity>{user1, user2};
          
-        _dbContext.Users.AddAsync(nanu);
-        _dbContext.Users.AddAsync(roli);
-        _dbContext.SaveChangesAsync();
+        await _dbContext.Users.AddAsync(user1);
+        await _dbContext.Users.AddAsync(user2);
+        await _dbContext.SaveChangesAsync();
 
         var usersFetched = await _repository.GetAllUsers();
         
         Assert.That(usersFetched, Is.EquivalentTo(users));
 
-        await _repository.DeleteUserById(nanu.Id);
-        usersFetched = await _repository.GetAllUsers();
-        var shouldBeRoli = usersFetched[0];
+        await _repository.DeleteUserById(user1.Id);
         
-        Assert.That(usersFetched.Count, Is.EqualTo(users.Count - 1));
-        CompareTwoUserEntities(shouldBeRoli, roli);
+        var result = await _repository.GetAllUsers();
+        
+        Assert.That(result.Count, Is.EqualTo(1));
+        CompareTwoUserEntities(result[0], user2);
     }
 
     private void CompareTwoUserEntities(UserEntity actualUser, UserEntity expectedUser)
