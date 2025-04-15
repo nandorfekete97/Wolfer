@@ -32,13 +32,51 @@ public class TrainerRepositoryTest
         _dbContext.Database.EnsureDeleted();
         _dbContext.Dispose();
     }
-
+    
     [Test]
-    public async Task CreateTrainer_AddsTrainerSuccessfully()
+    public async Task GetById_ReturnsCorrectTrainer()
     {
-        TrainerEntity trainer = new TrainerEntity()
+        TrainerEntity trainerEntity = new TrainerEntity
         {
-            Id = 123,
+            Email = "lengyel@akos.com",
+            FirstName = "Ákos",
+            LastName = "Lengyel",
+            Username = "wolf",
+            Password = "cornisland123"
+        };
+
+        await _dbContext.Trainers.AddAsync(trainerEntity);
+        await _dbContext.SaveChangesAsync();
+
+        var result = await _repository.GetById(trainerEntity.Id);
+        
+        CompareTwoTrainerEntities(result, trainerEntity);
+    }
+    
+    [Test]
+    public async Task GetByIdFails_IfIdNonExistent()
+    {
+        int wrongId = -1;
+
+        var result = await _repository.GetById(wrongId);
+        
+        Assert.That(result, Is.Null);
+    }
+    
+    [Test]
+    public async Task CreateTrainer_AddsTrainersSuccessfully()
+    {
+        TrainerEntity sziszi = new TrainerEntity()
+        {
+            FirstName = "Sziszi",
+            LastName = "Ravasz",
+            Username = "sziszi",
+            Password = "cornisland13",
+            Email = "sziszi@ravasz.com"
+        };
+        
+        TrainerEntity akos = new TrainerEntity()
+        {
             FirstName = "Ákos",
             LastName = "Lengyel",
             Username = "wolf",
@@ -46,11 +84,14 @@ public class TrainerRepositoryTest
             Email = "akos@lengyel.com"
         };
 
-        await _repository.CreateTrainer(trainer);
-
-        var result = await _repository.GetById(123);
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.FirstName, Is.EqualTo("Ákos"));
+        await _repository.CreateTrainer(sziszi);
+        await _repository.CreateTrainer(akos);
+        
+        var akosresult = await _repository.GetByUserName(akos.Username);
+        var szisziresult = await _repository.GetByUserName(sziszi.Username);
+        
+        CompareTwoTrainerEntities(akosresult, akos);
+        CompareTwoTrainerEntities(szisziresult, szisziresult);
     }
 
     [Test]
@@ -58,7 +99,6 @@ public class TrainerRepositoryTest
     {
         TrainerEntity trainer = new TrainerEntity
         {
-            Id = 2,
             FirstName = "Sziszi",
             LastName = "Ravasz",
             Username = "sziszi",
@@ -69,9 +109,89 @@ public class TrainerRepositoryTest
         await _dbContext.Trainers.AddAsync(trainer);
         await _dbContext.SaveChangesAsync();
 
-        var result = await _repository.GetByUserName("sziszi");
+        var result = await _repository.GetByUserName(trainer.Username);
         
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.LastName, Is.EqualTo("Ravasz"));
+        CompareTwoTrainerEntities(result, trainer);
+    }
+
+    [Test]
+    public async Task GetByUserNameFails_IfUserNameNonExistent()
+    {
+        TrainerEntity trainer = new TrainerEntity
+        {
+            FirstName = "Sziszi",
+            LastName = "Ravasz",
+            Username = "sziszi",
+            Password = "cornisland123",
+            Email = "sziszi@ravasz.com"
+        };
+
+        await _dbContext.Trainers.AddAsync(trainer);
+        await _dbContext.SaveChangesAsync();
+
+        var result = await _repository.GetByUserName("wolf");
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public async Task UpdateTrainer_UpdatesTrainerSuccessfully()
+    {
+        TrainerEntity trainer = new TrainerEntity
+        {
+            FirstName = "Sziszi",
+            LastName = "Ravasz",
+            Username = "sziszi",
+            Password = "cornisland123",
+            Email = "sziszi@ravasz.com"
+        };
+
+        await _dbContext.Trainers.AddAsync(trainer);
+        await _dbContext.SaveChangesAsync();
+
+        TrainerEntity trainerToUpdate = await _repository.GetByUserName(trainer.Username);
+
+        string newUserName = "sziszike";
+        trainerToUpdate.Username = newUserName;
+        // research into why test is also functional with comparing to original trainer
+        // because by updating trainerToUpdate property, original trainer object is updated as well
+        await _repository.UpdateTrainer(trainerToUpdate);
+        
+        var result = await _repository.GetById(trainerToUpdate.Id);
+        CompareTwoTrainerEntities(result, trainerToUpdate);
+    }
+
+    [Test]
+    public async Task DeleteTrainer_DeletesSuccessfully()
+    {
+        TrainerEntity sziszi = new TrainerEntity
+        {
+            FirstName = "Sziszi",
+            LastName = "Ravasz",
+            Username = "sziszi",
+            Password = "cornisland13",
+            Email = "sziszi@ravasz.com"
+        };
+
+        await _dbContext.Trainers.AddAsync(sziszi);
+        await _dbContext.SaveChangesAsync();
+
+        var firstResult = await _repository.GetById(sziszi.Id);
+        CompareTwoTrainerEntities(firstResult, sziszi);
+
+        await _repository.DeleteTrainer(firstResult.Id);
+
+        var afterDelete = await _repository.GetById(sziszi.Id);
+        Assert.That(afterDelete, Is.Null);
+    }
+
+    private void CompareTwoTrainerEntities(TrainerEntity actualTrainer, TrainerEntity expected)
+    {
+        Assert.That(actualTrainer, Is.Not.Null);
+        Assert.That(actualTrainer.Id, Is.Not.Null);
+        Assert.That(actualTrainer.FirstName, Is.EqualTo(expected.FirstName));
+        Assert.That(actualTrainer.LastName, Is.EqualTo(expected.LastName));
+        Assert.That(actualTrainer.Username, Is.EqualTo(expected.Username));
+        Assert.That(actualTrainer.Password, Is.EqualTo(expected.Password));
+        Assert.That(actualTrainer.Email, Is.EqualTo(expected.Email));
     }
 }

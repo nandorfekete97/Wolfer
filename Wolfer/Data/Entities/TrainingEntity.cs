@@ -6,7 +6,7 @@ namespace Wolfer.Data.Entities;
 [PrimaryKey(nameof(Id))]
 public class TrainingEntity
 {
-    public int Id;
-    public DateTime Date;
-    public TrainingType TrainingType;
+    public int Id { get; set; }
+    public DateTime Date { get; set; }
+    public TrainingType TrainingType { get; set; }
 }

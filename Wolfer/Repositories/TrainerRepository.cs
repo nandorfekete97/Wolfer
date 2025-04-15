@@ -42,7 +42,7 @@ public class TrainerRepository : ITrainerRepository
 
     public async Task<bool> DeleteTrainer(int trainerId)
     {
-        var trainerToDelete = _dbContext.Trainers.FirstOrDefaultAsync(entity => entity.Id == trainerId);
+        var trainerToDelete = await _dbContext.Trainers.FirstOrDefaultAsync(entity => entity.Id == trainerId);
 
         if (trainerToDelete is not null)
         {
