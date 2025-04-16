@@ -112,19 +112,108 @@ public class UserTrainingRepositoryTest
     }
 
     [Test]
+    public async Task GetByUserId_FailsWithWrongId()
+    {
+        int wrongId = -1;
+
+        var result = await _repository.GetByUserId(wrongId);
+        
+        Assert.That(result, Is.Empty);
+    }
+
+    [Test]
+    public async Task GetByTrainingId_ReturnsCorrectUserTrainings()
+    {
+        UserEntity user = new UserEntity
+        {
+            Email = "nandor@fekete.com",
+            FirstName = "Nándor",
+            LastName = "Fekete",
+            Username = "nandorfekete97",
+            Password = "abc123"
+        };
+
+        UserEntity user2 = new UserEntity
+        {
+            Email = "abel@kosar.com",
+            FirstName = "Ábel",
+            LastName = "Kosár",
+            Username = "abelkosar96",
+            Password = "abc123"
+        };
+        
+        UserEntity user3 = new UserEntity
+        {
+            Email = "rolandhury@kosar.com",
+            FirstName = "Roland",
+            LastName = "Hury",
+            Username = "roli24",
+            Password = "abc123"
+        };
+
+        TrainingEntity weighLiftingTraining = new TrainingEntity
+        {
+            TrainingType = TrainingType.WeightLifting,
+            Date = DateTime.Today
+        };
+
+        TrainingEntity legDayTraining = new TrainingEntity
+        {
+            TrainingType = TrainingType.LegDay,
+            Date = DateTime.Today
+        };
+
+        await _dbContext.Users.AddAsync(user);
+        await _dbContext.Trainings.AddAsync(weighLiftingTraining);
+        await _dbContext.Trainings.AddAsync(legDayTraining);
+        
+        await _dbContext.SaveChangesAsync();
+        
+        // create different usertraining entities
+        // training id should be same for at least 2 entities (expected result)
+        // all usertraining entities added to db
+        UserTrainingEntity userTraining1 = new UserTrainingEntity
+        {
+            TrainingId = weighLiftingTraining.Id,
+            UserId = user.Id
+        };
+
+        UserTrainingEntity userTraining2 = new UserTrainingEntity
+        {
+            TrainingId = legDayTraining.Id,
+            UserId = user2.Id
+        };
+
+        UserTrainingEntity userTraining3 = new UserTrainingEntity
+        {
+            TrainingId = weighLiftingTraining.Id,
+            UserId = user3.Id
+        };
+
+        await _dbContext.UserTrainings.AddAsync(userTraining1);
+        await _dbContext.UserTrainings.AddAsync(userTraining2);
+        await _dbContext.UserTrainings.AddAsync(userTraining3);
+        await _dbContext.SaveChangesAsync();
+
+        List<UserTrainingEntity> expected = new List<UserTrainingEntity>
+        {
+            userTraining1, userTraining3
+        };
+        
+        // assert
+        var result = await _repository.GetByTrainingId(weighLiftingTraining.Id);
+
+        Assert.That(result, Is.EquivalentTo(expected));
+    }
+    
+    [Test]
     public async Task GetByTrainingId_FailsWithWrongId()
     {
         int wrongId = -1;
 
         var result = await _repository.GetByTrainingId(wrongId);
         
-        Assert.That(result, Is.Null);
-    }
-
-    [Test]
-    public async Task GetByUserId_ReturnsCorrectUserTraining()
-    {
-        
+        Assert.That(result, Is.Empty);
     }
 
     private void CompareTwoUserTrainings(UserTrainingEntity actualUserTraining, UserTrainingEntity expected)
