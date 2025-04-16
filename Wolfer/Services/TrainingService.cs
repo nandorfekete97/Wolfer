@@ -1,4 +1,5 @@
 using Wolfer.Data;
+using Wolfer.Data.DTOs;
 using Wolfer.Data.Entities;
 using Wolfer.Repositories;
 
@@ -41,5 +42,44 @@ public class TrainingService : ITrainingService
         }
 
         return await _trainingRepository.GetTrainingsByType(type);
+    }
+
+    public Task CreateTraining(TrainingDTO trainingDto)
+    {
+        throw new NotImplementedException();
+
+        // if (trainingDto.Id != 0)
+        // {
+        //     throw new ArgumentException("Trainer ID must be null.");
+        // }
+        //
+        // // training type is an enum, need to check if it's not defined here
+        // if (trainingDto.TrainingType == null || trainingDto.Date == null)
+        // {
+        //     throw new ArgumentException("All properties must be filled out.");
+        // }
+        //
+        // TrainingEntity newTrainingEntity = ConvertDtoToEntity(trainingDto);
+        //
+    }
+
+    public Task UpdateTraining(TrainingDTO trainingDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteTraining(TrainingDTO trainingDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    private TrainingEntity ConvertDtoToEntity(TrainingDTO trainingDto)
+    {
+        TrainingEntity trainingEntity = new TrainingEntity
+        {
+            Date = trainingDto.Date,
+            TrainingType = trainingDto.TrainingType
+        };
+        return trainingEntity;
     }
 }
