@@ -10,4 +10,5 @@ public interface ITrainerRepository
     Task CreateTrainer(TrainerEntity trainerEntity);
     Task UpdateTrainer(TrainerEntity trainerEntity);
     Task<bool> DeleteTrainer(int trainerId);
+    Task<bool> IsTrainerPresent(int id);
 }
