@@ -23,6 +23,11 @@ public class UserRepository : IUserRepository
         return await _dbContext.Users.FirstOrDefaultAsync(userEntity => userEntity.FirstName == firstName);
     }
 
+    public async Task<UserEntity?> GetUserByUserName(string userName)
+    {
+        return await _dbContext.Users.FirstOrDefaultAsync(userEntity => userEntity.Username == userName);
+    }
+
     public async Task<List<UserEntity>> GetAllUsers()
     {
         return await _dbContext.Users.ToListAsync();
@@ -52,5 +57,10 @@ public class UserRepository : IUserRepository
         }
 
         return false;
+    }
+
+    public async Task<bool> IsUserPresent(int userId)
+    {
+        return _dbContext.Users.Any(entity => entity.Id == userId);
     }
 }

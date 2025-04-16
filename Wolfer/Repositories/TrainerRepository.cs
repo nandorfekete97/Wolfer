@@ -53,4 +53,9 @@ public class TrainerRepository : ITrainerRepository
 
         return false;
     }
+
+    public async Task<bool> IsTrainerPresent(int trainerId)
+    {
+        return _dbContext.Trainers.Any(entity => entity.Id == trainerId);
+    }
 }

@@ -57,6 +57,20 @@ public class TrainerController : ControllerBase
             return NotFound(new { message = e.Message });
         }
     }
+    
+    [HttpPost("AddTrainer")]
+    public async Task<IActionResult> AddTrainer(TrainerDTO trainerDto)
+    {
+        try
+        {
+            await _trainerService.CreateTrainer(trainerDto);
+            return Ok(new { message = "Trainer created."});
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
 
     [HttpPut("UpdateTrainer")]
     public async Task<IActionResult> UpdateTrainer(TrainerDTO trainerDto)
@@ -79,20 +93,6 @@ public class TrainerController : ControllerBase
         {
             await _trainerService.DeleteTrainer(id);
             return Ok();
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = e.Message });
-        }
-    }
-
-    [HttpPost("AddTrainer")]
-    public async Task<IActionResult> AddTrainer(TrainerDTO trainerDto)
-    {
-        try
-        {
-            await _trainerService.CreateTrainer(trainerDto);
-            return Ok(new { message = "Trainer created."});
         }
         catch (Exception e)
         {
