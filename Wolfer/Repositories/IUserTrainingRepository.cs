@@ -4,6 +4,6 @@ namespace Wolfer.Repositories;
 
 public interface IUserTrainingRepository
 {
-    Task<UserTrainingsEntity> GetByUserId(int userId);
-    Task<UserTrainingsEntity> GetByTrainingId(int trainingId);
+    Task<List<UserTrainingEntity>> GetByUserId(int userId);
+    Task<List<UserTrainingEntity>> GetByTrainingId(int trainingId);
 }
