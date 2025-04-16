@@ -63,7 +63,9 @@ public class TrainerService : ITrainerService
 
     public async Task UpdateTrainer(TrainerDTO trainerDto)
     {
-        if (trainerDto.Id <= 0)
+        TrainerEntity trainerToUpdate = await GetById(trainerDto.Id);
+        
+        if (trainerToUpdate == null)
         {
             throw new ArgumentException("Invalid ID.");
         }

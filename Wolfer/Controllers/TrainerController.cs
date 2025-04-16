@@ -15,8 +15,22 @@ public class TrainerController : ControllerBase
     {
         _trainerService = trainerService;
     }
+    
+    [HttpGet("GetTrainerById/{id}")]
+    public async Task<IActionResult> GetTrainerById(int id)
+    {
+        try
+        {
+            TrainerEntity trainerEntity = await _trainerService.GetById(id);
+            return Ok(new { trainerEntity });
+        }
+        catch (Exception e)
+        {
+            return NotFound(new { message = e.Message });
+        }
+    }
 
-    [HttpGet("GetTrainer")]
+    [HttpGet("GetTrainerByUserName/{userName}")]
     public async Task<IActionResult> GetTrainerByUserName(string userName)
     {
         try
@@ -27,6 +41,48 @@ public class TrainerController : ControllerBase
         catch (Exception e)
         {
             return NotFound(new { message = e.Message });
+        }
+    }
+
+    [HttpGet("GetTrainerByFirstName/{firstName}")]
+    public async Task<IActionResult> GetTrainerByFirstName(string firstName)
+    {
+        try
+        {
+            TrainerEntity trainerEntity = await _trainerService.GetByFirstName(firstName);
+            return Ok(new { trainerEntity });
+        }
+        catch (Exception e)
+        {
+            return NotFound(new { message = e.Message });
+        }
+    }
+
+    [HttpPut("UpdateTrainer")]
+    public async Task<IActionResult> UpdateTrainer(TrainerDTO trainerDto)
+    {
+        try
+        {
+            await _trainerService.UpdateTrainer(trainerDto);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpDelete("DeleteTrainer/{id}")]
+    public async Task<IActionResult> DeleteTrainer(int id)
+    {
+        try
+        {
+            await _trainerService.DeleteTrainer(id);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
         }
     }
 
