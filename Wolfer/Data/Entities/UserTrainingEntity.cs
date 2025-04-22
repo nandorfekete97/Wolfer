@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 namespace Wolfer.Data.Entities;
 
 [PrimaryKey(nameof(UserId), nameof(TrainingId))]
-public class UserTrainingsEntity
+public class UserTrainingEntity
 {
-    public int UserId;
-    public int TrainingId;
+    public int UserId { get; set; }
+    public int TrainingId { get; set; }
 }
