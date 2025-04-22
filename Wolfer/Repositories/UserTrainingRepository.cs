@@ -22,6 +22,4 @@ public class UserTrainingRepository : IUserTrainingRepository
     {
         return await _dbContext.UserTrainingsEnumerable.FirstOrDefaultAsync(entity => entity.TrainingId == trainingId);
     }
-    
-    
 }

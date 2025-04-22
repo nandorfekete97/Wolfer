@@ -11,5 +11,5 @@ public interface ITrainingService
     public Task<List<TrainingEntity>> GetTrainingsByType(TrainingType type);
     public Task CreateTraining(TrainingDTO trainingDto);
     public Task UpdateTraining(TrainingDTO trainingDto);
-    public Task DeleteTraining(TrainingDTO trainingDto);
+    public Task DeleteTraining(int id);
 }

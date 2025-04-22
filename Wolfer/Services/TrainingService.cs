@@ -44,33 +44,50 @@ public class TrainingService : ITrainingService
         return await _trainingRepository.GetTrainingsByType(type);
     }
 
-    public Task CreateTraining(TrainingDTO trainingDto)
+    public async Task CreateTraining(TrainingDTO trainingDto)
     {
-        throw new NotImplementedException();
+        if (trainingDto.Id != 0)
+        {
+            throw new ArgumentException("Trainer ID must be null.");
+        }
+        
+        if (trainingDto.TrainingType == null || trainingDto.Date == null)
+        {
+            throw new ArgumentException("All properties must be filled out.");
+        }
+        
+        TrainingEntity newTrainingEntity = ConvertDtoToEntity(trainingDto);
 
-        // if (trainingDto.Id != 0)
-        // {
-        //     throw new ArgumentException("Trainer ID must be null.");
-        // }
-        //
-        // // training type is an enum, need to check if it's not defined here
-        // if (trainingDto.TrainingType == null || trainingDto.Date == null)
-        // {
-        //     throw new ArgumentException("All properties must be filled out.");
-        // }
-        //
-        // TrainingEntity newTrainingEntity = ConvertDtoToEntity(trainingDto);
-        //
+        await _trainingRepository.CreateTraining(newTrainingEntity);
     }
 
-    public Task UpdateTraining(TrainingDTO trainingDto)
+    public async Task UpdateTraining(TrainingDTO trainingDto)
     {
-        throw new NotImplementedException();
+        TrainingEntity trainingToUpdate = await GetById(trainingDto.Id);
+
+        if (trainingToUpdate == null)
+        {
+            throw new ArgumentException("Invalid ID.");
+        }
+
+        if (!Enum.IsDefined(typeof(TrainingType), trainingDto.TrainingType) || trainingDto.Date == DateTime.MinValue)
+        {
+            throw new ArgumentException("All properties must be filled out.");
+        }
+
+        TrainingEntity newTrainingEntity = ConvertDtoToEntity(trainingDto);
+
+        await _trainingRepository.UpdateTraining(newTrainingEntity);
     }
 
-    public Task DeleteTraining(TrainingDTO trainingDto)
+    public async Task DeleteTraining(int trainingId)
     {
-        throw new NotImplementedException();
+        if (trainingId <= 0)
+        {
+            throw new ArgumentException("Invalid ID.");
+        }
+
+        await _trainingRepository.DeleteById(trainingId);
     }
 
     private TrainingEntity ConvertDtoToEntity(TrainingDTO trainingDto)
