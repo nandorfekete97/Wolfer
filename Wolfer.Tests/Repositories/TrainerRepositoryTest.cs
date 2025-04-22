@@ -91,7 +91,7 @@ public class TrainerRepositoryTest
         var result2 = await _repository.GetByUserName(trainer2.Username);
         
         CompareTwoTrainerEntities(result2, trainer2);
-        CompareTwoTrainerEntities(result1, result2);
+        CompareTwoTrainerEntities(result1, trainer1);
     }
 
     [Test]

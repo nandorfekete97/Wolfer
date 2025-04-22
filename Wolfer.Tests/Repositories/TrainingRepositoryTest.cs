@@ -239,7 +239,7 @@ public class TrainingRepositoryTest
 
         TrainingEntity legDayAquired = await _repository.GetById(legDayTraining.Id);
         
-        await _repository.DeleteTraining(legDayAquired.Id);
+        await _repository.DeleteById(legDayAquired.Id);
 
         var afterDelete = await _repository.GetTrainingsByDate(DateOnly.FromDateTime(today));
 
