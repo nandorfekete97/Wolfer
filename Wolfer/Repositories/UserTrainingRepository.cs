@@ -13,13 +13,13 @@ public class UserTrainingRepository : IUserTrainingRepository
         _dbContext = dbContext;
     }
     
-    public async Task<UserTrainingsEntity> GetByUserId(int userId)
+    public async Task<List<UserTrainingEntity>> GetByUserId(int userId)
     {
-        return await _dbContext.UserTrainingsEnumerable.FirstOrDefaultAsync(entity => entity.UserId == userId);
+        return await _dbContext.UserTrainings.Where(entity => entity.UserId == userId).ToListAsync();
     }
 
-    public async Task<UserTrainingsEntity> GetByTrainingId(int trainingId)
+    public async Task<List<UserTrainingEntity>> GetByTrainingId(int trainingId)
     {
-        return await _dbContext.UserTrainingsEnumerable.FirstOrDefaultAsync(entity => entity.TrainingId == trainingId);
+        return await _dbContext.UserTrainings.Where(entity => entity.TrainingId == trainingId).ToListAsync();
     }
 }
