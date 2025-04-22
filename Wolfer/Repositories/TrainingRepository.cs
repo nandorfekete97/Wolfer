@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Wolfer.Data;
 using Wolfer.Data.Context;
+using Wolfer.Data.DTOs;
 using Wolfer.Data.Entities;
 
 namespace Wolfer.Repositories;
@@ -49,8 +50,8 @@ public class TrainingRepository : ITrainingRepository
         _dbContext.Update(trainingEntity);
         await _dbContext.SaveChangesAsync();
     }
-    
-    public async Task<bool> DeleteTraining(int trainingId)
+
+    public async Task<bool> DeleteById(int trainingId)
     {
         var trainingToDelete = await _dbContext.Trainings.FirstOrDefaultAsync(entity => entity.Id == trainingId);
 
