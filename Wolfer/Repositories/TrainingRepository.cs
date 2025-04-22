@@ -31,6 +31,13 @@ public class TrainingRepository : ITrainingRepository
         return await _dbContext.Trainings.Where(entity => entity.TrainingType == trainingType).ToListAsync();
     }
     
+    public async Task<List<TrainingEntity>> GetByIds(List<int> trainingIds)
+    {
+        return await _dbContext.Trainings
+            .Where(t => trainingIds.Contains(t.Id))
+            .ToListAsync();
+    }
+    
     public async Task CreateTraining(TrainingEntity trainingEntity)
     {
         await _dbContext.Trainings.AddAsync(trainingEntity);

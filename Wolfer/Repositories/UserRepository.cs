@@ -27,6 +27,13 @@ public class UserRepository : IUserRepository
     {
         return await _dbContext.Users.ToListAsync();
     }
+    
+    public async Task<List<UserEntity>> GetByIds(List<int> userIds)
+    {
+        return await _dbContext.Users
+            .Where(u => userIds.Contains(u.Id))
+            .ToListAsync();
+    }
 
     public async Task CreateUser(UserEntity user)
     {
