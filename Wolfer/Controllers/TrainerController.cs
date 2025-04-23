@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wolfer.Data.DTOs;
 using Wolfer.Data.Entities;
@@ -16,7 +17,7 @@ public class TrainerController : ControllerBase
         _trainerService = trainerService;
     }
     
-    [HttpGet("GetTrainerById/{id}")]
+    [HttpGet("GetTrainerById/{id}"), Authorize(Roles="User")]
     public async Task<IActionResult> GetTrainerById(int id)
     {
         try
@@ -30,7 +31,7 @@ public class TrainerController : ControllerBase
         }
     }
 
-    [HttpGet("GetTrainerByUserName/{userName}")]
+    [HttpGet("GetTrainerByUserName/{userName}"), Authorize(Roles="User")]
     public async Task<IActionResult> GetTrainerByUserName(string userName)
     {
         try
@@ -44,7 +45,7 @@ public class TrainerController : ControllerBase
         }
     }
 
-    [HttpGet("GetTrainerByFirstName/{firstName}")]
+    [HttpGet("GetTrainerByFirstName/{firstName}"), Authorize(Roles="User")]
     public async Task<IActionResult> GetTrainerByFirstName(string firstName)
     {
         try
@@ -58,7 +59,7 @@ public class TrainerController : ControllerBase
         }
     }
     
-    [HttpPost("AddTrainer")]
+    [HttpPost("AddTrainer"), Authorize(Roles="User")]
     public async Task<IActionResult> AddTrainer(TrainerDTO trainerDto)
     {
         try
@@ -72,7 +73,7 @@ public class TrainerController : ControllerBase
         }
     }
 
-    [HttpPut("UpdateTrainer")]
+    [HttpPut("UpdateTrainer"), Authorize(Roles="User")]
     public async Task<IActionResult> UpdateTrainer(TrainerDTO trainerDto)
     {
         try
@@ -86,7 +87,7 @@ public class TrainerController : ControllerBase
         }
     }
 
-    [HttpDelete("DeleteTrainer/{id}")]
+    [HttpDelete("DeleteTrainer/{id}"), Authorize(Roles="User")]
     public async Task<IActionResult> DeleteTrainer(int id)
     {
         try
