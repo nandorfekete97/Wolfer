@@ -78,7 +78,7 @@ public class UserController : ControllerBase
         try
         {
             await _userService.UpdateUser(userDto);
-            return Ok();
+            return Ok(new { message = "User updated."});
         }
         catch (Exception e)
         {
@@ -92,7 +92,7 @@ public class UserController : ControllerBase
         try
         {
             await _userService.DeleteUser(id);
-            return Ok();
+            return Ok(new { message = "User deleted."});
         }
         catch (Exception e)
         {
