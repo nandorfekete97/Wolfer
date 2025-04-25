@@ -1,0 +1,13 @@
+@import "~bootstrap/scss/bootstrap.scss";
+
+.training-table-header {
+    display: flex;
+}
+
+.training-table {
+    border-radius: 12px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: rgb(77, 76, 76);
+}

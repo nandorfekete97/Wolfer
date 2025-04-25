@@ -1,0 +1,23 @@
+@import "~bootstrap/scss/bootstrap.scss";
+
+#sign-up-button {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.training {
+    display: flex;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.training-info {
+    margin: auto;
+}
+
+.custom-signup-btn {
+    padding: 2px 6px;     
+    font-size: 1.25rem;  
+    margin-top: 5px;
+    margin-bottom: 5px;  
+}
