@@ -9,5 +9,19 @@ export default defineConfig({
     alias: {
         '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
     }
+  },
+  server: {
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5166',
+        changeOrigin: true,
+        rewrite: (path) => {
+          console.log('[Proxy Rewrite]', path);
+          return path.replace(/^\/api/, '');
+        }
+      }
+    },
+    hot: true
   }
 })
