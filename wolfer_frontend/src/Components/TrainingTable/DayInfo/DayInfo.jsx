@@ -8,7 +8,7 @@ const DayInfo = ({ date }) => {
 
   const getTrainings = async () => {
     const dateOnly = date.toISOString().split('T')[0];
-    const res = await fetch(`http://localhost:5166/Training/GetTrainingsByDate/${dateOnly}`);
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`);
     const data = await res.json();
     setTrainings(data.trainingEntities); 
   }
