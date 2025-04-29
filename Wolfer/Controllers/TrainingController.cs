@@ -42,7 +42,6 @@ public class TrainingController : ControllerBase
         catch (Exception e)
         {
             return NotFound(new { message = e.Message });
-
         }
     }
     
