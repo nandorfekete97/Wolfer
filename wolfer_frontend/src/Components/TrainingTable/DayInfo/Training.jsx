@@ -1,9 +1,24 @@
 import './Training.css'
 import React, { useState, useEffect } from 'react';
 
-const Training = () => {
-  const [time, setTime] = useState("09:00");
-  const [type, setType] = useState("Crossfit");
+const trainingTypeMap = [
+  "Functional Body-Building",
+  "Weight Lifting",
+  "Crossfit",
+  "Leg Day"
+]
+
+const Training = ({training}) => {
+  const [time, setTime] = useState(null);
+  const [type, setType] = useState("");
+
+  useEffect(() => {
+    if (training) {
+      const dateObj = new Date(training.date);
+      setTime(dateObj.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}));
+      setType(trainingTypeMap[training.trainingType]);
+    }
+  }, [training]);
 
   return (
     <div className="training">

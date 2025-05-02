@@ -11,10 +11,12 @@ namespace Wolfer.Controllers;
 public class TrainingController : ControllerBase
 {
     private ITrainingService _trainingService;
+    private IUserTrainingService _userTrainingService;
 
-    public TrainingController(ITrainingService trainingService)
+    public TrainingController(ITrainingService trainingService, IUserTrainingService userTrainingService)
     {
         _trainingService = trainingService;
+        _userTrainingService = userTrainingService;
     }
 
     [HttpGet("GetTrainingById/{id}")]
@@ -30,6 +32,20 @@ public class TrainingController : ControllerBase
             return NotFound(new { message = e.Message });
         }
     }
+    
+    [HttpGet("GetTrainingsForUser/{userId}")]
+    public async Task<IActionResult> GetTrainingsForUser(int userId)
+    {
+        try
+        {
+            var trainings = await _userTrainingService.GetByUserId(userId);
+            return Ok(trainings);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 
     [HttpGet("GetTrainingsByDate/{date}")]
     public async Task<IActionResult> GetTrainingsByDate(DateOnly date)
@@ -42,7 +58,6 @@ public class TrainingController : ControllerBase
         catch (Exception e)
         {
             return NotFound(new { message = e.Message });
-
         }
     }
     
@@ -57,7 +72,6 @@ public class TrainingController : ControllerBase
         catch (Exception e)
         {
             return NotFound(new { message = e.Message });
-
         }
     }
 

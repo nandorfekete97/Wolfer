@@ -22,4 +22,21 @@ public class UserTrainingRepository : IUserTrainingRepository
     {
         return await _dbContext.UserTrainings.Where(entity => entity.TrainingId == trainingId).ToListAsync();
     }
+
+    public async Task<UserTrainingEntity> GetByUserIdAndTrainingId(int userId, int trainingId)
+    {
+        return await _dbContext.UserTrainings.FirstOrDefaultAsync(
+            entity => entity.UserId == userId && entity.TrainingId == trainingId);
+    }
+
+    public async Task Create(UserTrainingEntity userTrainingEntity)
+    {
+        if (userTrainingEntity == null)
+        {
+            throw new ArgumentNullException(nameof(userTrainingEntity));
+        }
+
+        await _dbContext.UserTrainings.AddAsync(userTrainingEntity);
+        await _dbContext.SaveChangesAsync();
+    }
 }

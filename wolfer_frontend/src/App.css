@@ -1,7 +1,6 @@
 @import "~bootstrap/scss/bootstrap.scss";
 
 #root {
-  width: 120rem;
   padding: 2rem;
   text-align: center;
   background-color: rgb(58, 58, 58);
