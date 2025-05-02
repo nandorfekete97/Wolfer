@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wolfer.Data.DTOs;
 using Wolfer.Data.Entities;
@@ -16,7 +17,7 @@ public class UserController : ControllerBase
         _userService = userService;
     }
     
-    [HttpGet("GetUserById/{id}")]
+    [HttpGet("GetUserById/{id}"), Authorize(Roles="User")]
     public async Task<IActionResult> GetUserById(int id)
     {
         try
@@ -30,7 +31,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet("GetUserByUserName/{userName}")]
+    [HttpGet("GetUserByUserName/{userName}"), Authorize(Roles="User")]
     public async Task<IActionResult> GetUserByUserName(string userName)
     {
         try
@@ -44,7 +45,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet("GetUserByFirstName/{firstName}")]
+    [HttpGet("GetUserByFirstName/{firstName}"), Authorize(Roles="User")]
     public async Task<IActionResult> GetUserByFirstName(string firstName)
     {
         try
@@ -58,7 +59,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPost("AddUser")]
+    [HttpPost("AddUser"), Authorize(Roles="User")]
     public async Task<IActionResult> AddUser([FromBody] UserDTO userDto)
     {
         try
@@ -72,7 +73,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPut("UpdateUser")]
+    [HttpPut("UpdateUser"), Authorize(Roles="User")]
     public async Task<IActionResult> UpdateUser(UserDTO userDto)
     {
         try
@@ -86,7 +87,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpDelete("DeleteUser/{id}")]
+    [HttpDelete("DeleteUser/{id}"), Authorize(Roles="User")]
     public async Task<IActionResult> DeleteUser(int id)
     {
         try

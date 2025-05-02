@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Wolfer.Data.Entities;
 
 namespace Wolfer.Data.Context;
 
-public class WolferContext : DbContext
+public class WolferContext : IdentityDbContext<IdentityUser, IdentityRole, string>
 {
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<UserTrainingEntity> UserTrainings { get; set; }
