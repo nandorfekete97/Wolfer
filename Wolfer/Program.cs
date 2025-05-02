@@ -53,9 +53,21 @@ builder.Services.AddScoped<ITrainerRepository, TrainerRepository>();
 builder.Services.AddScoped<ITrainerService, TrainerService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITrainingRepository, TrainingRepository>();
+builder.Services.AddScoped<ITrainingService, TrainingService>();
+builder.Services.AddScoped<IUserTrainingRepository, UserTrainingRepository>();
+builder.Services.AddScoped<IUserTrainingService, UserTrainingService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<AuthenticationSeeder>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy => policy.WithOrigins("http://localhost:5173") 
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 builder.Services
     .AddIdentityCore<IdentityUser>(options =>
@@ -105,6 +117,8 @@ builder.Services
     .AddEntityFrameworkStores<WolferContext>();
 
 var app = builder.Build();
+
+app.UseCors("AllowFrontend");
 
 using var scope = app.Services.CreateScope(); // AuthenticationSeeder is a scoped service, therefore we need a scope instance to access it
 var authenticationSeeder = scope.ServiceProvider.GetRequiredService<AuthenticationSeeder>();

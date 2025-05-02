@@ -1,0 +1,16 @@
+@import "~bootstrap/scss/bootstrap.scss";
+
+#root {
+  padding: 2rem;
+  text-align: center;
+  background-color: rgb(58, 58, 58);
+  color: rgb(206, 205, 205);
+}
+
+.container {
+  display: flex;
+}
+
+.gym-name {
+  font-weight: 800;
+}

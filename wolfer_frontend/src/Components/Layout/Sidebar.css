@@ -1,0 +1,17 @@
+.list-unstyled {
+    text-align: left;
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.sidebar-item {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  
+    &:hover {
+      background-color: #444;
+      color: white;
+      cursor: pointer;
+    }
+  }
