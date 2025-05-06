@@ -29,6 +29,7 @@ const handleLogin = async (e) => {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem('token', data.token);
+            localStorage.setItem('userId', data.userId);
             setSuccessfulLogin(true);
         } else {
             const data = await response.json();

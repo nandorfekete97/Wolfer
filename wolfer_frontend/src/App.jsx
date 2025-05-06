@@ -3,6 +3,7 @@ import './App.css'
 import Layout from './Components/Layout/Layout';
 import TrainingsTable from './Components/TrainingTable/TrainingsTable';
 import Login from './Components/Login/Login';
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 function App() {
   const [successfulLogin, setSuccessfulLogin] = useState(false);
