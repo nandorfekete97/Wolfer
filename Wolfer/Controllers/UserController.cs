@@ -18,11 +18,11 @@ public class UserController : ControllerBase
     }
     
     [HttpGet("GetUserById/{id}"), Authorize(Roles="User")]
-    public async Task<IActionResult> GetUserById(int id)
+    public async Task<IActionResult> GetUserById(Guid id)
     {
         try
         {
-            UserEntity userEntity = await _userService.GetById(id);
+            UserEntity userEntity = await _userService.GetById(1);
             return Ok(new { userEntity });
         }
         catch (Exception e)
@@ -88,11 +88,11 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("DeleteUser/{id}"), Authorize(Roles="User")]
-    public async Task<IActionResult> DeleteUser(int id)
+    public async Task<IActionResult> DeleteUser(Guid id)
     {
         try
         {
-            await _userService.DeleteUser(id);
+            await _userService.DeleteUser(1);
             return Ok(new { message = "User deleted."});
         }
         catch (Exception e)

@@ -13,7 +13,7 @@ public class UserTrainingRepository : IUserTrainingRepository
         _dbContext = dbContext;
     }
     
-    public async Task<List<UserTrainingEntity>> GetByUserId(int userId)
+    public async Task<List<UserTrainingEntity>> GetByUserId(Guid userId)
     {
         return await _dbContext.UserTrainings.Where(entity => entity.UserId == userId).ToListAsync();
     }
@@ -23,7 +23,7 @@ public class UserTrainingRepository : IUserTrainingRepository
         return await _dbContext.UserTrainings.Where(entity => entity.TrainingId == trainingId).ToListAsync();
     }
 
-    public async Task<UserTrainingEntity> GetByUserIdAndTrainingId(int userId, int trainingId)
+    public async Task<UserTrainingEntity> GetByUserIdAndTrainingId(Guid userId, int trainingId)
     {
         return await _dbContext.UserTrainings.FirstOrDefaultAsync(
             entity => entity.UserId == userId && entity.TrainingId == trainingId);

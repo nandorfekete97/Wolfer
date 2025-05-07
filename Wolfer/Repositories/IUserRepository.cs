@@ -4,9 +4,9 @@ namespace Wolfer.Repositories;
 
 public interface IUserRepository
 {
-    Task<UserEntity?> GetUserById(int id);
+    Task<UserEntity?> GetUserById();
     Task<UserEntity?> GetUserByFirstName(string firstName);
-    Task<List<UserEntity>> GetByIds(List<int> userIds);
+    Task<List<UserEntity>> GetByIds();
     Task<UserEntity?> GetUserByUserName(string userName);
     Task CreateUser(UserEntity user);
     Task UpdateUser(UserEntity user);

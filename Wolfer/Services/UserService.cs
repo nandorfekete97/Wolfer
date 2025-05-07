@@ -15,12 +15,12 @@ public class UserService : IUserService
 
     public async Task<UserEntity> GetById(int id)
     {
-        if (id <= 0)
-        {
-            throw new ArgumentException("ID must be positive integer.");
-        }
+        // if (id <= 0)
+        // {
+        //     throw new ArgumentException("ID must be positive integer.");
+        // }
 
-        return await _userRepository.GetUserById(id);
+        return await _userRepository.GetUserById();
     }
 
     public async Task<UserEntity> GetByFirstName(string firstName)
@@ -45,10 +45,10 @@ public class UserService : IUserService
 
     public async Task CreateUser(UserDTO userDto)
     {
-        if (userDto.Id != 0)
-        {
-            throw new ArgumentException("User ID must be null.");
-        }
+        // if (userDto.Id != 0)
+        // {
+        //     throw new ArgumentException("User ID must be null.");
+        // }
         
         if (userDto.FirstName == "" || userDto.LastName == "" || userDto.Email == "" ||
             userDto.Password == "")
@@ -81,10 +81,10 @@ public class UserService : IUserService
 
     public async Task DeleteUser(int userId)
     {
-        if (userId <= 0)
-        {
-            throw new ArgumentException("Invalid ID."); 
-        }
+        // if (userId <= 0)
+        // {
+        //     throw new ArgumentException("Invalid ID."); 
+        // }
 
         await _userRepository.DeleteUserById(userId);
     }

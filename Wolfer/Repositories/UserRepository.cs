@@ -13,9 +13,10 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
     
-    public async Task<UserEntity?> GetUserById(int userId)
+    public async Task<UserEntity?> GetUserById()
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(userEntity => userEntity.Id == userId);
+        throw new NotImplementedException();
+        //return await _dbContext.Users.FirstOrDefaultAsync(userEntity => userEntity.Id == userId);
     }
 
     public async Task<UserEntity?> GetUserByFirstName(string firstName)
@@ -33,11 +34,12 @@ public class UserRepository : IUserRepository
         return await _dbContext.Users.ToListAsync();
     }
     
-    public async Task<List<UserEntity>> GetByIds(List<int> userIds)
+    public async Task<List<UserEntity>> GetByIds()
     {
-        return await _dbContext.Users
-            .Where(u => userIds.Contains(u.Id))
-            .ToListAsync();
+        throw new NotImplementedException();
+        // return await _dbContext.Users
+        //     .Where(u => userIds.Contains(u.Id))
+        //     .ToListAsync();
     }
 
     public async Task CreateUser(UserEntity user)
