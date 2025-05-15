@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Wolfer.Data.Entities;
 using Wolfer.Services;
@@ -17,7 +18,7 @@ public class UserTrainingController : ControllerBase
     }
 
     [HttpGet("GetTrainingsByUserId/{userId}")]
-    public async Task<IActionResult> GetTrainingsByUserId(Guid userId)
+    public async Task<IActionResult> GetTrainingsByUserId(string userId)
     {
         try
         {
@@ -35,7 +36,7 @@ public class UserTrainingController : ControllerBase
     {
         try
         {
-            List<UserEntity> userEntities = await _userTrainingService.GetByTrainingId(trainingId);
+            List<IdentityUser> userEntities = await _userTrainingService.GetByTrainingId(trainingId);
             return Ok(new { userEntities });
         }
         catch (Exception e)
@@ -45,7 +46,7 @@ public class UserTrainingController : ControllerBase
     }
     
     [HttpGet("GetPastTrainingsForUser/{userId}")]
-    public async Task<IActionResult> GetPastTrainingsForUser(Guid userId)
+    public async Task<IActionResult> GetPastTrainingsForUser(string userId)
     {
         try
         {
@@ -59,7 +60,7 @@ public class UserTrainingController : ControllerBase
     }
 
     [HttpPost("SignUserUpForTraining/users/{userId}/trainings/{trainingId}")]
-    public async Task<IActionResult> SignUserUpForTraining(Guid userId, int trainingId)
+    public async Task<IActionResult> SignUserUpForTraining(string userId, int trainingId)
     {
         try
         {

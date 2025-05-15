@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Wolfer.Data.Context;
 using Wolfer.Data.Entities;
@@ -6,70 +7,43 @@ namespace Wolfer.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    private WolferContext _dbContext;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public UserRepository(WolferContext dbContext)
+    public UserRepository(UserManager<IdentityUser> userManager)
     {
-        _dbContext = dbContext;
+        _userManager = userManager;
     }
     
-    public async Task<UserEntity?> GetUserById()
+    public async Task<IdentityUser?> GetUserById(string userId)
     {
-        throw new NotImplementedException();
-        //return await _dbContext.Users.FirstOrDefaultAsync(userEntity => userEntity.Id == userId);
-    }
-
-    public async Task<UserEntity?> GetUserByFirstName(string firstName)
-    {
-        return await _dbContext.Users.FirstOrDefaultAsync(userEntity => userEntity.FirstName == firstName);
-    }
-
-    public async Task<UserEntity?> GetUserByUserName(string userName)
-    {
-        return await _dbContext.Users.FirstOrDefaultAsync(userEntity => userEntity.Username == userName);
-    }
-
-    public async Task<List<UserEntity>> GetAllUsers()
-    {
-        return await _dbContext.Users.ToListAsync();
+        return await _userManager.FindByIdAsync(userId);
     }
     
-    public async Task<List<UserEntity>> GetByIds()
+    public async Task<List<IdentityUser>> GetByIds(List<string> userIds)
     {
-        throw new NotImplementedException();
-        // return await _dbContext.Users
-        //     .Where(u => userIds.Contains(u.Id))
-        //     .ToListAsync();
+        return await _userManager.Users.Where(u => userIds.Contains(u.Id)).ToListAsync();
     }
 
-    public async Task CreateUser(UserEntity user)
+    public async Task UpdateUser(IdentityUser user, string oldPassword, string newPassword)
     {
-        await _dbContext.Users.AddAsync(user);
-        await _dbContext.SaveChangesAsync();
+        await _userManager.UpdateAsync(user);
+        
+        if (!String.IsNullOrEmpty(oldPassword) && !String.IsNullOrEmpty(newPassword) && oldPassword != newPassword)
+        {
+            await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+        }
     }
 
-    public async Task UpdateUser(UserEntity user)
+    public async Task<bool> DeleteUserById(string userId)
     {
-        _dbContext.Update(user);
-        await _dbContext.SaveChangesAsync();
-    }
-
-    public async Task<bool> DeleteUserById(int userId)
-    {
-        var userToDelete = await _dbContext.Users.FirstOrDefaultAsync(userEntity => userEntity.Id == userId);
+        var userToDelete = await GetUserById(userId);
 
         if (userToDelete is not null)
         {
-            _dbContext.Remove(userToDelete);
-            await _dbContext.SaveChangesAsync();
+            await _userManager.DeleteAsync(userToDelete);
             return true;
         }
 
         return false;
-    }
-
-    public async Task<bool> IsUserPresent(int userId)
-    {
-        return _dbContext.Users.Any(entity => entity.Id == userId);
     }
 }

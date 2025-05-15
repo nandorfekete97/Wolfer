@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Wolfer.Data.Entities;
 using Wolfer.Repositories;
 
@@ -16,14 +17,14 @@ public class UserTrainingService : IUserTrainingService
         _trainingRepository = trainingRepository;
     }
 
-    public async Task<List<TrainingEntity>> GetByUserId(Guid userId)
+    public async Task<List<TrainingEntity>> GetByUserId(string userId)
     {
         // if (userId <= 0)
         // {
         //     throw new ArgumentException("ID must be positive integer.");
         // }
 
-        UserEntity user = await _userRepository.GetUserById();
+        IdentityUser user = await _userRepository.GetUserById(userId);
 
         if (user == null)
         {
@@ -37,14 +38,14 @@ public class UserTrainingService : IUserTrainingService
         return await _trainingRepository.GetByIds(trainingIds);
     }
     
-    public async Task<List<TrainingEntity>> GetPastTrainingsByUserId(Guid userId)
+    public async Task<List<TrainingEntity>> GetPastTrainingsByUserId(string userId)
     {
         // if (userId <= 0)
         // {
         //     throw new ArgumentException("ID must be positive integer.");
         // }
 
-        UserEntity user = await _userRepository.GetUserById();
+        IdentityUser user = await _userRepository.GetUserById(userId);
 
         if (user == null)
         {
@@ -62,7 +63,7 @@ public class UserTrainingService : IUserTrainingService
         return pastTrainings;
     }
 
-    public async Task<List<UserEntity>> GetByTrainingId(int trainingId)
+    public async Task<List<IdentityUser>> GetByTrainingId(int trainingId)
     {
         if (trainingId <= 0)
         {
@@ -78,17 +79,17 @@ public class UserTrainingService : IUserTrainingService
 
         List<UserTrainingEntity> userTrainingEntities = await _userTrainingRepository.GetByTrainingId(trainingId);
 
-        List<Guid> userIds = userTrainingEntities.Select(entity => entity.UserId).ToList();
+        List<string> userIds = userTrainingEntities.Select(entity => entity.UserId).ToList();
 
-        return await _userRepository.GetByIds();
+        return await _userRepository.GetByIds(userIds);
     }
     
-    public async Task SignUpUserToTraining(Guid userId, int trainingId)
+    public async Task SignUpUserToTraining(string userId, int trainingId)
     {
         // if (userId <= 0 || trainingId <= 0)
         //     throw new ArgumentException("User ID and Training ID must be valid.");
 
-        var user = await _userRepository.GetUserById();
+        var user = await _userRepository.GetUserById(userId);
         var training = await _trainingRepository.GetById(trainingId);
 
         if (user == null || training == null)

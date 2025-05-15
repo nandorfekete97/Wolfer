@@ -7,7 +7,6 @@ namespace Wolfer.Data.Context;
 
 public class WolferContext : IdentityDbContext<IdentityUser, IdentityRole, string>
 {
-    public DbSet<UserEntity> Users { get; set; }
     public DbSet<UserTrainingEntity> UserTrainings { get; set; }
     public DbSet<TrainingEntity> Trainings { get; set; }
     public DbSet<TrainerEntity> Trainers { get; set; }
