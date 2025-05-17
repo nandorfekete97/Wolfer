@@ -72,4 +72,18 @@ public class UserTrainingController : ControllerBase
             return BadRequest(new { message = e.Message });
         }
     }
+
+    [HttpDelete("SignUserOffFromTraining/users/{userId}/trainings/{trainingId}")]
+    public async Task<IActionResult> SignUserOffFromTraining(Guid userId, int trainingId)
+    {
+        try
+        {
+            await _userTrainingService.SignOffUserFromTraining(userId, trainingId);
+            return Ok(new { message = "UserTraining deleted" });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
 }

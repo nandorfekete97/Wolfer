@@ -83,14 +83,13 @@ public class UserTrainingService : IUserTrainingService
     
     public async Task SignUpUserToTraining(Guid userId, int trainingId)
     {
-        // if (userId <= 0 || trainingId <= 0)
-        //     throw new ArgumentException("User ID and Training ID must be valid.");
-
         var user = await _userRepository.GetUserById(userId.ToString());
         var training = await _trainingRepository.GetById(trainingId);
 
         if (user == null || training == null)
+        {
             throw new ArgumentException("User or Training not found.");
+        }
 
         var existing = await _userTrainingRepository.GetByUserIdAndTrainingId(userId.ToString(), trainingId);
         if (existing != null)
@@ -103,5 +102,19 @@ public class UserTrainingService : IUserTrainingService
         };
 
         await _userTrainingRepository.Create(userTraining);
+    }
+
+    public async Task SignOffUserFromTraining(Guid userId, int trainingId)
+    {
+        // first check if usertraining exists
+        var userTraining = await _userTrainingRepository.GetByUserIdAndTrainingId(userId.ToString(), trainingId);
+
+        if (userTraining == null)
+        {
+            throw new ArgumentException("UserTraining record or Training not found.");
+        }
+
+        // delete if we get here
+        await _userTrainingRepository.Delete(userId, trainingId);
     }
 }

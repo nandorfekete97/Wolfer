@@ -53,4 +53,20 @@ public class UserTrainingRepository : IUserTrainingRepository
         await _dbContext.UserTrainings.AddAsync(userTrainingEntity);
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<bool> Delete(Guid userId, int trainingId)
+    {
+        var userTrainingToDelete =
+            await _dbContext.UserTrainings.FirstOrDefaultAsync(entity =>
+                entity.UserId == userId && entity.TrainingId == trainingId);
+
+        if (userTrainingToDelete is not null)
+        {
+            _dbContext.Remove(userTrainingToDelete);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
 }
