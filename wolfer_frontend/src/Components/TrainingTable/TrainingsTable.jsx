@@ -4,6 +4,20 @@ import React, { useState, useEffect } from 'react';
 
 const TrainingsTable = () => {
   const [weekDates, setWeekDates] = useState([]);
+  const [signedUpTrainings, setSignedUpTrainings] = useState([]);
+  const [dataIsLoaded, setDataIsLoaded] = useState(false);
+
+  const getSignedUpTrainings = async () => {
+    const userId = localStorage.getItem("userId");
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetUpcomingTrainingsByUserId/${userId}`);
+    const data = await res.json();
+    setSignedUpTrainings(data.trainingEntities); 
+    setDataIsLoaded(true);
+  }
+
+  useEffect(() => {
+    getSignedUpTrainings();
+  }, []);
 
   useEffect(() => {
     const today = new Date();
@@ -22,9 +36,12 @@ const TrainingsTable = () => {
         <h3 className="table-item col-sm-4">Type</h3>
         <h3 className="table-item col-sm-4">Register</h3>
       </div>
-      {weekDates.map((day, idx) => (
-        <DayInfo key={idx} date={day} />
-      ))}
+      {dataIsLoaded ?
+      weekDates.map((day, idx) => (
+        <DayInfo key={idx} date={day} signedUpTrainings={signedUpTrainings} />
+      )) :
+      <h5>Loading</h5>
+      }
     </div>
   );
 };

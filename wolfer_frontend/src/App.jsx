@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import './App.css'
+import { useEffect, useState } from 'react';
+import './App.css';
 import Layout from './Components/Layout/Layout';
 import TrainingsTable from './Components/TrainingTable/TrainingsTable';
 import Login from './Components/Login/Login';
@@ -9,42 +9,44 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 function App() {
   const [successfulLogin, setSuccessfulLogin] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setSuccessfulLogin(true);
+    }
+  }, []);
+
   return (
-    <>
     <Router>
       <div className="col-sm-12">
         <h1 className="gym-name">WOLFER</h1>
       </div>
 
       <div className="container col-sm-12">
-        {
-        successfulLogin ?
-        <>
-          <div className="col-sm-3">
-            <Layout setSuccessfulLogin={setSuccessfulLogin}/>
-          </div>
-
-          {/* // wouldn't it make sense to create routing here? in case of successful login, 
-          // we want to be able to switch between sidebar components */}
-
-          <div className="col-sm-9">
-            {/* <TrainingsTable/> */}
-            <Routes>
+        {successfulLogin ? (
+          <>
+            <div className="col-sm-3">
+              <Layout setSuccessfulLogin={setSuccessfulLogin} />
+            </div>
+            <div className="col-sm-9">
+              <Routes>
                 <Route path="/" element={<Navigate to="/trainings" />} />
                 <Route path="/trainings" element={<TrainingsTable />} />
                 <Route path="/profile" element={<Profile />} />
-                {/* Add more routes like PRs, History, etc. */}
+                <Route path="*" element={<Navigate to="/trainings" />} />
               </Routes>
+            </div>
+          </>
+        ) : (
+          <div className="col-sm-12">
+            <Routes>
+              <Route path="*" element={<Login setSuccessfulLogin={setSuccessfulLogin} />} />
+            </Routes>
           </div>
-        </>
-          
-        :
-          <Login setSuccessfulLogin = {setSuccessfulLogin}/>
-        }
+        )}
       </div>
-      </Router>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
