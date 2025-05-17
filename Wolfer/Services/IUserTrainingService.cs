@@ -8,5 +8,5 @@ public interface IUserTrainingService
     public Task<List<TrainingEntity>> GetByUserId(string userId);
     public Task<List<IdentityUser>> GetByTrainingId(int trainingId);
     Task<List<TrainingEntity>> GetPastTrainingsByUserId(string userId);
-    Task SignUpUserToTraining(string userId, int trainingId);
+    Task SignUpUserToTraining(Guid userId, int trainingId);
 }
