@@ -1,6 +1,6 @@
 # 🐺 Wolfer
 
-**Wolfer** is a web application that allows trainers to create and manage trainings, while users can sign up, maintain their profiles, and track personal bests. Wolfer was developed showcasing a React.js (Vite) frontend, connected to a ASP.NET backend, using an MSSQL database. During development SOLID principles were followed and Clean Code methodology was maintained. Different layers of the application are thorouhly tested. This is a solo project.
+**Wolfer** is a web application that allows trainers to create and manage trainings, while users can sign up, maintain their profiles, and track personal bests. Wolfer was developed showcasing a React.js (Vite) frontend, connected to a ASP.NET backend, using an MSSQL database. During development SOLID principles were followed and Clean Code methodology was maintained. Different layers of the application are thoroughly tested. This is a solo project.
 
 ---
 
