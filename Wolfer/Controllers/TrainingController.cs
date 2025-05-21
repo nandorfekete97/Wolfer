@@ -34,7 +34,7 @@ public class TrainingController : ControllerBase
     }
     
     [HttpGet("GetTrainingsForUser/{userId}")]
-    public async Task<IActionResult> GetTrainingsForUser(int userId)
+    public async Task<IActionResult> GetTrainingsForUser(string userId)
     {
         try
         {

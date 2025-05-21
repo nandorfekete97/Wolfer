@@ -1,15 +1,12 @@
+using Microsoft.AspNetCore.Identity;
 using Wolfer.Data.Entities;
 
 namespace Wolfer.Repositories;
 
 public interface IUserRepository
 {
-    Task<UserEntity?> GetUserById(int id);
-    Task<UserEntity?> GetUserByFirstName(string firstName);
-    Task<List<UserEntity>> GetByIds(List<int> userIds);
-    Task<UserEntity?> GetUserByUserName(string userName);
-    Task CreateUser(UserEntity user);
-    Task UpdateUser(UserEntity user);
-    Task<bool> DeleteUserById(int id);
-    Task<bool> IsUserPresent(int id);
+    Task<IdentityUser?> GetUserById(string userId);
+    Task<List<IdentityUser>> GetByIds(List<string> userIds);
+    Task UpdateUser(IdentityUser user, string oldPassword, string newPassword);
+    Task<bool> DeleteUserById(string userId);
 }

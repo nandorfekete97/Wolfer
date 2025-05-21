@@ -6,6 +6,6 @@ namespace Wolfer.Data.Entities;
 [PrimaryKey(nameof(UserId), nameof(TrainingId))]
 public class UserTrainingEntity
 {
-    public int UserId { get; set; }
+    public Guid UserId { get; set; }
     public int TrainingId { get; set; }
 }

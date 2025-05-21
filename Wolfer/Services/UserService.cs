@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Wolfer.Data.DTOs;
 using Wolfer.Data.Entities;
 using Wolfer.Repositories;
@@ -13,91 +15,46 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<UserEntity> GetById(int id)
+    public async Task<IdentityUser?> GetById(string userId)
     {
-        if (id <= 0)
+        if (String.IsNullOrEmpty(userId))
         {
             throw new ArgumentException("ID must be positive integer.");
         }
 
-        return await _userRepository.GetUserById(id);
+        return await _userRepository.GetUserById(userId);
     }
 
-    public async Task<UserEntity> GetByFirstName(string firstName)
+    public async Task<List<IdentityUser>> GetByUserIds(List<string> userIds)
     {
-        if (string.IsNullOrEmpty(firstName))
-        {
-            throw new ArgumentException("First name cannot by empty.");
-        }
+        List<string> filteredUserIds = userIds.Where(userId => !String.IsNullOrEmpty(userId)).ToList();
 
-        return await _userRepository.GetUserByFirstName(firstName);
-    }
-
-    public async Task<UserEntity> GetByUserName(string userName)
-    {
-        if (string.IsNullOrEmpty(userName))
-        {
-            throw new ArgumentException("Username cannot by empty.");
-        }
-
-        return await _userRepository.GetUserByUserName(userName);
-    }
-
-    public async Task CreateUser(UserDTO userDto)
-    {
-        if (userDto.Id != 0)
-        {
-            throw new ArgumentException("User ID must be null.");
-        }
-        
-        if (userDto.FirstName == "" || userDto.LastName == "" || userDto.Email == "" ||
-            userDto.Password == "")
-        {
-            throw new ArgumentException("All properties must be filled out.");
-        }
-
-        UserEntity newUserEntity = ConvertDtoToEntity(userDto);
-
-        await _userRepository.CreateUser(newUserEntity);
+        return await _userRepository.GetByIds(filteredUserIds);
     }
 
     public async Task UpdateUser(UserDTO userDto)
     {
-        if (!await _userRepository.IsUserPresent(userDto.Id))
-        {
-            throw new ArgumentException("Invalid ID.");
-        }
-        
-        if (userDto.FirstName == "" || userDto.LastName == "" || userDto.Email == "" ||
-            userDto.Password == "")
+        if (String.IsNullOrEmpty(userDto.Email) || String.IsNullOrEmpty(userDto.UserName))
         {
             throw new ArgumentException("All properties must be filled out.");
         }
         
-        UserEntity newUserEntity = ConvertDtoToEntity(userDto);
+        IdentityUser newUserEntity = ConvertDtoToEntity(userDto);
 
-        await _userRepository.UpdateUser(newUserEntity);
+        await _userRepository.UpdateUser(newUserEntity, userDto.OldPassword, userDto.NewPassword);
     }
 
-    public async Task DeleteUser(int userId)
+    public async Task DeleteUser(string userId)
     {
-        if (userId <= 0)
-        {
-            throw new ArgumentException("Invalid ID."); 
-        }
-
         await _userRepository.DeleteUserById(userId);
     }
 
-    private UserEntity ConvertDtoToEntity(UserDTO userDto)
+    private IdentityUser ConvertDtoToEntity(UserDTO userDto)
     {
-        UserEntity userEntity = new UserEntity
+        IdentityUser userEntity = new IdentityUser
         {
-            FirstName = userDto.FirstName,
-            LastName = userDto.LastName,
-            Username = userDto.Username,
+            UserName = userDto.UserName,
             Email = userDto.Email,
-            Password = userDto.Password,
             Id = userDto.Id
         };
         return userEntity;

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Wolfer.Data.Entities;
 using Wolfer.Repositories;
 
@@ -16,14 +17,9 @@ public class UserTrainingService : IUserTrainingService
         _trainingRepository = trainingRepository;
     }
 
-    public async Task<List<TrainingEntity>> GetByUserId(int userId)
+    public async Task<List<TrainingEntity>> GetByUserId(string userId)
     {
-        if (userId <= 0)
-        {
-            throw new ArgumentException("ID must be positive integer.");
-        }
-
-        UserEntity user = await _userRepository.GetUserById(userId);
+        IdentityUser user = await _userRepository.GetUserById(userId);
 
         if (user == null)
         {
@@ -34,17 +30,19 @@ public class UserTrainingService : IUserTrainingService
         
         List<int> trainingIds = userTrainingEntities.Select(entity => entity.TrainingId).ToList();
 
-        return await _trainingRepository.GetByIds(trainingIds);
+        List<TrainingEntity> trainingEntities = await _trainingRepository.GetByIds(trainingIds);
+
+        return trainingEntities.Where(entity => DateOnly.FromDateTime(entity.Date) >= DateOnly.FromDateTime(DateTime.Now)).ToList();
     }
     
-    public async Task<List<TrainingEntity>> GetPastTrainingsByUserId(int userId)
+    public async Task<List<TrainingEntity>> GetPastTrainingsByUserId(string userId)
     {
-        if (userId <= 0)
-        {
-            throw new ArgumentException("ID must be positive integer.");
-        }
+        // if (userId <= 0)
+        // {
+        //     throw new ArgumentException("ID must be positive integer.");
+        // }
 
-        UserEntity user = await _userRepository.GetUserById(userId);
+        IdentityUser user = await _userRepository.GetUserById(userId);
 
         if (user == null)
         {
@@ -62,7 +60,7 @@ public class UserTrainingService : IUserTrainingService
         return pastTrainings;
     }
 
-    public async Task<List<UserEntity>> GetByTrainingId(int trainingId)
+    public async Task<List<IdentityUser>> GetByTrainingId(int trainingId)
     {
         if (trainingId <= 0)
         {
@@ -78,23 +76,22 @@ public class UserTrainingService : IUserTrainingService
 
         List<UserTrainingEntity> userTrainingEntities = await _userTrainingRepository.GetByTrainingId(trainingId);
 
-        List<int> userIds = userTrainingEntities.Select(entity => entity.UserId).ToList();
+        List<string> userIds = userTrainingEntities.Select(entity => entity.UserId.ToString()).ToList();
 
         return await _userRepository.GetByIds(userIds);
     }
     
-    public async Task SignUpUserToTraining(int userId, int trainingId)
+    public async Task SignUpUserToTraining(Guid userId, int trainingId)
     {
-        if (userId <= 0 || trainingId <= 0)
-            throw new ArgumentException("User ID and Training ID must be valid.");
-
-        var user = await _userRepository.GetUserById(userId);
+        var user = await _userRepository.GetUserById(userId.ToString());
         var training = await _trainingRepository.GetById(trainingId);
 
         if (user == null || training == null)
+        {
             throw new ArgumentException("User or Training not found.");
+        }
 
-        var existing = await _userTrainingRepository.GetByUserIdAndTrainingId(userId, trainingId);
+        var existing = await _userTrainingRepository.GetByUserIdAndTrainingId(userId.ToString(), trainingId);
         if (existing != null)
             throw new InvalidOperationException("User already signed up for this training.");
 
@@ -105,5 +102,19 @@ public class UserTrainingService : IUserTrainingService
         };
 
         await _userTrainingRepository.Create(userTraining);
+    }
+
+    public async Task SignOffUserFromTraining(Guid userId, int trainingId)
+    {
+        // first check if usertraining exists
+        var userTraining = await _userTrainingRepository.GetByUserIdAndTrainingId(userId.ToString(), trainingId);
+
+        if (userTraining == null)
+        {
+            throw new ArgumentException("UserTraining record or Training not found.");
+        }
+
+        // delete if we get here
+        await _userTrainingRepository.Delete(userId, trainingId);
     }
 }

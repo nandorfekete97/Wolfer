@@ -13,9 +13,23 @@ public class UserTrainingRepository : IUserTrainingRepository
         _dbContext = dbContext;
     }
     
-    public async Task<List<UserTrainingEntity>> GetByUserId(int userId)
+    public async Task<List<UserTrainingEntity>> GetByUserId(string userId)
     {
-        return await _dbContext.UserTrainings.Where(entity => entity.UserId == userId).ToListAsync();
+        // return await _dbContext.UserTrainings.Where(entity => entity.UserId == userId).ToListAsync();
+
+        List<UserTrainingEntity> userTrainingEntities = await _dbContext.UserTrainings.ToListAsync();
+
+        List<UserTrainingEntity> result = new List<UserTrainingEntity>();
+        
+        for (int i = 0; i < userTrainingEntities.Count; i++)
+        {
+            if (userTrainingEntities[i].UserId.ToString() == userId)
+            {
+                result.Add(userTrainingEntities[i]);
+            }
+        }
+
+        return result;
     }
 
     public async Task<List<UserTrainingEntity>> GetByTrainingId(int trainingId)
@@ -23,10 +37,10 @@ public class UserTrainingRepository : IUserTrainingRepository
         return await _dbContext.UserTrainings.Where(entity => entity.TrainingId == trainingId).ToListAsync();
     }
 
-    public async Task<UserTrainingEntity> GetByUserIdAndTrainingId(int userId, int trainingId)
+    public async Task<UserTrainingEntity> GetByUserIdAndTrainingId(string userId, int trainingId)
     {
         return await _dbContext.UserTrainings.FirstOrDefaultAsync(
-            entity => entity.UserId == userId && entity.TrainingId == trainingId);
+            entity => entity.UserId.ToString() == userId && entity.TrainingId == trainingId);
     }
 
     public async Task Create(UserTrainingEntity userTrainingEntity)
@@ -38,5 +52,21 @@ public class UserTrainingRepository : IUserTrainingRepository
 
         await _dbContext.UserTrainings.AddAsync(userTrainingEntity);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<bool> Delete(Guid userId, int trainingId)
+    {
+        var userTrainingToDelete =
+            await _dbContext.UserTrainings.FirstOrDefaultAsync(entity =>
+                entity.UserId == userId && entity.TrainingId == trainingId);
+
+        if (userTrainingToDelete is not null)
+        {
+            _dbContext.Remove(userTrainingToDelete);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
     }
 }

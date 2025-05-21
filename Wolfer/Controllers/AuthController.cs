@@ -49,8 +49,8 @@ public class AuthController : ControllerBase
             AddErrors(result);
             return BadRequest(ModelState);
         }
-
-        return Ok(new AuthResponse(result.Email, result.UserName, result.Token));
+ 
+        return Ok(new AuthResponse(result.UserId, result.Email, result.UserName, result.Token));
     }
 
     private void AddErrors(AuthResult result)

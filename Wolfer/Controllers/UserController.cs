@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Wolfer.Data.DTOs;
 using Wolfer.Data.Entities;
@@ -18,11 +19,11 @@ public class UserController : ControllerBase
     }
     
     [HttpGet("GetUserById/{id}"), Authorize(Roles="User")]
-    public async Task<IActionResult> GetUserById(int id)
+    public async Task<IActionResult> GetUserById(string userId)
     {
         try
         {
-            UserEntity userEntity = await _userService.GetById(id);
+            IdentityUser userEntity = await _userService.GetById(userId);
             return Ok(new { userEntity });
         }
         catch (Exception e)
@@ -30,49 +31,7 @@ public class UserController : ControllerBase
             return NotFound(new { message = e.Message });
         }
     }
-
-    [HttpGet("GetUserByUserName/{userName}"), Authorize(Roles="User")]
-    public async Task<IActionResult> GetUserByUserName(string userName)
-    {
-        try
-        {
-            UserEntity userEntity = await _userService.GetByUserName(userName);
-            return Ok(new { userEntity });
-        }
-        catch (Exception e)
-        {
-            return NotFound(new { message = e.Message });
-        }
-    }
-
-    [HttpGet("GetUserByFirstName/{firstName}"), Authorize(Roles="User")]
-    public async Task<IActionResult> GetUserByFirstName(string firstName)
-    {
-        try
-        {
-            UserEntity userEntity = await _userService.GetByFirstName(firstName);
-            return Ok(new { userEntity });
-        }
-        catch (Exception e)
-        {
-            return NotFound(new { message = e.Message });
-        }
-    }
-
-    [HttpPost("AddUser"), Authorize(Roles="User")]
-    public async Task<IActionResult> AddUser([FromBody] UserDTO userDto)
-    {
-        try
-        {
-            await _userService.CreateUser(userDto);
-            return Ok(new { message = "User created."});
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = e.Message });
-        }
-    }
-
+    
     [HttpPut("UpdateUser"), Authorize(Roles="User")]
     public async Task<IActionResult> UpdateUser(UserDTO userDto)
     {
@@ -88,11 +47,11 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("DeleteUser/{id}"), Authorize(Roles="User")]
-    public async Task<IActionResult> DeleteUser(int id)
+    public async Task<IActionResult> DeleteUser(string userId)
     {
         try
         {
-            await _userService.DeleteUser(id);
+            await _userService.DeleteUser(userId);
             return Ok(new { message = "User deleted."});
         }
         catch (Exception e)
