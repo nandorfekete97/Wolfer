@@ -9,10 +9,11 @@ const trainingTypeMap = [
   "Leg Day"
 ]
 
-const Training = ({training, signedUpTrainingIdsForDay}) => {
+const Training = ({training, signedUpTrainingIdsForDay, refreshSignedUpTrainings}) => {
   const [time, setTime] = useState(null);
   const [type, setType] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
 
   useEffect(() => {
     if (training) {
@@ -44,15 +45,50 @@ const Training = ({training, signedUpTrainingIdsForDay}) => {
         });
 
         if (response.ok) {
-            setIsSignedUp(true);
+            setResponseMessage("Successfully signed up for training.");
+            refreshSignedUpTrainings();
         } else {
             const data = await response.json();
-            setError(data.message || 'Failed to sign up for training.');
+            setResponseMessage(data.message || 'Failed to sign up for training.');
         }
     } catch (error) {
-        setError('An error occurred during signing up for training.');
+        setResponseMessage('An error occurred during signing up for training.');
     }
   }
+
+  const signOffFromTraining = async (e) =>{
+    e.preventDefault();
+    const userId = localStorage.getItem("userId");
+
+    try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/SignUserOffFromTraining/users/${userId}/trainings/${training.id}`, {
+            method: 'DELETE',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            setResponseMessage("Successfully signed off from training.");
+            refreshSignedUpTrainings();
+        } else {
+            const data = await response.json();
+            setResponseMessage(data.message || 'Failed to sign off from training.');
+        }
+    } catch (error) {
+        setError('An error occurred during signing off from training.');
+    }
+  }
+
+  // so far not clear if working or not, because page needs refresh, to rerender the buttons properly
+  useEffect(() => {
+  if (responseMessage) {
+    const timeout = setTimeout(() => {
+      setResponseMessage("");
+    }, 3000); // clear after 3 seconds
+    return () => clearTimeout(timeout);
+  }
+  }, [responseMessage]);
 
   return (
     <div className="training">
@@ -63,20 +99,34 @@ const Training = ({training, signedUpTrainingIdsForDay}) => {
           {type}
         </h5>
 
-        {/* if already signed up for training, make sign up button for given training change into sign off (Red) */}
-        {/* at the moment other trainings' sign up button won't disable when being signed up for training that day */}
+        {signedUpTrainingIdsForDay.includes(training.id) ? (
+          <button
+            type="button"
+            id="sign-off-button"
+            className="btn btn-sm btn-danger col-sm-4"
+            onClick={signOffFromTraining}
+          >
+            Sign Off
+          </button>
+        ) : (
+          <button
+            type="button"
+            id="sign-up-button"
+            className="btn btn-sm btn-success col-sm-4"
+            onClick={signUpForTraining}
+            disabled={isDisabled}
+          >
+            Sign Up
+          </button>
+      )}
 
-        <button
-          type="button"
-          disabled={isDisabled}
-          id="sign-up-button"
-          className={`btn btn-sm ${signedUpTrainingIdsForDay.includes(training.id) ? 'btn-danger' : 'btn-success'} col-sm-4`}
-          onClick={(e) => signUpForTraining(e)}
-        >
-          {signedUpTrainingIdsForDay.includes(training.id) ? 'Sign Off' : 'Sign Up'}
-        </button>
+      {responseMessage && (
+        <div className="response-message mt-2 text-info col-12">
+          {responseMessage}
+        </div>
+      )}
     </div>
   )
 }
 
-export default Training
+export default Training;

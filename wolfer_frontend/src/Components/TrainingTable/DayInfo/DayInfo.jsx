@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Training from './Training'
 import './DayInfo.css'
 
-const DayInfo = ({ date, signedUpTrainings }) => {
+const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings }) => {
   
   const [trainings, setTrainings] = useState([]);
   const [signedUpTrainingIdsForDay, setSignedUpTrainingIdsForDay] = useState([]);
@@ -50,7 +50,8 @@ const DayInfo = ({ date, signedUpTrainings }) => {
           <Training 
             key={training.id}
             training={training} 
-            signedUpTrainingIdsForDay={signedUpTrainingIdsForDay} />
+            signedUpTrainingIdsForDay={signedUpTrainingIdsForDay}
+            refreshSignedUpTrainings={refreshSignedUpTrainings} />
         ))}
     </>
   )

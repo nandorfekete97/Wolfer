@@ -38,7 +38,10 @@ const TrainingsTable = () => {
       </div>
       {dataIsLoaded ?
       weekDates.map((day, idx) => (
-        <DayInfo key={idx} date={day} signedUpTrainings={signedUpTrainings} />
+        <DayInfo key={idx} 
+                 date={day} 
+                 signedUpTrainings={signedUpTrainings}
+                 refreshSignedUpTrainings={getSignedUpTrainings} />
       )) :
       <h5>Loading</h5>
       }
