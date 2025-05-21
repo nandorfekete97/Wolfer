@@ -8,11 +8,19 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings }) => {
   const [signedUpTrainingIdsForDay, setSignedUpTrainingIdsForDay] = useState([]);
 
   const getTrainings = async () => {
-    const dateOnly = date.toISOString().split('T')[0];
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`);
-    const data = await res.json();
-    setTrainings(data.trainingEntities); 
-  }
+  const dateOnly = date.toISOString().split('T')[0];
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`);
+  const data = await res.json();
+
+  // even if trainings were added in a non-chronological order, they should be displayed in a chronological order
+  const sortedTrainings = data.trainingEntities.sort((a, b) => {
+    const timeA = new Date(a.date).getTime();
+    const timeB = new Date(b.date).getTime();
+    return timeA - timeB;
+  });
+
+  setTrainings(sortedTrainings);
+  };
 
   const getTodaysTrainingIds = () => {
     const todaysTrainings = signedUpTrainings.filter(training => isToday(training.date));
