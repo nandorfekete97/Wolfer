@@ -73,3 +73,5 @@ The project is built with a RESTful API backend and a component-based frontend.
 **Developer:** Nándor Fekete  
 **Email:** [nandor.fekete@yahoo.com](mailto:nandor.fekete@yahoo.com)  
 **LinkedIn:** [https://www.linkedin.com/in/nándor-fekete-fn97](https://www.linkedin.com/in/nándor-fekete-fn97)
+
+## 7. 📌 [Project Board (Backlog)](https://github.com/users/nandorfekete97/projects/2/views/1)
