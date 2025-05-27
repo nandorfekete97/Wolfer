@@ -76,11 +76,13 @@ public class TrainingController : ControllerBase
     }
 
     [HttpPost("AddTraining")]
-    public async Task<IActionResult> AddTraining(TrainingDTO trainingDto)
+    public async Task<IActionResult> AddTraining([FromBody] TrainingDTO trainingDto)
     {
         try
         {
             await _trainingService.CreateTraining(trainingDto);
+            Console.WriteLine("trainingDto.Date: " + trainingDto.Date);
+            Console.WriteLine("trainingDto.TrainingType: " + trainingDto.TrainingType);
             return Ok(new { message = "Training created."});
         }
         catch (Exception e)
