@@ -5,6 +5,7 @@ import TrainingsTable from './Components/TrainingTable/TrainingsTable';
 import Login from './Components/Login/Login';
 import Profile from './Components/Profile/Profile';
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import Planning from './Components/Planning/Planning';
 
 function App() {
   const [successfulLogin, setSuccessfulLogin] = useState(false);
@@ -34,6 +35,7 @@ function App() {
                 <Route path="/trainings" element={<TrainingsTable />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="*" element={<Navigate to="/trainings" />} />
+                <Route path='/planning' element={<Planning/>}/>
               </Routes>
             </div>
           </>
