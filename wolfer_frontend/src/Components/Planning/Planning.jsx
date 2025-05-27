@@ -28,10 +28,7 @@ const Planning = () => {
       return;
     }
 
-    const isoString = `${date}T${time}`;
-    const fulldate = new Date(isoString);
-
-    console.log("fulldate: ", fulldate);
+    const localDateTimeString = `${date}T${time}`;
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/AddTraining`, {
@@ -40,7 +37,7 @@ const Planning = () => {
           'Content-Type': 'application/json',
         },
           body: JSON.stringify({
-          Date: fulldate.toISOString(),
+          Date: localDateTimeString,
           TrainingType: type
         }),
       });
