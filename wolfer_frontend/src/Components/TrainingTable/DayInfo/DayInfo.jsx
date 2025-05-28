@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Training from './Training'
 import './DayInfo.css'
 
-const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings }) => {
+const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp = true }) => {
   
   const [trainings, setTrainings] = useState([]);
   const [signedUpTrainingIdsForDay, setSignedUpTrainingIdsForDay] = useState([]);
@@ -12,7 +12,6 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings }) => {
   const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`);
   const data = await res.json();
 
-  // even if trainings were added in a non-chronological order, they should be displayed in a chronological order
   const sortedTrainings = data.trainingEntities.sort((a, b) => {
     const timeA = new Date(a.date).getTime();
     const timeB = new Date(b.date).getTime();
@@ -51,18 +50,18 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings }) => {
 
   return (
     <>
-        <h3 className="day-info">
-          {date ? `${date.toDateString()}` : ""}
-        </h3>
+        <h3 className="day-info"> {date ? `${date.toDateString()}` : ""} </h3>
         {trainings.map((training) => (
           <Training 
             key={training.id}
             training={training} 
             signedUpTrainingIdsForDay={signedUpTrainingIdsForDay}
-            refreshSignedUpTrainings={refreshSignedUpTrainings} />
+            refreshSignedUpTrainings={refreshSignedUpTrainings}
+            refreshDayTrainings = {getTrainings}
+            showSignUp = {showSignUp} />
         ))}
     </>
   )
 }
 
-export default DayInfo
+export default DayInfo;
