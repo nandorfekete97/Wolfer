@@ -81,8 +81,6 @@ public class TrainingController : ControllerBase
         try
         {
             await _trainingService.CreateTraining(trainingDto);
-            Console.WriteLine("trainingDto.Date: " + trainingDto.Date);
-            Console.WriteLine("trainingDto.TrainingType: " + trainingDto.TrainingType);
             return Ok(new { message = "Training created."});
         }
         catch (Exception e)
