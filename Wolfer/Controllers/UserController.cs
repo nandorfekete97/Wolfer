@@ -19,7 +19,7 @@ public class UserController : ControllerBase
     }
     
     [HttpGet("GetUserById/{id}"), Authorize(Roles="User")]
-    public async Task<IActionResult> GetUserById(string userId)
+    public async Task<IActionResult> GetUserById(Guid userId)
     {
         try
         {
@@ -47,7 +47,7 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("DeleteUser/{id}"), Authorize(Roles="User")]
-    public async Task<IActionResult> DeleteUser(string userId)
+    public async Task<IActionResult> DeleteUser(Guid userId)
     {
         try
         {

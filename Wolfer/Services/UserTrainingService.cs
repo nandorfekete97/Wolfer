@@ -17,7 +17,7 @@ public class UserTrainingService : IUserTrainingService
         _trainingRepository = trainingRepository;
     }
 
-    public async Task<List<TrainingEntity>> GetByUserId(string userId)
+    public async Task<List<TrainingEntity>> GetByUserId(Guid userId)
     {
         IdentityUser user = await _userRepository.GetUserById(userId);
 
@@ -35,13 +35,8 @@ public class UserTrainingService : IUserTrainingService
         return trainingEntities.Where(entity => DateOnly.FromDateTime(entity.Date) >= DateOnly.FromDateTime(DateTime.Now)).ToList();
     }
     
-    public async Task<List<TrainingEntity>> GetPastTrainingsByUserId(string userId)
+    public async Task<List<TrainingEntity>> GetPastTrainingsByUserId(Guid userId)
     {
-        // if (userId <= 0)
-        // {
-        //     throw new ArgumentException("ID must be positive integer.");
-        // }
-
         IdentityUser user = await _userRepository.GetUserById(userId);
 
         if (user == null)
@@ -76,14 +71,14 @@ public class UserTrainingService : IUserTrainingService
 
         List<UserTrainingEntity> userTrainingEntities = await _userTrainingRepository.GetByTrainingId(trainingId);
 
-        List<string> userIds = userTrainingEntities.Select(entity => entity.UserId.ToString()).ToList();
+        List<Guid> userIds = userTrainingEntities.Select(entity => entity.UserId).ToList();
 
         return await _userRepository.GetByIds(userIds);
     }
     
     public async Task SignUpUserToTraining(Guid userId, int trainingId)
     {
-        var user = await _userRepository.GetUserById(userId.ToString());
+        var user = await _userRepository.GetUserById(userId);
         var training = await _trainingRepository.GetById(trainingId);
 
         if (user == null || training == null)
@@ -91,7 +86,7 @@ public class UserTrainingService : IUserTrainingService
             throw new ArgumentException("User or Training not found.");
         }
 
-        var existing = await _userTrainingRepository.GetByUserIdAndTrainingId(userId.ToString(), trainingId);
+        var existing = await _userTrainingRepository.GetByUserIdAndTrainingId(userId, trainingId);
         if (existing != null)
             throw new InvalidOperationException("User already signed up for this training.");
 
@@ -106,15 +101,13 @@ public class UserTrainingService : IUserTrainingService
 
     public async Task SignOffUserFromTraining(Guid userId, int trainingId)
     {
-        // first check if usertraining exists
-        var userTraining = await _userTrainingRepository.GetByUserIdAndTrainingId(userId.ToString(), trainingId);
+        var userTraining = await _userTrainingRepository.GetByUserIdAndTrainingId(userId, trainingId);
 
         if (userTraining == null)
         {
             throw new ArgumentException("UserTraining record or Training not found.");
         }
 
-        // delete if we get here
         await _userTrainingRepository.Delete(userId, trainingId);
     }
 }

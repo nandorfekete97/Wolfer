@@ -6,8 +6,8 @@ namespace Wolfer.Services;
 
 public interface IUserService
 {
-    public Task<IdentityUser?> GetById(string userId);
-    public Task<List<IdentityUser>> GetByUserIds(List<string> userIds);
+    public Task<IdentityUser?> GetById(Guid userId);
+    public Task<List<IdentityUser>> GetByUserIds(List<Guid> userIds);
     public Task UpdateUser(UserDTO userDto);
-    public Task DeleteUser(string userId);
+    public Task DeleteUser(Guid userId);
 }
