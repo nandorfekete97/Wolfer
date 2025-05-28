@@ -32,9 +32,9 @@ function App() {
             <div className="col-sm-9">
               <Routes>
                 <Route path="/" element={<Navigate to="/trainings" />} />
+                <Route path="*" element={<Navigate to="/trainings" />} />
                 <Route path="/trainings" element={<TrainingsTable />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="*" element={<Navigate to="/trainings" />} />
                 <Route path='/planning' element={<Planning/>}/>
               </Routes>
             </div>

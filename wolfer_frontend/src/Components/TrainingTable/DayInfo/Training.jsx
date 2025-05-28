@@ -9,7 +9,7 @@ const trainingTypeMap = [
   "Leg Day"
 ]
 
-const Training = ({training, signedUpTrainingIdsForDay, refreshSignedUpTrainings}) => {
+const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTrainings, refreshDayTrainings, showSignUp = true }) => {
   const [time, setTime] = useState(null);
   const [type, setType] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
@@ -80,53 +80,91 @@ const Training = ({training, signedUpTrainingIdsForDay, refreshSignedUpTrainings
     }
   }
 
-  // so far not clear if working or not, because page needs refresh, to rerender the buttons properly
-  useEffect(() => {
-  if (responseMessage) {
-    const timeout = setTimeout(() => {
-      setResponseMessage("");
-    }, 3000); // clear after 3 seconds
-    return () => clearTimeout(timeout);
+  const handleDelete = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/DeleteTraining/${training.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok) {
+        setResponseMessage("Training was deleted successfully.");
+        if (refreshSignedUpTrainings) 
+        {
+          refreshSignedUpTrainings();
+        };
+        if (refreshDayTrainings) 
+        {
+          refreshDayTrainings();
+        }
+      } else {
+        const data = await response.json();
+        setResponseMessage(data.message || 'Training could not be deleted.');
+      }
+    } catch (error) {
+      setResponseMessage('An error occurred during deleting training.');
+    }
   }
-  }, [responseMessage]);
 
   return (
-    <div className="training">
-        <h5 className="training-info col-sm-4">
-          {time} 
-        </h5>
-        <h5 className="training-info col-sm-4">
-          {type}
-        </h5>
+  <div className="training">
+    <h5 className="training-info col-sm-4">{time}</h5>
+    <h5 className="training-info col-sm-4">{training.trainingType}</h5>
 
-        {signedUpTrainingIdsForDay.includes(training.id) ? (
-          <button
-            type="button"
-            id="sign-off-button"
-            className="btn btn-sm btn-danger col-sm-4"
-            onClick={signOffFromTraining}
-          >
-            Sign Off
-          </button>
-        ) : (
-          <button
-            type="button"
-            id="sign-up-button"
-            className="btn btn-sm btn-success col-sm-4"
-            onClick={signUpForTraining}
-            disabled={isDisabled}
-          >
-            Sign Up
-          </button>
-      )}
+    {showSignUp ? (
+      signedUpTrainingIdsForDay.includes(training.id) ? (
+        <button
+          type="button"
+          id="sign-off-button"
+          className="btn btn-sm btn-danger col-sm-4"
+          onClick={signOffFromTraining}
+        >
+          Sign Off
+        </button>
+      ) : (
+        <button
+          type="button"
+          id="sign-up-button"
+          className="btn btn-sm btn-success col-sm-4"
+          onClick={signUpForTraining}
+          disabled={isDisabled}
+        >
+          Sign Up
+        </button>
+      )
+    ) : (
+      <div className="col-sm-4 d-flex gap-2">
+        <button
+          type="button"
+          id="edit-training-button"
+          className="btn btn-sm btn-primary"
+          // onClick={handleEditTraining}
+        >
+          Edit
+        </button>
+        <button
+          type="button"
+          id="delete-training-button"
+          className="btn btn-sm btn-danger"
+          onClick={(e) => handleDelete(e)}
+        >
+          Delete
+        </button>
+      </div>
+    )}
 
-      {responseMessage && (
-        <div className="response-message mt-2 text-info col-12">
-          {responseMessage}
-        </div>
-      )}
-    </div>
-  )
-}
+    {responseMessage && (
+      <div className="response-message mt-2 text-info col-12">
+        {responseMessage}
+      </div>
+    )}
+  </div>
+);
+
+};
 
 export default Training;

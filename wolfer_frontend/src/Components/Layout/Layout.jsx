@@ -1,5 +1,4 @@
-import Sidebar from "./Sidebar";
-import Planning from "../Planning/Planning";
+import './Layout.css';
 import { useNavigate } from 'react-router-dom';
 
 const Layout = ({setSuccessfulLogin}) => {
@@ -22,7 +21,6 @@ const Layout = ({setSuccessfulLogin}) => {
 
   return (
       <div className="align-items-start">
-          {/* <Sidebar /> */}
           <ul className="list-unstyled">
             <li className="sidebar-item" onClick={(goToTrainings)}>Trainings</li>
             <li className="sidebar-item">Profile</li>

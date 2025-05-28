@@ -1,24 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useState } from 'react';
 import Training from './Training'
 import './DayInfo.css'
 
-const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp = true }) => {
+const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp = true, refreshTrigger }) => {
   
   const [trainings, setTrainings] = useState([]);
   const [signedUpTrainingIdsForDay, setSignedUpTrainingIdsForDay] = useState([]);
 
   const getTrainings = async () => {
-  const dateOnly = date.toISOString().split('T')[0];
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`);
-  const data = await res.json();
+    const dateOnly = date.toISOString().split('T')[0];
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`);
+    const data = await res.json();
 
-  const sortedTrainings = data.trainingEntities.sort((a, b) => {
-    const timeA = new Date(a.date).getTime();
-    const timeB = new Date(b.date).getTime();
-    return timeA - timeB;
-  });
+    // sorting trainings should be on backend 
+    const sortedTrainings = data.trainingEntities.sort((a, b) => {
+      const timeA = new Date(a.date).getTime();
+      const timeB = new Date(b.date).getTime();
+      return timeA - timeB;
+    });
 
-  setTrainings(sortedTrainings);
+    setTrainings(sortedTrainings);
   };
 
   const getTodaysTrainingIds = () => {
@@ -40,13 +41,11 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
     return today == trainingDate.split('T')[0];
   }
   
-  console.log(trainings);
-
   useEffect(() => {
     if (date) {
       getTrainings();
     }
-  }, [date]);
+  }, [date, refreshTrigger]);
 
   return (
     <>

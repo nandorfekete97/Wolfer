@@ -1,7 +1,8 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import TrainingsTable from '../TrainingTable/TrainingsTable';
 import Training from '../TrainingTable/DayInfo/Training';
+import DayInfo from '../TrainingTable/DayInfo/DayInfo';
 
 const Planning = () => {
 
@@ -10,6 +11,7 @@ const Planning = () => {
     const [hour, setHour] = useState('');
     const [minute, setMinute] = useState('');
     const [responseMessage, setResponseMessage] = useState("");
+    const [refreshTrigger, setRefreshTrigger] = useState(false);
 
     const availableHours = ["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
     const availableMinutes = ["00", "15", "30", "45"];
@@ -39,7 +41,8 @@ const Planning = () => {
       });
 
       if (response.ok) {
-        setResponseMessage("Training was added successfully.")
+        setResponseMessage("Training was added successfully.");
+        setRefreshTrigger(!refreshTrigger);
       } else {
         const data = await response.json();
         setResponseMessage(data.message || 'Training could not be added.');
@@ -109,7 +112,7 @@ const Planning = () => {
       </form>
       <div>
         <h2>Edit Training</h2>
-        <TrainingsTable showSignUp={false}/>
+        <TrainingsTable showSignUp={false} refreshTrigger={refreshTrigger}/>
       </div>
     </div>
   )
