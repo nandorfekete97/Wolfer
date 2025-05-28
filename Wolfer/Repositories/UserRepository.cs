@@ -14,14 +14,15 @@ public class UserRepository : IUserRepository
         _userManager = userManager;
     }
     
-    public async Task<IdentityUser?> GetUserById(string userId)
+    public async Task<IdentityUser?> GetUserById(Guid userId)
     {
-        return await _userManager.FindByIdAsync(userId);
+        return await _userManager.FindByIdAsync(userId.ToString());
     }
     
-    public async Task<List<IdentityUser>> GetByIds(List<string> userIds)
+    public async Task<List<IdentityUser>> GetByIds(List<Guid> userIds)
     {
-        return await _userManager.Users.Where(u => userIds.Contains(u.Id)).ToListAsync();
+        List<string> userIdsConverted = userIds.Select(id => id.ToString()).ToList();
+        return await _userManager.Users.Where(u => userIdsConverted.Contains(u.Id)).ToListAsync();
     }
 
     public async Task UpdateUser(IdentityUser user, string oldPassword, string newPassword)
@@ -34,7 +35,7 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task<bool> DeleteUserById(string userId)
+    public async Task<bool> DeleteUserById(Guid userId)
     {
         var userToDelete = await GetUserById(userId);
 

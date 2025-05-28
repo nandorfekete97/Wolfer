@@ -18,7 +18,7 @@ public class UserTrainingController : ControllerBase
     }
 
     [HttpGet("GetUpcomingTrainingsByUserId/{userId}")]
-    public async Task<IActionResult> GetUpcomingTrainingsByUserId(string userId)
+    public async Task<IActionResult> GetUpcomingTrainingsByUserId(Guid userId)
     {
         try
         {
@@ -46,7 +46,7 @@ public class UserTrainingController : ControllerBase
     }
     
     [HttpGet("GetPastTrainingsForUser/{userId}")]
-    public async Task<IActionResult> GetPastTrainingsForUser(string userId)
+    public async Task<IActionResult> GetPastTrainingsForUser(Guid userId)
     {
         try
         {

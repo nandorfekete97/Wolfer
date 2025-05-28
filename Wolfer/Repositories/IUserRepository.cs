@@ -5,8 +5,8 @@ namespace Wolfer.Repositories;
 
 public interface IUserRepository
 {
-    Task<IdentityUser?> GetUserById(string userId);
-    Task<List<IdentityUser>> GetByIds(List<string> userIds);
+    Task<IdentityUser?> GetUserById(Guid userId);
+    Task<List<IdentityUser>> GetByIds(List<Guid> userIds);
     Task UpdateUser(IdentityUser user, string oldPassword, string newPassword);
-    Task<bool> DeleteUserById(string userId);
+    Task<bool> DeleteUserById(Guid userId);
 }

@@ -15,9 +15,9 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<IdentityUser?> GetById(string userId)
+    public async Task<IdentityUser?> GetById(Guid userId)
     {
-        if (String.IsNullOrEmpty(userId))
+        if (String.IsNullOrEmpty(userId.ToString()))
         {
             throw new ArgumentException("ID must be positive integer.");
         }
@@ -25,9 +25,9 @@ public class UserService : IUserService
         return await _userRepository.GetUserById(userId);
     }
 
-    public async Task<List<IdentityUser>> GetByUserIds(List<string> userIds)
+    public async Task<List<IdentityUser>> GetByUserIds(List<Guid> userIds)
     {
-        List<string> filteredUserIds = userIds.Where(userId => !String.IsNullOrEmpty(userId)).ToList();
+        List<Guid> filteredUserIds = userIds.Where(userId => !String.IsNullOrEmpty(userId.ToString())).ToList();
 
         return await _userRepository.GetByIds(filteredUserIds);
     }
@@ -44,7 +44,7 @@ public class UserService : IUserService
         await _userRepository.UpdateUser(newUserEntity, userDto.OldPassword, userDto.NewPassword);
     }
 
-    public async Task DeleteUser(string userId)
+    public async Task DeleteUser(Guid userId)
     {
         await _userRepository.DeleteUserById(userId);
     }
