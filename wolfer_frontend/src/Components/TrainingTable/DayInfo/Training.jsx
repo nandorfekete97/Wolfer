@@ -1,6 +1,7 @@
 import { data } from 'react-router-dom';
 import './Training.css'
 import React, { useState, useEffect } from 'react';
+import DeleteModal from '../../Modals/DeleteModal';
 
 const trainingTypeMap = [
   "Functional Body-Building",
@@ -14,6 +15,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   const [type, setType] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
 
   useEffect(() => {
     if (training) {
@@ -110,6 +112,14 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
     }
   }
 
+  const openDeleteModal = () => {
+    setDeleteModalIsOpen(true);
+  }
+
+  const closeDeleteModal = () => {
+    setDeleteModalIsOpen(false);
+  }
+
   return (
   <div className="training">
     <h5 className="training-info col-sm-4">{time}</h5>
@@ -150,18 +160,29 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
           type="button"
           id="delete-training-button"
           className="btn btn-sm btn-danger"
-          onClick={(e) => handleDelete(e)}
+          onClick={(e) => openDeleteModal(e)}
         >
           Delete
         </button>
       </div>
     )}
 
+    {deleteModalIsOpen && training ? (
+      <DeleteModal 
+        deleteModalIsOpen={deleteModalIsOpen} 
+        closeDeleteModal={closeDeleteModal} 
+        handleDelete = {handleDelete}
+      />) : (
+        <></>
+      )
+    };
+
     {responseMessage && (
       <div className="response-message mt-2 text-info col-12">
         {responseMessage}
       </div>
     )}
+
   </div>
 );
 
