@@ -55,6 +55,11 @@ public class TrainingService : ITrainingService
         {
             throw new ArgumentException("All properties must be filled out.");
         }
+
+        if (await IsTrainingTimeOccupied(trainingDto.Date))
+        {
+            throw new ArgumentException("Training date is occupied.");
+        }
         
         TrainingEntity newTrainingEntity = ConvertDtoToEntity(trainingDto);
 
@@ -73,6 +78,11 @@ public class TrainingService : ITrainingService
         if (!Enum.IsDefined(typeof(TrainingType), trainingDto.TrainingType) || trainingDto.Date == DateTime.MinValue)
         {
             throw new ArgumentException("All properties must be filled out.");
+        }
+        
+        if (await IsTrainingTimeOccupied(trainingDto.Date))
+        {
+            throw new ArgumentException("Training date is occupied.");
         }
 
         TrainingEntity newTrainingEntity = ConvertDtoToEntity(trainingDto);
@@ -98,5 +108,32 @@ public class TrainingService : ITrainingService
             TrainingType = trainingDto.TrainingType
         };
         return trainingEntity;
+    }
+
+    private async Task<bool> IsTrainingTimeOccupied(DateTime trainingDate)
+    {
+        List<TrainingEntity> trainingEntities = await _trainingRepository.GetTrainingsByDate(DateOnly.FromDateTime(trainingDate));
+
+        int newTrainingHour = trainingDate.Hour;
+        int newTrainingMinute = trainingDate.Minute;
+
+        return trainingEntities.Any(entity => IsTimeDifferenceSmallerThanOneHour(newTrainingHour, newTrainingMinute, entity.Date.Hour, entity.Date.Minute));
+    }
+
+    private bool IsTimeDifferenceSmallerThanOneHour(int newTrainingHour, int newTrainingMinute, int existingTrainingHour, int existingTrainingMinute)
+    {
+        if (existingTrainingHour - newTrainingHour == 0)
+        {
+            return true;
+        }
+        if (existingTrainingHour - newTrainingHour == -1)
+        {
+            return newTrainingMinute < existingTrainingMinute;
+        }
+        if (existingTrainingHour - newTrainingHour == 1)
+        {
+            return newTrainingMinute > existingTrainingMinute;
+        }
+        return false;
     }
 }

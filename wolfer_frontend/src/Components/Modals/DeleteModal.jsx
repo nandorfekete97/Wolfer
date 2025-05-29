@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 
-const DeleteModal = (deleteModalIsOpen, closeDeleteModal, handleDelete) => {
+const DeleteModal = ({deleteModalIsOpen, closeDeleteModal, handleDelete}) => {
 
   return (
         <div>
@@ -13,7 +13,6 @@ const DeleteModal = (deleteModalIsOpen, closeDeleteModal, handleDelete) => {
             <h2>Are you sure you want to delete this training?</h2>
             <button onClick={(e) => handleDelete(e)}>Delete</button>
             <button onClick={() => closeDeleteModal()}>Cancel</button>
-            <div>Modal Content</div>
           </Modal>
         </div>
       );

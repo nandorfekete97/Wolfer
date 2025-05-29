@@ -85,6 +85,8 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   const handleDelete = async (e) => {
     e.preventDefault();
 
+    setResponseMessage("");
+
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/DeleteTraining/${training.id}`, {
         method: 'DELETE',
@@ -175,8 +177,10 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
       />) : (
         <></>
       )
-    };
+    }
 
+    {/* make response message styled - hogyha 2 egymas utani uzenet ugyanaz  */}
+    {/* vagy lehet a responsemessage egy kulon modal  */}
     {responseMessage && (
       <div className="response-message mt-2 text-info col-12">
         {responseMessage}
