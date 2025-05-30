@@ -13,9 +13,11 @@ const Planning = () => {
     const [responseMessage, setResponseMessage] = useState("");
     const [refreshTrigger, setRefreshTrigger] = useState(false);
 
-    const availableHours = ["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
+    const allHours = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
     const availableMinutes = ["00", "15", "30", "45"];
     const availableTrainingTypes = ["FunctionalBodyBuilding", "WeightLifting", "CrossFit", "LegDay"];
+    const today = new Date();
+    const availableHours = allHours.filter((hour) => hour > today.getHours());
 
     const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,19 +74,20 @@ const Planning = () => {
         <div className="form-group">
             <label>Training Date:</label>
             <input
-                type="date"
-                className="training-date-input"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
+                type = "date"
+                min = {today.toISOString().split('T')[0]}
+                className = "training-date-input"
+                value = {date}
+                onChange = {(e) => setDate(e.target.value)}
             />
         </div>
 
         <div className="form-group">
           <label>Training Hour:</label>
           <select
-            id='hours'
-            onChange={(e) => setHour(e.target.value)}
-            value={hour || ''}
+            id = 'hours'
+            onChange = {(e) => setHour(e.target.value)}
+            value = {hour || ''}
           >
             <option value="">-- Select Hour --</option>
             {availableHours.map((h) => (

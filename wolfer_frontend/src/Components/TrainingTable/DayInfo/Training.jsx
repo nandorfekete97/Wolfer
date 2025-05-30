@@ -17,6 +17,8 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   const [responseMessage, setResponseMessage] = useState("");
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
 
+  const today = new Date();
+
   useEffect(() => {
     if (training) {
       const dateObj = new Date(training.date);
@@ -134,6 +136,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
           id="sign-off-button"
           className="btn btn-sm btn-danger col-sm-4"
           onClick={signOffFromTraining}
+          disabled = {(today.toISOString() > training.date)}
         >
           Sign Off
         </button>
@@ -143,7 +146,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
           id="sign-up-button"
           className="btn btn-sm btn-success col-sm-4"
           onClick={signUpForTraining}
-          disabled={isDisabled}
+          disabled={isDisabled || (today.toISOString() > training.date)}
         >
           Sign Up
         </button>
@@ -154,6 +157,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
           type="button"
           id="edit-training-button"
           className="btn btn-sm btn-primary"
+          disabled = {(today.toISOString() > training.date)}
           // onClick={handleEditTraining}
         >
           Edit
@@ -163,6 +167,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
           id="delete-training-button"
           className="btn btn-sm btn-danger"
           onClick={(e) => openDeleteModal(e)}
+          disabled = {(today.toISOString() > training.date)}
         >
           Delete
         </button>
