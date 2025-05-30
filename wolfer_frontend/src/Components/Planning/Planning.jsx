@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import TrainingsTable from '../TrainingTable/TrainingsTable';
 import Training from '../TrainingTable/DayInfo/Training';
 import DayInfo from '../TrainingTable/DayInfo/DayInfo';
+import './Planning.css';
 
 const Planning = () => {
 
@@ -12,6 +13,7 @@ const Planning = () => {
     const [minute, setMinute] = useState('');
     const [responseMessage, setResponseMessage] = useState("");
     const [refreshTrigger, setRefreshTrigger] = useState(false);
+    const [isSelectedDateToday, setIsSelectedDateToday] = useState(false);
 
     const allHours = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
     const availableMinutes = ["00", "15", "30", "45"];
@@ -54,71 +56,94 @@ const Planning = () => {
     }
   };
 
+  useEffect(() => {
+  if (!date) {
+    setIsSelectedDateToday(false);
+    return;
+  }
+
+  const selectedDateString = new Date(date).toISOString().split('T')[0];
+  const todayDateString = today.toISOString().split('T')[0];
+
+  setIsSelectedDateToday(selectedDateString === todayDateString);
+  }, [date]);
+
   return (
-    <div>
-      <h2>Add New Training</h2>
-      <form className="training-creation-form" onSubmit={handleSubmit}>
-        <div className="form-group">
+    <div className="planning-container">
+      <div className="training-box">
+        <h2>Add New Training</h2>
+        <form className="training-creation-form" onSubmit={handleSubmit}>
+          <div className="form-group">
             <label>Training Type:</label>
             <select
-            id="choices"
-            onChange={(e) => setType(e.target.value)}
-            value={type || ''}
+              id="choices"
+              onChange={(e) => setType(e.target.value)}
+              value={type || ''}
             >
-                <option value="">-- Select Training Type --</option>
-                {availableTrainingTypes.map((t) => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
+              <option value="">-- Select Training Type --</option>
+              {availableTrainingTypes.map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
             </select>
-        </div>
-        <div className="form-group">
+          </div>
+
+          <div className="form-group">
             <label>Training Date:</label>
             <input
-                type = "date"
-                min = {today.toISOString().split('T')[0]}
-                className = "training-date-input"
-                value = {date}
-                onChange = {(e) => setDate(e.target.value)}
+              type="date"
+              min={today.toISOString().split('T')[0]}
+              className="training-date-input"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
             />
-        </div>
+          </div>
 
-        <div className="form-group">
-          <label>Training Hour:</label>
-          <select
-            id = 'hours'
-            onChange = {(e) => setHour(e.target.value)}
-            value = {hour || ''}
-          >
-            <option value="">-- Select Hour --</option>
-            {availableHours.map((h) => (
-              <option key={h} value={h}>{h}</option>
-            ))}
-          </select>
-        </div>
+          <div className="form-group">
+            <label>Training Hour:</label>
+            <select
+              id="hours"
+              onChange={(e) => setHour(e.target.value)}
+              value={hour || ''}
+            >
+              <option value="">-- Select Hour --</option>
+              {isSelectedDateToday ? 
+                availableHours.map((h) => (
+                  <option key={h} value={h}>{h}</option>
+                )) :
+                allHours.map((h) => (
+                  <option key={h} value={h}>{h}</option>
+                ))
+              }
+            </select>
+          </div>
 
-        <div className="form-group">
-          <label>Training Minute:</label>
-          <select
-            id='minutes'
-            onChange={(e) => setMinute(e.target.value)}
-            value={minute || ''}
-          >
-            <option value="">-- Select Minute --</option>
-            {availableMinutes.map((m) => (
-              <option key={m} value={m}>{m}</option>
-            ))}
-          </select>
-        </div>
- 
-        <button type='submit'>Submit Training</button>
-        {responseMessage && <p>{responseMessage}</p>}
-      </form>
-      <div>
+          <div className="form-group">
+            <label>Training Minute:</label>
+            <select
+              id="minutes"
+              onChange={(e) => setMinute(e.target.value)}
+              value={minute || ''}
+            >
+              <option value="">-- Select Minute --</option>
+              {}
+              {availableMinutes.map((m) => (
+                <option key={m} value={m}>{m}</option>
+              ))}
+            </select>
+          </div>
+
+          <button type="submit">Submit Training</button>
+          {responseMessage && <p>{responseMessage}</p>}
+        </form>
+      </div>
+
+      <div className="training-box">
         <h2>Edit Training</h2>
-        <TrainingsTable showSignUp={false} refreshTrigger={refreshTrigger}/>
+        <TrainingsTable showSignUp={false} refreshTrigger={refreshTrigger} />
       </div>
     </div>
-  )
+);
+
 }
 
 export default Planning;

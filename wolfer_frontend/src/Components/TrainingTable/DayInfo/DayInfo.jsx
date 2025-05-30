@@ -51,13 +51,15 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
     <>
         <h3 className="day-info"> {date ? `${date.toDateString()}` : ""} </h3>
         {trainings.map((training) => (
-          <Training 
+          <h5>
+            <Training 
             key={training.id}
             training={training} 
             signedUpTrainingIdsForDay={signedUpTrainingIdsForDay}
             refreshSignedUpTrainings={refreshSignedUpTrainings}
             refreshDayTrainings = {getTrainings}
             showSignUp = {showSignUp} />
+          </h5>
         ))}
     </>
   )

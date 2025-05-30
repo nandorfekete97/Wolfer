@@ -1,11 +1,24 @@
-.training-table-header {
-    display: flex;
+.training-table {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 1rem;
+  background-color: #515151;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid #343434;
 }
 
-.training-table {
-    border-radius: 12px;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    background-color: rgb(77, 76, 76);
+.training-table-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-weight: bold;
+  /* border-bottom: 2px solid #ccc; */
+  background-color: #515151;;
+  border-radius: 5px;
+}
+
+.table-item {
+  flex: 1;
+  text-align: center;
 }
