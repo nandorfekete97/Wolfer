@@ -36,6 +36,9 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
     e.preventDefault();
     const userId = localStorage.getItem("userId");
 
+    console.log("today: ", today.toISOString());
+    console.log("training.date: ", training.date);
+
     try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/SignUserUpForTraining/users/${userId}/trainings/${training.id}`, {
             method: 'POST',
