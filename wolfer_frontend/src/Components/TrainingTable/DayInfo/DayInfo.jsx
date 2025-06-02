@@ -12,7 +12,7 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
     const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`);
     const data = await res.json();
 
-    // sorting trainings should be on backend 
+    // sorting trainings should (perhaps) be on backend 
     const sortedTrainings = data.trainingEntities.sort((a, b) => {
       const timeA = new Date(a.date).getTime();
       const timeB = new Date(b.date).getTime();
@@ -52,7 +52,7 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
         <h3 className="day-info"> {date ? `${date.toDateString()}` : ""} </h3>
         {trainings.map((training) => (
           <h5>
-            <Training 
+            <Training
             key={training.id}
             training={training} 
             signedUpTrainingIdsForDay={signedUpTrainingIdsForDay}

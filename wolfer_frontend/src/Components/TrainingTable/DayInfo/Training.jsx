@@ -1,14 +1,8 @@
 import { data } from 'react-router-dom';
 import './Training.css'
 import React, { useState, useEffect } from 'react';
-import DeleteModal from '../../Modals/DeleteModal';
-
-const trainingTypeMap = [
-  "Functional Body-Building",
-  "Weight Lifting",
-  "Crossfit",
-  "Leg Day"
-]
+import DeleteModal from '../../Modals/DeleteTrainingModal';
+import EditTrainingModal from '../../Modals/EditTrainingModal';
 
 const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTrainings, refreshDayTrainings, showSignUp = true }) => {
   const [time, setTime] = useState(null);
@@ -16,6 +10,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   const [isDisabled, setIsDisabled] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
 
   const today = new Date();
 
@@ -23,7 +18,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
     if (training) {
       const dateObj = new Date(training.date);
       setTime(dateObj.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}));
-      setType(trainingTypeMap[training.trainingType]);
+      setType(training.trainingType);
     }
   }, [training]);
 
@@ -119,84 +114,87 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
     }
   }
 
-  const openDeleteModal = () => {
-    setDeleteModalIsOpen(true);
-  }
+  const handleUpdate = async (updatedTraining) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/UpdateTraining/${training.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedTraining),
+      });
 
-  const closeDeleteModal = () => {
-    setDeleteModalIsOpen(false);
+      const data = await response.json();
+      setResponseMessage(response.ok ? "Training updated successfully." : data.message || "Failed to update training.");
+      if (response.ok) {
+        refreshDayTrainings?.();
+        refreshSignedUpTrainings?.();
+      }
+    } catch (error) {
+      setResponseMessage("An error occurred during update.");
+    }
   }
 
   return (
-  <div className="training">
-    <h5 className="training-info col-sm-4">{time}</h5>
-    <h5 className="training-info col-sm-4">{training.trainingType}</h5>
+    <div className = "training">
+      <h5 className = "training-info col-sm-4">{time}</h5>
+      <h5 className = "training-info col-sm-4">{type}</h5>
 
-    {showSignUp ? (
-      signedUpTrainingIdsForDay.includes(training.id) ? (
-        <button
-          type="button"
-          id="sign-off-button"
-          className="btn btn-sm btn-danger col-sm-4"
-          onClick={signOffFromTraining}
-          disabled = {(today.toISOString() > training.date)}
-        >
-          Sign Off
-        </button>
+      {showSignUp ? (
+        signedUpTrainingIdsForDay.includes(training.id) ? (
+          <button
+            className = "btn btn-sm btn-danger col-sm-4"
+            onClick = {signOffFromTraining}
+            disabled = {today.toISOString() > training.date}
+          >
+            Sign Off
+          </button>
+        ) : (
+          <button
+            className = "btn btn-sm btn-success col-sm-4"
+            onClick = {signUpForTraining}
+            disabled = {isDisabled || today.toISOString() > training.date}
+          >
+            Sign Up
+          </button>
+        )
       ) : (
-        <button
-          type="button"
-          id="sign-up-button"
-          className="btn btn-sm btn-success col-sm-4"
-          onClick={signUpForTraining}
-          disabled={isDisabled || (today.toISOString() > training.date)}
-        >
-          Sign Up
-        </button>
-      )
-    ) : (
-      <div className="col-sm-4 d-flex gap-2">
-        <button
-          type="button"
-          id="edit-training-button"
-          className="btn btn-sm btn-primary"
-          disabled = {(today.toISOString() > training.date)}
-          // onClick={handleEditTraining}
-        >
-          Edit
-        </button>
-        <button
-          type="button"
-          id="delete-training-button"
-          className="btn btn-sm btn-danger"
-          onClick={(e) => openDeleteModal(e)}
-          disabled = {(today.toISOString() > training.date)}
-        >
-          Delete
-        </button>
-      </div>
-    )}
+        <div className = "col-sm-4 d-flex gap-2">
+          <button
+            className = "btn btn-sm btn-primary"
+            disabled = {today.toISOString() > training.date}
+            onClick = {() => setEditModalIsOpen(true)}
+          >
+            Edit
+          </button>
+          <button
+            className = "btn btn-sm btn-danger"
+            disabled = {today.toISOString() > training.date}
+            onClick = {(e) => setDeleteModalIsOpen(true)}
+          >
+            Delete
+          </button>
+        </div>
+      )}
 
-    {deleteModalIsOpen && training ? (
-      <DeleteModal 
-        deleteModalIsOpen={deleteModalIsOpen} 
-        closeDeleteModal={closeDeleteModal} 
+      <DeleteModal
+        deleteModalIsOpen = {deleteModalIsOpen}
+        closeDeleteModal = {() => setDeleteModalIsOpen(false)}
         handleDelete = {handleDelete}
-      />) : (
-        <></>
-      )
-    }
+      />
 
-    {/* make response message styled - hogyha 2 egymas utani uzenet ugyanaz  */}
-    {/* vagy lehet a responsemessage egy kulon modal  */}
-    {responseMessage && (
-      <div className="response-message mt-2 text-info col-12">
-        {responseMessage}
-      </div>
-    )}
+      <EditTrainingModal
+        editModalIsOpen = {editModalIsOpen}
+        closeEditModal = {() => setEditModalIsOpen(false)}
+        training = {training}
+        handleUpdate = {handleUpdate}
+      />
 
-  </div>
-);
+      {responseMessage && (
+        <div className = "response-message mt-2 text-info col-12">
+          {responseMessage}
+        </div>
+      )}
+    </div>
+  );
 
 };
 

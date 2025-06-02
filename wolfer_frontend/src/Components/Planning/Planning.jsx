@@ -39,8 +39,8 @@ const Planning = () => {
           'Content-Type': 'application/json',
         },
           body: JSON.stringify({
-          Date: localDateTimeString,
-          TrainingType: type
+            Date: localDateTimeString,
+            TrainingType: type
         }),
       });
 
@@ -71,7 +71,7 @@ const Planning = () => {
   return (
     <div className="planning-container">
       <div className="training-box">
-        <h2>Add New Training</h2>
+        <h3>ADD NEW TRAINING</h3>
         <form className="training-creation-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Training Type:</label>
@@ -138,7 +138,7 @@ const Planning = () => {
       </div>
 
       <div className="training-box">
-        <h2>Edit Training</h2>
+        <h3>EDIT TRAINING PLAN</h3>
         <TrainingsTable showSignUp={false} refreshTrigger={refreshTrigger} />
       </div>
     </div>
