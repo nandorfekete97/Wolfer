@@ -15,7 +15,7 @@ const Planning = () => {
     const [refreshTrigger, setRefreshTrigger] = useState(false);
     const [isSelectedDateToday, setIsSelectedDateToday] = useState(false);
 
-    const allHours = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+    const allHours = ["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
     const availableMinutes = ["00", "15", "30", "45"];
     const availableTrainingTypes = ["FunctionalBodyBuilding", "WeightLifting", "CrossFit", "LegDay"];
     const today = new Date();

@@ -25,6 +25,28 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
     }
   }, [training, editModalIsOpen]);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!type || !date || !hour || !minute) {
+      setResponseMessage("Please fill in all fields.");
+      return;
+    }
+
+    const [year, month, day] = date.split("-").map(Number);
+    const utcDate = new Date(Date.UTC(year, month - 1, day, Number(hour), Number(minute), 0, 0));
+    const formattedDate = utcDate.toISOString(); // Includes 'Z'
+
+    const updatedTraining = {
+      id: training.id,
+      trainingType: type,
+      date: formattedDate,
+    };
+
+    handleUpdate(updatedTraining);
+    closeEditModal();
+  }
+
   return (
         <div>
           <Modal
@@ -34,8 +56,7 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
             ariaHideApp={false}
           >
             <h2>UPDATE TRAINING</h2>
-            {/* onSubmit={handleUpdate} should be called in form tag be */}
-            <form className="training-modification-form" >
+            <form className="training-modification-form" onSubmit = {handleSubmit}>
                 <div className="form-group">
                     <label>Training Type:</label>
                     <select

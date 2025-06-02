@@ -56,7 +56,7 @@ public class TrainingService : ITrainingService
             throw new ArgumentException("All properties must be filled out.");
         }
 
-        if (await IsTrainingTimeOccupied(trainingDto.Date))
+        if (await IsTrainingTimeOccupied(trainingDto.Date, trainingDto.Id))
         {
             throw new ArgumentException("Training date is occupied.");
         }
@@ -80,14 +80,16 @@ public class TrainingService : ITrainingService
             throw new ArgumentException("All properties must be filled out.");
         }
         
-        if (await IsTrainingTimeOccupied(trainingDto.Date))
+        if (await IsTrainingTimeOccupied(trainingDto.Date, trainingDto.Id))
         {
             throw new ArgumentException("Training date is occupied.");
         }
 
-        TrainingEntity newTrainingEntity = ConvertDtoToEntity(trainingDto);
+        //TrainingEntity newTrainingEntity = ConvertDtoToEntity(trainingDto);
+        trainingToUpdate.Date = trainingDto.Date;
+        trainingToUpdate.TrainingType = trainingDto.TrainingType;
 
-        await _trainingRepository.UpdateTraining(newTrainingEntity);
+        await _trainingRepository.UpdateTraining(trainingToUpdate);
     }
 
     public async Task DeleteTraining(int trainingId)
@@ -104,20 +106,21 @@ public class TrainingService : ITrainingService
     {
         TrainingEntity trainingEntity = new TrainingEntity
         {
+            Id = trainingDto.Id,
             Date = trainingDto.Date,
             TrainingType = trainingDto.TrainingType
         };
         return trainingEntity;
     }
 
-    private async Task<bool> IsTrainingTimeOccupied(DateTime trainingDate)
+    private async Task<bool> IsTrainingTimeOccupied(DateTime trainingDate, int excludedId)
     {
         List<TrainingEntity> trainingEntities = await _trainingRepository.GetTrainingsByDate(DateOnly.FromDateTime(trainingDate));
 
         int newTrainingHour = trainingDate.Hour;
         int newTrainingMinute = trainingDate.Minute;
 
-        return trainingEntities.Any(entity => IsTimeDifferenceSmallerThanOneHour(newTrainingHour, newTrainingMinute, entity.Date.Hour, entity.Date.Minute));
+        return trainingEntities.Where(entity => entity.Id != excludedId).Any(entity => IsTimeDifferenceSmallerThanOneHour(newTrainingHour, newTrainingMinute, entity.Date.Hour, entity.Date.Minute));
     }
 
     private bool IsTimeDifferenceSmallerThanOneHour(int newTrainingHour, int newTrainingMinute, int existingTrainingHour, int existingTrainingMinute)

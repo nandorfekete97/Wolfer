@@ -113,7 +113,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
 
   const handleUpdate = async (updatedTraining) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/UpdateTraining/${training.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/UpdateTraining/`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedTraining),
