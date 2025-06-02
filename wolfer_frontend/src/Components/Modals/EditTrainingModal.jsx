@@ -1,17 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { use } from 'react';
 import Modal from 'react-modal';
-//import './EditTrainingModal.css';
 
-const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUpdate }) => {
+const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUpdate }) => { 
 
   const today = new Date();
+  const availableTrainingTypes = ["FunctionalBodyBuilding", "WeightLifting", "CrossFit", "LegDay"];
+  const allHours = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+  const availableMinutes = ["00", "15", "30", "45"];
 
+  const [type, setType] = useState('');
+  const [date, setDate] = useState('');
+  const [hour, setHour] = useState('');
+  const [minute, setMinute] = useState('');
   const [responseMessage, setResponseMessage] = useState("");
 
   useEffect(() => {
-    console.log("training in edit modal: ", training);
-  }, )
+    if (training) {
+      setType(training.trainingType || '');
+
+      const dt = new Date(training.date);
+      setDate(dt.toISOString().split('T')[0]);
+      setHour(dt.getHours().toString().padStart(2, '0'));
+      setMinute(dt.getMinutes().toString().padStart(2, '0'));
+    }
+  }, [training, editModalIsOpen]);
 
   return (
         <div>
@@ -27,63 +39,54 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
                 <div className="form-group">
                     <label>Training Type:</label>
                     <select
-                    id="choices"
-                    // onChange={(e) => setType(e.target.value)}
-                    // value={type}
+                      value={type}
+                      onChange={(e) => setType(e.target.value)}
                     >
-                    <option value="">-- Select Training Type --</option>
-                        {/* {availableTrainingTypes.map((t) => (
+                      <option value="">-- Select Training Type --</option>
+                      {availableTrainingTypes.map((t) => (
                         <option key={t} value={t}>{t}</option>
-                    ))} */}
+                      ))}
                     </select>
                 </div>
 
                 <div className="form-group">
                     <label>Training Date:</label>
                     <input
-                    type="date"
-                    min = {today.toISOString().split('T')[0]}
-                    className="training-date-input"
-                    // value should hold date (2025-07-18) of training under editing
-                    
-                    // onChange={(e) => setDate(e.target.value)}
+                      type = "date"
+                      min = {today.toISOString().split('T')[0]}
+                      value = {date}
+                      className = "training-date-input"
+                      onChange = {(e) => setDate(e.target.value)}
                     />
                 </div>
 
-                <div className="form-group">
+                <div className = "form-group">
                     <label>Training Hour:</label>
                     <select
-                    id="hours"
-                    // onChange={(e) => setHour(e.target.value)}
-                    // value={hour || ''}
+                      value = {hour}
+                      onChange = {(e) => setHour(e.target.value)}
                     >
-                    <option value="">-- Select Hour --</option>
-                    {/* {isSelectedDateToday ? 
-                        availableHours.map((h) => (
-                        <option key={h} value={h}>{h}</option>
-                        )) :
-                        allHours.map((h) => (
-                        <option key={h} value={h}>{h}</option>
-                        ))
-                    } */}
+                      <option value = "">-- Select Hour --</option>
+                      {allHours.map((h) => (
+                        <option key = {h} value={h}>{h}</option>
+                      ))}
                     </select>
                 </div>
 
-                <div className="form-group">
+                <div className = "form-group">
                     <label>Training Minute:</label>
                     <select
-                    id="minutes"
-                    // onChange={(e) => setMinute(e.target.value)}
-                    // value={minute || ''}
+                      value = {minute}
+                      onChange = {(e) => setMinute(e.target.value)}
                     >
-                    <option value="">-- Select Minute --</option>
-                    {/* {availableMinutes.map((m) => (
-                        <option key={m} value={m}>{m}</option>
-                    ))} */}
+                      <option value="">-- Select Minute --</option>
+                      {availableMinutes.map((m) => (
+                          <option key={m} value={m}>{m}</option>
+                      ))}
                     </select>
                 </div>
 
-                <button type="submit">Submit Training</button>
+                <button type = "submit" className = 'btn btn-primary'>Submit Training</button>
                 {responseMessage && <p>{responseMessage}</p>}
                 </form>
 
