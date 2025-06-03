@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using Microsoft.AspNetCore.Identity;
+using MockQueryable.Moq;
+using Moq;
 using NUnit.Framework;
-using Wolfer.Data.Context;
-using Wolfer.Data.Entities;
 using Wolfer.Repositories;
 
 namespace Wolfer.Tests.Repositories;
@@ -13,240 +14,104 @@ namespace Wolfer.Tests.Repositories;
 [TestOf(typeof(UserRepository))]
 public class UserRepositoryTest
 {
-    private WolferContext _dbContext;
+    private Mock<UserManager<IdentityUser>> _userManagerMock;
     private UserRepository _repository;
 
     [SetUp]
     public void SetUp()
     {
-        var options = new DbContextOptionsBuilder<WolferContext>().UseInMemoryDatabase(databaseName: "WolferTestDb")
-            .Options;
+        var store = new Mock<IUserStore<IdentityUser>>();
+        _userManagerMock = new Mock<UserManager<IdentityUser>>(
+            store.Object, null, null, null, null, null, null, null, null
+        );
+        _repository = new UserRepository(_userManagerMock.Object);
+    }
+
+    [Test]
+    public async Task GetUserById_ReturnsUserSuccessfully()
+    {
+        var userId = Guid.NewGuid();
+    
+        var user = new IdentityUser { Id = userId.ToString(), Email = "nandor@fekete.com" };
         
-        _dbContext = new WolferContext(options);
-
-        _repository = new UserRepository(_dbContext);
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        _dbContext.Database.EnsureDeleted();
-        _dbContext.Dispose();
-    }
-    
-    [Test]
-    public async Task GetById_ReturnsUserSuccessfully()
-    {
-        UserEntity user = new UserEntity
-        {
-            Email = "nandor@fekete.com",
-            FirstName = "Nándor",
-            LastName = "Fekete",
-            Password = "spurs97",
-            Username = "nanu97"
-        };
-
-        await _dbContext.Users.AddAsync(user);
-        await _dbContext.SaveChangesAsync();
-
-        var result = await _repository.GetUserById(user.Id);
-
-        CompareTwoUserEntities(result, user);
-    }
-    
-    [Test]
-    public async Task GetByIdFails_IfIdDoesntExist()
-    {
-        int wrongId = -1;
-
-        var result = await _repository.GetUserById(wrongId);
+        _userManagerMock.Setup(m => m.FindByIdAsync(userId.ToString()))
+            .ReturnsAsync(user);
         
-        Assert.That(result, Is.Null);
+        var result = await _repository.GetUserById(userId);
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Email, Is.EqualTo("nandor@fekete.com"));
     }
-    
+
     [Test]
-    public async Task GetUserByFirstName_ReturnsCorrectUser()
+    public async Task GetUserById_ReturnsNull_IfUserNotFound()
     {
-         UserEntity user1 = new UserEntity
-         {
-             Email = "nandor@fekete.com",
-             FirstName = "Nándor",
-             LastName = "Fekete",
-             Password = "spurs97",
-             Username = "nanu97"
-         };
-         
-         UserEntity user2 = new UserEntity
-        {
-            Email = "roli@hury.com",
-            FirstName = "Roland",
-            LastName = "Hury",
-            Password = "roli97",
-            Username = "roland97"
-        };
-         
-        await _dbContext.Users.AddAsync(user1);
-        await _dbContext.Users.AddAsync(user2);
-        await _dbContext.SaveChangesAsync();   
-         
-        var result = await _repository.GetUserByFirstName(user2.FirstName);
-         
-        CompareTwoUserEntities(result, user2);
-    }
-    
-    [Test]
-    public async Task GetUserByFirstName_FailsIfNameIsNotFound()
-    {
-        UserEntity user1 = new UserEntity
-        {
-            Email = "nandor@fekete.com",
-            FirstName = "Nándor",
-            LastName = "Fekete",
-            Password = "spurs97",
-            Username = "nanu97"
-        };
-         
-        UserEntity user2 = new UserEntity
-        {
-            Email = "roli@hury.com",
-            FirstName = "Roland",
-            LastName = "Hury",
-            Password = "roli97",
-            Username = "roland97"
-        };
-         
-        await _dbContext.Users.AddAsync(user1);
-        await _dbContext.Users.AddAsync(user2);
-        await _dbContext.SaveChangesAsync();   
-         
-        var result = await _repository.GetUserByFirstName("Ábel");
-         
+        var userId = Guid.NewGuid();
+
+        _userManagerMock.Setup(m => m.FindByIdAsync(userId.ToString()))
+            .ReturnsAsync((IdentityUser?)null);
+
+        var result = await _repository.GetUserById(userId);
+
         Assert.That(result, Is.Null);
     }
 
     [Test]
-    public async Task GetAllUsers_ReturnsAllUsers()
+    public async Task GetByIds_ReturnsMatchingUsers()
     {
-        UserEntity user1 = new UserEntity
-        {
-            Email = "nandor@fekete.com",
-            FirstName = "Nándor",
-            LastName = "Fekete",
-            Password = "spurs97",
-            Username = "nanu97"
-        };
-         
-        UserEntity user2 = new UserEntity
-        {
-            Email = "roli@hury.com",
-            FirstName = "Roland",
-            LastName = "Hury",
-            Password = "roli97",
-            Username = "roland97"
-        };
+        var user1 = new IdentityUser { Id = Guid.NewGuid().ToString(), Email = "user1@test.com" };
+        var user2 = new IdentityUser { Id = Guid.NewGuid().ToString(), Email = "user2@test.com" };
+        var users = new List<IdentityUser> { user1, user2 };
 
-        List<UserEntity> users = new List<UserEntity>{user1, user2};
-         
-        await _dbContext.Users.AddAsync(user1);
-        await _dbContext.Users.AddAsync(user2);
-        await _dbContext.SaveChangesAsync();   
-         
-        var result = await _repository.GetAllUsers();
-         
-        Assert.That(result, Is.EquivalentTo(users));
+        var userStore = users.AsQueryable().BuildMockDbSet();
+
+        _userManagerMock.Setup(m => m.Users).Returns(userStore.Object);
+
+        var result = await _repository.GetByIds(new List<Guid> { Guid.Parse(user1.Id), Guid.Parse(user2.Id) });
+
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result.Select(u => u.Email), Is.EquivalentTo(new[] { "user1@test.com", "user2@test.com" }));
     }
 
     [Test]
-    public async Task CreateUser_SuccessfullyCreatesTrainer()
+    public async Task UpdateUser_CallsUpdateAndChangePassword_WhenPasswordsDiffer()
     {
-        UserEntity user = new UserEntity
-        {
-            Email = "nandor@fekete.com",
-            FirstName = "Nándor",
-            LastName = "Fekete",
-            Password = "spurs97",
-            Username = "nanu97"
-        };
+        var user = new IdentityUser { Id = Guid.NewGuid().ToString() };
 
-        await _repository.CreateUser(user);
+        _userManagerMock.Setup(m => m.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
+        _userManagerMock.Setup(m => m.ChangePasswordAsync(user, "oldPass", "newPass")).ReturnsAsync(IdentityResult.Success);
 
-        var result = await _repository.GetUserById(user.Id);
-        
-        CompareTwoUserEntities(result, user);
+        await _repository.UpdateUser(user, "oldPass", "newPass");
+
+        _userManagerMock.Verify(m => m.UpdateAsync(user), Times.Once);
+        _userManagerMock.Verify(m => m.ChangePasswordAsync(user, "oldPass", "newPass"), Times.Once);
     }
 
     [Test]
-    public async Task UpdateUser_SuccessfullyUpdates()
+    public async Task DeleteUserById_DeletesIfUserExists()
     {
-        UserEntity user = new UserEntity
-        {
-            Email = "nandor@fekete.com",
-            FirstName = "Nándor",
-            LastName = "Fekete",
-            Password = "spurs97",
-            Username = "nanu97"
-        };
+        var userId = Guid.NewGuid();
+        var user = new IdentityUser { Id = userId.ToString() };
 
-        await _dbContext.Users.AddAsync(user);
-        await _dbContext.SaveChangesAsync();
-        
-        UserEntity userToUpdate = await _repository.GetUserById(user.Id);
-        
-        CompareTwoUserEntities(userToUpdate, user);
-        userToUpdate.Username = "nanuel97";
-        await _repository.UpdateUser(userToUpdate);
+        _userManagerMock.Setup(m => m.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+        _userManagerMock.Setup(m => m.DeleteAsync(user)).ReturnsAsync(IdentityResult.Success);
 
-        var result = await _repository.GetUserById(userToUpdate.Id);
-        CompareTwoUserEntities(result, userToUpdate);
+        var result = await _repository.DeleteUserById(userId);
+
+        Assert.That(result, Is.True);
+        _userManagerMock.Verify(m => m.DeleteAsync(user), Times.Once);
     }
 
     [Test]
-    public async Task DeleteUser_DeletesSuccessfully()
+    public async Task DeleteUserById_ReturnsFalse_IfUserNotFound()
     {
-        UserEntity user1 = new UserEntity
-        {
-            Email = "nandor@fekete.com",
-            FirstName = "Nándor",
-            LastName = "Fekete",
-            Password = "spurs97",
-            Username = "nanu97"
-        };
-         
-        UserEntity user2 = new UserEntity
-        {
-            Email = "roli@hury.com",
-            FirstName = "Roland",
-            LastName = "Hury",
-            Password = "roli97",
-            Username = "roland97"
-        };
+        var userId = Guid.NewGuid();
 
-        List<UserEntity> users = new List<UserEntity>{user1, user2};
-         
-        await _dbContext.Users.AddAsync(user1);
-        await _dbContext.Users.AddAsync(user2);
-        await _dbContext.SaveChangesAsync();
+        _userManagerMock.Setup(m => m.FindByIdAsync(userId.ToString())).ReturnsAsync((IdentityUser?)null);
 
-        var usersFetched = await _repository.GetAllUsers();
-        
-        Assert.That(usersFetched, Is.EquivalentTo(users));
+        var result = await _repository.DeleteUserById(userId);
 
-        await _repository.DeleteUserById(user1.Id);
-        
-        var result = await _repository.GetAllUsers();
-        
-        Assert.That(result.Count, Is.EqualTo(1));
-        CompareTwoUserEntities(result[0], user2);
-    }
-
-    private void CompareTwoUserEntities(UserEntity actualUser, UserEntity expectedUser)
-    {
-        Assert.That(actualUser, Is.Not.Null);
-        Assert.That(actualUser.Id, Is.Not.Null);
-        Assert.That(actualUser.FirstName, Is.EqualTo(expectedUser.FirstName));
-        Assert.That(actualUser.LastName, Is.EqualTo(expectedUser.LastName));
-        Assert.That(actualUser.Username, Is.EqualTo(expectedUser.Username));
-        Assert.That(actualUser.Password, Is.EqualTo(expectedUser.Password));
-        Assert.That(actualUser.Email, Is.EqualTo(expectedUser.Email));
+        Assert.That(result, Is.False);
+        _userManagerMock.Verify(m => m.DeleteAsync(It.IsAny<IdentityUser>()), Times.Never);
     }
 }
