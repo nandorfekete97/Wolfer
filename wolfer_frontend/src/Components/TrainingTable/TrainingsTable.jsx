@@ -2,7 +2,7 @@ import './TrainingTable.css';
 import DayInfo from './DayInfo/DayInfo';
 import React, { useState, useEffect } from 'react';
 
-const TrainingsTable = () => {
+const TrainingsTable = ({ showSignUp=true, refreshTrigger, triggerRefresh, isSelectedDateToday }) => {
   const [weekDates, setWeekDates] = useState([]);
   const [signedUpTrainings, setSignedUpTrainings] = useState([]);
   const [dataIsLoaded, setDataIsLoaded] = useState(false);
@@ -34,15 +34,25 @@ const TrainingsTable = () => {
       <div className="training-table-header">
         <h3 className="table-item col-sm-4">Time</h3>
         <h3 className="table-item col-sm-4">Type</h3>
+        {showSignUp ? 
         <h3 className="table-item col-sm-4">Register</h3>
+        :
+        <h3 className="table-item col-sm-4">Modification</h3>
+        }
       </div>
       {dataIsLoaded ?
-      weekDates.map((day, idx) => (
-        <DayInfo key={idx} 
-                 date={day} 
-                 signedUpTrainings={signedUpTrainings}
-                 refreshSignedUpTrainings={getSignedUpTrainings} />
-      )) :
+        weekDates.map((day, idx) => (
+          <DayInfo 
+            key= {idx} 
+            date= {day} 
+            signedUpTrainings= {signedUpTrainings}
+            refreshSignedUpTrainings= {getSignedUpTrainings} 
+            showSignUp = {showSignUp}
+            refreshTrigger = {refreshTrigger}
+            triggerRefresh = {triggerRefresh}
+            isSelectedDateToday = {isSelectedDateToday}
+          />
+        )) :
       <h5>Loading</h5>
       }
     </div>

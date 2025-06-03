@@ -1,0 +1,40 @@
+.modal-content {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  max-width: 400px;
+  margin: auto;
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.modal-content button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-content button:first-of-type {
+  background-color: #dc3545;
+  color: white;
+}
+
+.modal-content button:first-of-type:hover {
+  background-color: #b52a37;
+}
+
+.modal-content button:last-of-type {
+  background-color: #6c757d;
+  color: white;
+}
+
+.modal-content button:last-of-type:hover {
+  background-color: #5a6268;
+}

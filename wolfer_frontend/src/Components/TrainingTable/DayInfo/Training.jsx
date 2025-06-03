@@ -1,25 +1,24 @@
 import { data } from 'react-router-dom';
 import './Training.css'
 import React, { useState, useEffect } from 'react';
+import DeleteModal from '../../Modals/DeleteTrainingModal';
+import EditTrainingModal from '../../Modals/EditTrainingModal';
 
-const trainingTypeMap = [
-  "Functional Body-Building",
-  "Weight Lifting",
-  "Crossfit",
-  "Leg Day"
-]
-
-const Training = ({training, signedUpTrainingIdsForDay, refreshSignedUpTrainings}) => {
+const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTrainings, refreshDayTrainings, triggerRefresh, showSignUp = true, isSelectedDateToday }) => {
   const [time, setTime] = useState(null);
   const [type, setType] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+
+  const today = new Date();
 
   useEffect(() => {
     if (training) {
       const dateObj = new Date(training.date);
       setTime(dateObj.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}));
-      setType(trainingTypeMap[training.trainingType]);
+      setType(training.trainingType);
     }
   }, [training]);
 
@@ -80,53 +79,130 @@ const Training = ({training, signedUpTrainingIdsForDay, refreshSignedUpTrainings
     }
   }
 
-  // so far not clear if working or not, because page needs refresh, to rerender the buttons properly
-  useEffect(() => {
-  if (responseMessage) {
-    const timeout = setTimeout(() => {
-      setResponseMessage("");
-    }, 3000); // clear after 3 seconds
-    return () => clearTimeout(timeout);
+  const handleDelete = async (e) => {
+    e.preventDefault();
+
+    setResponseMessage("");
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/DeleteTraining/${training.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok) {
+        setResponseMessage("Training was deleted successfully.");
+        if (refreshSignedUpTrainings) 
+        {
+          refreshSignedUpTrainings();
+        };
+        if (refreshDayTrainings) 
+        {
+          refreshDayTrainings();
+        }
+      } else {
+        const data = await response.json();
+        setResponseMessage(data.message || 'Training could not be deleted.');
+      }
+    } catch (error) {
+      setResponseMessage('An error occurred during deleting training.');
+    }
   }
-  }, [responseMessage]);
+
+  const handleUpdate = async (updatedTraining) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/UpdateTraining/`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedTraining),
+      });
+
+      const data = await response.json();
+      setResponseMessage(response.ok ? "Training updated successfully." : data.message || "Failed to update training.");
+      if (response.ok) {
+        if (refreshSignedUpTrainings) 
+        {
+          refreshSignedUpTrainings();
+        };
+        if (refreshDayTrainings) 
+        {
+          refreshDayTrainings();
+        };
+        if (triggerRefresh)
+        {
+          triggerRefresh();
+        };
+      }
+    } catch (error) {
+      setResponseMessage("An error occurred during update.");
+    }
+  }
 
   return (
-    <div className="training">
-        <h5 className="training-info col-sm-4">
-          {time} 
-        </h5>
-        <h5 className="training-info col-sm-4">
-          {type}
-        </h5>
+    <div className = "training">
+      <h5 className = "training-info col-sm-4">{time}</h5>
+      <h5 className = "training-info col-sm-4">{type}</h5>
 
-        {signedUpTrainingIdsForDay.includes(training.id) ? (
+      {showSignUp ? (
+        signedUpTrainingIdsForDay.includes(training.id) ? (
           <button
-            type="button"
-            id="sign-off-button"
-            className="btn btn-sm btn-danger col-sm-4"
-            onClick={signOffFromTraining}
+            className = "btn btn-sm btn-danger col-sm-4"
+            onClick = {signOffFromTraining}
+            disabled = {today.toISOString() > training.date}
           >
             Sign Off
           </button>
         ) : (
           <button
-            type="button"
-            id="sign-up-button"
-            className="btn btn-sm btn-success col-sm-4"
-            onClick={signUpForTraining}
-            disabled={isDisabled}
+            className = "btn btn-sm btn-success col-sm-4"
+            onClick = {signUpForTraining}
+            disabled = {isDisabled || today.toISOString() > training.date}
           >
             Sign Up
           </button>
+        )
+      ) : (
+        <div className = "col-sm-4 d-flex gap-2">
+          <button
+            className = "btn btn-sm btn-primary"
+            disabled = {today.toISOString() > training.date}
+            onClick = {() => setEditModalIsOpen(true)}
+          >
+            Edit
+          </button>
+          <button
+            className = "btn btn-sm btn-danger"
+            disabled = {today.toISOString() > training.date}
+            onClick = {(e) => setDeleteModalIsOpen(true)}
+          >
+            Delete
+          </button>
+        </div>
       )}
 
+      <DeleteModal
+        deleteModalIsOpen = {deleteModalIsOpen}
+        closeDeleteModal = {() => setDeleteModalIsOpen(false)}
+        handleDelete = {handleDelete}
+      />
+
+      <EditTrainingModal
+        editModalIsOpen = {editModalIsOpen}
+        closeEditModal = {() => setEditModalIsOpen(false)}
+        training = {training}
+        handleUpdate = {handleUpdate}
+        isSelectedDateToday = {isSelectedDateToday}
+      />
+
       {responseMessage && (
-        <div className="response-message mt-2 text-info col-12">
+        <div className = "response-message mt-2 text-info col-12">
           {responseMessage}
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 export default Training;

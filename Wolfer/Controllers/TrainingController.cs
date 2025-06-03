@@ -76,7 +76,7 @@ public class TrainingController : ControllerBase
     }
 
     [HttpPost("AddTraining")]
-    public async Task<IActionResult> AddTraining(TrainingDTO trainingDto)
+    public async Task<IActionResult> AddTraining([FromBody] TrainingDTO trainingDto)
     {
         try
         {
@@ -90,7 +90,7 @@ public class TrainingController : ControllerBase
     }
 
     [HttpPut("UpdateTraining")]
-    public async Task<IActionResult> UpdateTraining(TrainingDTO trainingDto)
+    public async Task<IActionResult> UpdateTraining([FromBody] TrainingDTO trainingDto)
     {
         try
         {

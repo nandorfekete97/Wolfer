@@ -47,7 +47,7 @@ public class TrainingRepository : ITrainingRepository
     
     public async Task UpdateTraining(TrainingEntity trainingEntity)
     {
-        _dbContext.Update(trainingEntity);
+        //_dbContext.Update(trainingEntity);
         await _dbContext.SaveChangesAsync();
     }
 

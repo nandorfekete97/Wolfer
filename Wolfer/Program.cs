@@ -8,6 +8,7 @@ using Wolfer.Data.Context;
 using Wolfer.Repositories;
 using Wolfer.Services;
 using Wolfer.Services.Authentication;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -115,6 +116,11 @@ builder.Services
         options.Password.RequireLowercase = false;
     })
     .AddEntityFrameworkStores<WolferContext>();
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 var app = builder.Build();
 
