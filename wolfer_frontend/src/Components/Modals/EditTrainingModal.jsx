@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 
-const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUpdate }) => { 
+const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUpdate, isSelectedDateToday }) => { 
 
   const today = new Date();
   const availableTrainingTypes = ["FunctionalBodyBuilding", "WeightLifting", "CrossFit", "LegDay"];
-  const allHours = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+  const allHours = ["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
   const availableMinutes = ["00", "15", "30", "45"];
 
   const [type, setType] = useState('');
@@ -13,6 +13,13 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
   const [hour, setHour] = useState('');
   const [minute, setMinute] = useState('');
   const [responseMessage, setResponseMessage] = useState("");
+
+  const getFilteredHours = () => {
+    if (!isSelectedDateToday) return allHours;
+
+    const currentHour = today.getHours();
+    return allHours.filter(h => Number(h) > currentHour);
+  }
 
   useEffect(() => {
     if (training) {
@@ -35,7 +42,7 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
 
     const [year, month, day] = date.split("-").map(Number);
     const utcDate = new Date(Date.UTC(year, month - 1, day, Number(hour), Number(minute), 0, 0));
-    const formattedDate = utcDate.toISOString(); // Includes 'Z'
+    const formattedDate = utcDate.toISOString();
 
     const updatedTraining = {
       id: training.id,
@@ -88,7 +95,7 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
                       onChange = {(e) => setHour(e.target.value)}
                     >
                       <option value = "">-- Select Hour --</option>
-                      {allHours.map((h) => (
+                      {getFilteredHours().map((h) => (
                         <option key = {h} value={h}>{h}</option>
                       ))}
                     </select>

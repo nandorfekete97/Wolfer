@@ -2,7 +2,7 @@ import React, { useEffect, useImperativeHandle, useState } from 'react';
 import Training from './Training'
 import './DayInfo.css'
 
-const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp = true, refreshTrigger }) => {
+const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp = true, refreshTrigger, triggerRefresh, isSelectedDateToday }) => {
   
   const [trainings, setTrainings] = useState([]);
   const [signedUpTrainingIdsForDay, setSignedUpTrainingIdsForDay] = useState([]);
@@ -51,14 +51,17 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
     <>
         <h3 className="day-info"> {date ? `${date.toDateString()}` : ""} </h3>
         {trainings.map((training) => (
-          <h5>
+          <h5 key = {training.id}>
             <Training
-            key={training.id}
-            training={training} 
-            signedUpTrainingIdsForDay={signedUpTrainingIdsForDay}
-            refreshSignedUpTrainings={refreshSignedUpTrainings}
-            refreshDayTrainings = {getTrainings}
-            showSignUp = {showSignUp} />
+              key={training.id}
+              training={training} 
+              signedUpTrainingIdsForDay={signedUpTrainingIdsForDay}
+              refreshSignedUpTrainings={refreshSignedUpTrainings}
+              refreshDayTrainings = {getTrainings}
+              triggerRefresh = {triggerRefresh}
+              showSignUp = {showSignUp}
+              isSelectedDateToday = {isSelectedDateToday} 
+            />
           </h5>
         ))}
     </>

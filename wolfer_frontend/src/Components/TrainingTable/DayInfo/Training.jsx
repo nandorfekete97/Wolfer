@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import DeleteModal from '../../Modals/DeleteTrainingModal';
 import EditTrainingModal from '../../Modals/EditTrainingModal';
 
-const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTrainings, refreshDayTrainings, showSignUp = true }) => {
+const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTrainings, refreshDayTrainings, triggerRefresh, showSignUp = true, isSelectedDateToday }) => {
   const [time, setTime] = useState(null);
   const [type, setType] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
@@ -122,8 +122,18 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
       const data = await response.json();
       setResponseMessage(response.ok ? "Training updated successfully." : data.message || "Failed to update training.");
       if (response.ok) {
-        refreshDayTrainings?.();
-        refreshSignedUpTrainings?.();
+        if (refreshSignedUpTrainings) 
+        {
+          refreshSignedUpTrainings();
+        };
+        if (refreshDayTrainings) 
+        {
+          refreshDayTrainings();
+        };
+        if (triggerRefresh)
+        {
+          triggerRefresh();
+        };
       }
     } catch (error) {
       setResponseMessage("An error occurred during update.");
@@ -183,6 +193,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
         closeEditModal = {() => setEditModalIsOpen(false)}
         training = {training}
         handleUpdate = {handleUpdate}
+        isSelectedDateToday = {isSelectedDateToday}
       />
 
       {responseMessage && (

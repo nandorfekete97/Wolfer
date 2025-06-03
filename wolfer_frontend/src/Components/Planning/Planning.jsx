@@ -14,6 +14,7 @@ const Planning = () => {
     const [responseMessage, setResponseMessage] = useState("");
     const [refreshTrigger, setRefreshTrigger] = useState(false);
     const [isSelectedDateToday, setIsSelectedDateToday] = useState(false);
+    const triggerRefresh = () => setRefreshTrigger(prev => !prev);
 
     const allHours = ["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
     const availableMinutes = ["00", "15", "30", "45"];
@@ -139,7 +140,12 @@ const Planning = () => {
 
       <div className="training-box">
         <h3>EDIT TRAINING PLAN</h3>
-        <TrainingsTable showSignUp={false} refreshTrigger={refreshTrigger} />
+        <TrainingsTable 
+          showSignUp = {false} 
+          refreshTrigger = {refreshTrigger} 
+          triggerRefresh = {triggerRefresh} 
+          isSelectedDateToday = {isSelectedDateToday}
+        />
       </div>
     </div>
 );
