@@ -85,7 +85,6 @@ public class TrainingService : ITrainingService
             throw new ArgumentException("Training date is occupied.");
         }
 
-        //TrainingEntity newTrainingEntity = ConvertDtoToEntity(trainingDto);
         trainingToUpdate.Date = trainingDto.Date;
         trainingToUpdate.TrainingType = trainingDto.TrainingType;
 
