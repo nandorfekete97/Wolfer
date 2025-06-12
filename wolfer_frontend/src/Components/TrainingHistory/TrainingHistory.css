@@ -9,13 +9,11 @@
   color: white;
 }
 
-/* Section headers spacing */
 .training-history-header {
   text-align: center;
   margin-bottom: 20px;
 }
 
-/* Filter selects container */
 .training-filters {
   display: flex;
   justify-content: center;
@@ -31,44 +29,37 @@
   color: white;
 }
 
-/* Separate the main sections more */
-.training-summary,
-.past-trainings,
-.training-stats {
-  margin-bottom: 40px;
-  padding-bottom: 10px;
-  border-bottom: 1.5px solid #666;
-}
-
-/* Past trainings list */
 .training-list {
   list-style: none;
   padding-left: 0;
 }
 
 .training-list li {
-  padding: 10px 14px;
+  padding: 8px 12px;
   background-color: #686868;
-  margin-bottom: 8px;        /* a little more space between items */
+  margin-bottom: 6px;
   border-radius: 6px;
-  border: 1px solid #4a4a4a; /* subtle border */
-  transition: background-color 0.2s ease;
+  border: 1px solid #444;
 }
 
-.training-list li:hover {
-  background-color: #757575;
+.training-stats {
+  margin-top: 30px;
 }
 
-/* Favourite trainings stats list */
 .training-stats ul {
   list-style: none;
   padding-left: 0;
 }
 
 .training-stats li {
-  padding: 8px 12px;
+  padding: 6px 10px;
   background-color: #4a4a4a;
-  margin-bottom: 8px;         /* a bit more spacing here too */
+  margin-bottom: 6px;
   border-radius: 6px;
   border: 1px solid #333;
+}
+
+.training-counter {
+    color: rgb(201, 68, 68);
+    font-weight: 900;
 }
