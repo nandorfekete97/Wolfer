@@ -131,4 +131,38 @@ public class UserServiceTest
         
         _userRepositoryMock.Verify(repository => repository.UpdateUser(It.Is<IdentityUser>(user => user.Email == expectedUser.Email && user.UserName == expectedUser.UserName), userDto.OldPassword, userDto.NewPassword), Times.Once);
     }
+    
+    [TestCase("", "nandor.fekete@izeja.com", TestName = "EmptyUsername_ThrowsException")]
+    [TestCase("nanuelfekete97", "", TestName = "EmptyEmail_ThrowsException")]
+    public async Task UpdateUser_InvalidField_ThrowsException(
+        string username, string email)
+    {
+        Guid validId = Guid.NewGuid();
+
+        var userDto = new UserDTO
+        {
+            Id = validId.ToString(),
+            UserName = username,
+            OldPassword = "Sepa",
+            NewPassword = "Sári",
+            Email = email
+        };
+
+        var exception = Assert.ThrowsAsync<ArgumentException>(async () => await _userService.UpdateUser(userDto));
+
+        Assert.That(exception.Message, Is.EqualTo("All properties must be filled out."));
+        _userRepositoryMock.Verify(
+            r => r.UpdateUser(It.IsAny<IdentityUser>(), It.IsAny<string>(), It.IsAny<string>()),
+            Times.Never);
+    }
+
+    [Test]
+    public async Task DeleteUser_SuccessfullyDeletesUser()
+    {
+        Guid userId = Guid.NewGuid();
+
+        await _userService.DeleteUser(userId);
+        
+        _userRepositoryMock.Verify(repository => repository.DeleteUserById(userId), Times.Once);
+    }
 }

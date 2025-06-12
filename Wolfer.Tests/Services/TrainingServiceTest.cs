@@ -263,4 +263,26 @@ public class TrainingServiceTest
         
         Assert.That(exception.Message, Is.EqualTo("Invalid ID."));
     }
+
+    [Test]
+    public async Task DeleteTraining_SuccessfullyDeletesTraining()
+    {
+        int trainingId = 1;
+
+        await _trainingService.DeleteTraining(trainingId);
+        
+        _trainingRepositoryMock.Verify(repository => repository.DeleteById(trainingId), Times.Once);
+    }
+
+    [Test]
+    public async Task DeleteTraining_InvalidId_ThrowsException()
+    {
+        int invalidTrainingId = 0;
+
+        var exception =
+            Assert.ThrowsAsync<ArgumentException>(async () => await _trainingService.DeleteTraining(invalidTrainingId));
+        
+        Assert.That(exception.Message, Is.EqualTo("Invalid ID."));
+        _trainingRepositoryMock.Verify(repository => repository.DeleteById(invalidTrainingId), Times.Never);
+    }
 }
