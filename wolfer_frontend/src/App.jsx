@@ -6,6 +6,7 @@ import Login from './Components/Login/Login';
 import Profile from './Components/Profile/Profile';
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Planning from './Components/Planning/Planning';
+import TrainingHistory from './Components/TrainingHistory/TrainingHistory';
 
 function App() {
   const [successfulLogin, setSuccessfulLogin] = useState(false);
@@ -19,23 +20,24 @@ function App() {
 
   return (
     <Router>
-      <div className="col-sm-12">
-        <h1 className="gym-name">WOLFER</h1>
+      <div className = "col-sm-12">
+        <h1 className = "gym-name">WOLFER</h1>
       </div>
 
-      <div className="container col-sm-12">
+      <div className = "container col-sm-12">
         {successfulLogin ? (
           <>
-            <div className="col-sm-3">
-              <Layout setSuccessfulLogin={setSuccessfulLogin} />
+            <div className = "col-sm-3">
+              <Layout setSuccessfulLogin = {setSuccessfulLogin} />
             </div>
             <div className="col-sm-9">
               <Routes>
-                <Route path="/" element={<Navigate to="/trainings" />} />
-                <Route path="*" element={<Navigate to="/trainings" />} />
-                <Route path="/trainings" element={<TrainingsTable />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path='/planning' element={<Planning/>}/>
+                <Route path = "/" element={<Navigate to ="/trainings" />} />
+                <Route path = "*" element={<Navigate to="/trainings" />} />
+                <Route path = "/trainings" element={<TrainingsTable />} />
+                <Route path = "/profile" element={<Profile />} />
+                <Route path = '/planning' element={<Planning/>} />
+                <Route path = '/training-history' element={<TrainingHistory/>} />
               </Routes>
             </div>
           </>
