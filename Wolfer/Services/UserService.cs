@@ -9,17 +9,19 @@ namespace Wolfer.Services;
 public class UserService : IUserService
 {
     private IUserRepository _userRepository;
+    private readonly ILogger<UserService> _logger;
 
-    public UserService(IUserRepository userRepository)
+    public UserService(IUserRepository userRepository, ILogger<UserService> logger)
     {
         _userRepository = userRepository;
+        _logger = logger;
     }
 
     public async Task<IdentityUser?> GetById(Guid userId)
     {
-        if (String.IsNullOrEmpty(userId.ToString()))
+        if (userId == Guid.Empty)
         {
-            throw new ArgumentException("ID must be positive integer.");
+            throw new ArgumentException("Invalid ID.");
         }
 
         return await _userRepository.GetUserById(userId);
@@ -27,8 +29,15 @@ public class UserService : IUserService
 
     public async Task<List<IdentityUser>> GetByUserIds(List<Guid> userIds)
     {
-        List<Guid> filteredUserIds = userIds.Where(userId => !String.IsNullOrEmpty(userId.ToString())).ToList();
-
+        var invalidIds = userIds.Where(id => id == Guid.Empty).ToList();
+        
+        if (invalidIds.Any())
+        {
+            _logger.LogWarning("Invalid IDs: {invalidIds}", string.Join(", ", invalidIds));
+        }
+        
+        List<Guid> filteredUserIds = userIds.Where(userId => userId != Guid.Empty).ToList();
+        
         return await _userRepository.GetByIds(filteredUserIds);
     }
 

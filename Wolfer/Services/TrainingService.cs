@@ -50,12 +50,17 @@ public class TrainingService : ITrainingService
         {
             throw new ArgumentException("Trainer ID must be null.");
         }
-        
-        if (trainingDto.TrainingType == null || trainingDto.Date == null)
+
+        if (trainingDto.Date == default)
         {
-            throw new ArgumentException("All properties must be filled out.");
+            throw new ArgumentException("Date must be set.");
         }
 
+        if (!Enum.IsDefined(typeof(TrainingType), trainingDto.TrainingType))
+        {
+            throw new ArgumentException("Invalid training type.");
+        }
+            
         if (await IsTrainingTimeOccupied(trainingDto.Date, trainingDto.Id))
         {
             throw new ArgumentException("Training date is occupied.");
@@ -75,7 +80,7 @@ public class TrainingService : ITrainingService
             throw new ArgumentException("Invalid ID.");
         }
 
-        if (!Enum.IsDefined(typeof(TrainingType), trainingDto.TrainingType) || trainingDto.Date == DateTime.MinValue)
+        if (!Enum.IsDefined(typeof(TrainingType), trainingDto.TrainingType) || trainingDto.Date == default)
         {
             throw new ArgumentException("All properties must be filled out.");
         }
@@ -85,7 +90,6 @@ public class TrainingService : ITrainingService
             throw new ArgumentException("Training date is occupied.");
         }
 
-        //TrainingEntity newTrainingEntity = ConvertDtoToEntity(trainingDto);
         trainingToUpdate.Date = trainingDto.Date;
         trainingToUpdate.TrainingType = trainingDto.TrainingType;
 
@@ -113,7 +117,7 @@ public class TrainingService : ITrainingService
         return trainingEntity;
     }
 
-    private async Task<bool> IsTrainingTimeOccupied(DateTime trainingDate, int excludedId)
+    protected virtual async Task<bool> IsTrainingTimeOccupied(DateTime trainingDate, int excludedId)
     {
         List<TrainingEntity> trainingEntities = await _trainingRepository.GetTrainingsByDate(DateOnly.FromDateTime(trainingDate));
 
