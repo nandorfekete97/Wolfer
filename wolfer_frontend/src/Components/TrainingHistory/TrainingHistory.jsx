@@ -41,9 +41,8 @@ useEffect(() => {
 
 useEffect(() => {
     const filtered = pastTrainings.filter(training => {
-        //const [year, month] = training.date.split('T')[0].split('-');
         const trainingDate = new Date(training.date);
-        const yearMatch = selectedYear === "all" || trainingDate.getFullYear().toString() === year;
+        const yearMatch = selectedYear === "all" || trainingDate.getFullYear().toString() === selectedYear;
         const monthMatch = selectedMonth === "all" || (trainingDate.getMonth() + 1).toString().padStart(2, '0') === selectedMonth;
         return yearMatch && monthMatch;
     });
