@@ -30,6 +30,20 @@ public class UserTrainingController : ControllerBase
             return NotFound(new { message = e.Message });
         }
     }
+    
+    [HttpGet("GetPastTrainingsForUser/{userId}")]
+    public async Task<IActionResult> GetPastTrainingsForUser(Guid userId)
+    {
+        try
+        {
+            List<TrainingEntity> trainingEntities = await _userTrainingService.GetPastTrainingsByUserId(userId);
+            return Ok(new { trainingEntities });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 
     [HttpGet("GetUsersByTrainingId/{trainingId}")]
     public async Task<IActionResult> GetUsersByTrainingId(int trainingId)
@@ -42,20 +56,6 @@ public class UserTrainingController : ControllerBase
         catch (Exception e)
         {
             return NotFound(new { message = e.Message });
-        }
-    }
-    
-    [HttpGet("GetPastTrainingsForUser/{userId}")]
-    public async Task<IActionResult> GetPastTrainingsForUser(Guid userId)
-    {
-        try
-        {
-            var trainings = await _userTrainingService.GetPastTrainingsByUserId(userId);
-            return Ok(trainings);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { message = ex.Message });
         }
     }
 

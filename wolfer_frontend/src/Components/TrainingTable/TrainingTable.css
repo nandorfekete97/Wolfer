@@ -22,3 +22,78 @@
   flex: 1;
   text-align: center;
 }
+
+.training-history-container {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 1rem;
+  background-color: #515151;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid #343434;
+  color: white;
+}
+
+/* Section headers spacing */
+.training-history-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Filter selects container */
+.training-filters {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 20px;
+}
+
+.training-filters select {
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #888;
+  background-color: #3a3a3a;
+  color: white;
+}
+
+/* Separate the main sections more */
+.training-summary,
+.past-trainings,
+.training-stats {
+  margin-bottom: 40px;
+  padding-bottom: 10px;
+  border-bottom: 1.5px solid #666;
+}
+
+/* Past trainings list */
+.training-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.training-list li {
+  padding: 10px 14px;
+  background-color: #686868;
+  margin-bottom: 8px;        /* a little more space between items */
+  border-radius: 6px;
+  border: 1px solid #4a4a4a; /* subtle border */
+  transition: background-color 0.2s ease;
+}
+
+.training-list li:hover {
+  background-color: #757575;
+}
+
+/* Favourite trainings stats list */
+.training-stats ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.training-stats li {
+  padding: 8px 12px;
+  background-color: #4a4a4a;
+  margin-bottom: 8px;         /* a bit more spacing here too */
+  border-radius: 6px;
+  border: 1px solid #333;
+}
