@@ -24,6 +24,21 @@
 
 ## 2. 🧱 Tech Stack
 
+- **Frontend:**
+[![npm][npm-logo]][npm-link]
+[![React][React.js]][React-url]
+- **Backend:**
+[![ASP.NET Core][AspNet-logo]][AspNet-url]
+[![C#][Csharp-logo]][Csharp-url]
+- **Database:**
+[![MSSQL][Mssql-logo]][Mssql-url]
+[![Entity Framework][Ef-logo]][Ef-url]
+- **Containerization:**
+[![Docker][Docker-logo]][Docker-url]
+- **Version Control:**
+[![Git][Git-logo]][Git-url]
+[![GitHub][Github-logo]][Github-url]
+
 - **Frontend**: React (Vite, Bootstrap)
 - **Backend**: ASP.NET Core (C#)
 - **Database**: SQL Server
