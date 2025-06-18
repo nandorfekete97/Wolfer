@@ -18,7 +18,7 @@ public class UserController : ControllerBase
         _userService = userService;
     }
     
-    [HttpGet("GetUserById/{id}"), Authorize(Roles="User")]
+    [HttpGet("GetUserById/{userId}"), Authorize(Roles="User")]
     public async Task<IActionResult> GetUserById(Guid userId)
     {
         try
@@ -33,11 +33,15 @@ public class UserController : ControllerBase
     }
     
     [HttpPut("UpdateUser"), Authorize(Roles="User")]
-    public async Task<IActionResult> UpdateUser(UserDTO userDto)
+    public async Task<IActionResult> UpdateUser([FromBody] UserInfoUpdateDTO userInfoUpdateDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new { message = "Model binding failed", errors = ModelState });
+        }
         try
         {
-            await _userService.UpdateUser(userDto);
+            await _userService.UpdateUser(userInfoUpdateDto);
             return Ok(new { message = "User updated."});
         }
         catch (Exception e)

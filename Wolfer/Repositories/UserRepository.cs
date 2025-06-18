@@ -25,15 +25,14 @@ public class UserRepository : IUserRepository
         return await _userManager.Users.Where(u => userIdsConverted.Contains(u.Id)).ToListAsync();
     }
 
-    public async Task UpdateUser(IdentityUser user, string oldPassword, string newPassword)
+    public async Task UpdateUser(IdentityUser user)
     {
-        await _userManager.UpdateAsync(user);
-        
-        if (!String.IsNullOrEmpty(oldPassword) && !String.IsNullOrEmpty(newPassword) && oldPassword != newPassword)
-        {
-            await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
-        }
+        var result = await _userManager.UpdateAsync(user);
+    
+        if (!result.Succeeded)
+            throw new Exception(string.Join("; ", result.Errors.Select(e => e.Description)));
     }
+
 
     public async Task<bool> DeleteUserById(Guid userId)
     {

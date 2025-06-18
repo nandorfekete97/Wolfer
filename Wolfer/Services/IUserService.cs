@@ -8,6 +8,6 @@ public interface IUserService
 {
     public Task<IdentityUser?> GetById(Guid userId);
     public Task<List<IdentityUser>> GetByUserIds(List<Guid> userIds);
-    public Task UpdateUser(UserDTO userDto);
+    public Task UpdateUser(UserInfoUpdateDTO userInfoUpdateDto);
     public Task DeleteUser(Guid userId);
 }

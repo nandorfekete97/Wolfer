@@ -1,71 +1,85 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import EditUserModal from '../Modals/EditUserModal';
 
 const Profile = () => {
-  const [firstName, setFirstName] = useState("John");
-  const [lastName, setLastName] = useState("Doe");
-  const [userName, setUserName] = useState("johndoe123");
-  const [email, setEmail] = useState("john@example.com");
+  const [user, setUser] = useState('');
+  const [username, setUserName] = useState('');
+  const [email, setEmail] = useState('');
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
-  const [isEditable, setIsEditable] = useState(false);
+  const getUserInfo = async () => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
-  const toggleEdit = (e) => {
-    e.preventDefault();
-    setIsEditable(!isEditable);
-    console.log("firstname: ", firstName);
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/User/GetUserById/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      setUser(data.userEntity);
+      setUserName(data.userEntity.userName);
+      setEmail(data.userEntity.email);
+    } else {
+      console.error("Failed to fetch user data. Status:", res.status);
+    }
   };
+
+  const handleUpdate = async (updatedUser) => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
+    const updatedUserO = {
+      id: userId,
+      userName: updatedUser.userName,
+      email: updatedUser.email
+    };
+
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/User/UpdateUser`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedUserO)
+    });
+
+    if (res.ok) {
+      await getUserInfo();
+    } else {
+      console.error("Failed to update user. Status:", res.status);
+    }
+  };
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   return (
     <div className="col-sm-9">
       <h2>Profile</h2>
-      <form>
-        <div className="form-group">
-          <label>Firstname:</label>
-          <input
-            type="text"
-            value={firstName}
-            disabled={!isEditable}
-            onChange={(e) => setFirstName(e.target.value)}
-            className="form-control"
-          />
-        </div>
 
-        <div className="form-group">
-          <label>Lastname:</label>
-          <input
-            type="text"
-            value={lastName}
-            disabled={!isEditable}
-            onChange={(e) => setLastName(e.target.value)}
-            className="form-control"
-          />
-        </div>
+      <div className='user-info-group'>
+        <label>Username: {username}</label>
+      </div>
 
-        <div className="form-group">
-          <label>Username:</label>
-          <input
-            type="text"
-            value={userName}
-            disabled={!isEditable}
-            onChange={(e) => setUserName(e.target.value)}
-            className="form-control"
-          />
-        </div>
+      <div className='user-info-group'>
+        <label>Email: {email}</label>
+      </div>
 
-        <div className="form-group">
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            disabled={!isEditable}
-            onChange={(e) => setEmail(e.target.value)}
-            className="form-control"
-          />
-        </div>
+      <button className="btn btn-primary mt-3" onClick={() => setEditModalOpen(true)}>
+        Edit Profile
+      </button>
 
-        <button className="btn btn-primary mt-3" onClick={toggleEdit}>
-          {isEditable ? 'Save Profile' : 'Edit Profile'}
-        </button>
-      </form>
+      <EditUserModal
+        isOpen={editModalOpen}
+        closeModal={() => setEditModalOpen(false)}
+        user={user}
+        handleUpdate={handleUpdate}
+      />
     </div>
   );
 };
