@@ -90,3 +90,22 @@ The project is built with a RESTful API backend and a component-based frontend.
 **LinkedIn:** [https://www.linkedin.com/in/nándor-fekete-fn97](https://www.linkedin.com/in/nándor-fekete-fn97)
 
 ## 7. 📌 [Project Board (Backlog)](https://github.com/users/nandorfekete97/projects/2/views/1)
+
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+[AspNet-logo]: https://img.shields.io/badge/ASP.NET_Core-5C2D91?style=for-the-badge&logo=dotnet&logoColor=white
+[AspNet-url]: https://dotnet.microsoft.com/en-us/apps/aspnet
+[Csharp-logo]: https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white
+[Csharp-url]: https://learn.microsoft.com/en-us/dotnet/csharp/
+[Mssql-logo]: https://img.shields.io/badge/Microsoft_SQL_Server-CC2927?style=for-the-badge&logo=microsoft-sql-server&logoColor=white
+[Mssql-url]: https://www.microsoft.com/en-us/sql-server
+[Ef-logo]: https://img.shields.io/badge/Entity_Framework-512BD4?style=for-the-badge&logo=.net&logoColor=white
+[Ef-url]: https://learn.microsoft.com/en-us/ef/
+[Docker-logo]: https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white
+[Docker-url]: https://www.docker.com/
+[Git-logo]: https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white
+[Git-url]: https://git-scm.com/
+[Github-logo]: https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white
+[Github-url]: https://github.com/
+[npm-logo]: https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white
+[npm-link]: https://www.npmjs.com/
