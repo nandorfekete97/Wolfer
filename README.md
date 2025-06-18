@@ -39,11 +39,6 @@
 [![Git][Git-logo]][Git-url]
 [![GitHub][Github-logo]][Github-url]
 
-- **Frontend**: React (Vite, Bootstrap)
-- **Backend**: ASP.NET Core (C#)
-- **Database**: SQL Server
-- **Dev Tools**: Docker, Rider, VSCode
-
 ---
 
 ## 3. 🖥️ Running the Project Locally
