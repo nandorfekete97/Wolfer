@@ -9,7 +9,7 @@ namespace Wolfer.Services.Authentication;
 
 public class TokenService : ITokenService
 {
-    private const int ExpirationMinutes = 30;
+    private const int ExpirationMinutes = 120;
 
     public string CreateToken(IdentityUser user, string role)
     {

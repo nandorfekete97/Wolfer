@@ -73,6 +73,7 @@ public class UserRepositoryTest
         Assert.That(result.Select(u => u.Email), Is.EquivalentTo(new[] { "user1@test.com", "user2@test.com" }));
     }
 
+    // changes needed because update user parameters have been changed
     [Test]
     public async Task UpdateUser_CallsUpdateAndChangePassword_WhenPasswordsDiffer()
     {
@@ -81,7 +82,7 @@ public class UserRepositoryTest
         _userManagerMock.Setup(m => m.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
         _userManagerMock.Setup(m => m.ChangePasswordAsync(user, "oldPass", "newPass")).ReturnsAsync(IdentityResult.Success);
 
-        await _repository.UpdateUser(user, "oldPass", "newPass");
+        await _repository.UpdateUser(user);
 
         _userManagerMock.Verify(m => m.UpdateAsync(user), Times.Once);
         _userManagerMock.Verify(m => m.ChangePasswordAsync(user, "oldPass", "newPass"), Times.Once);

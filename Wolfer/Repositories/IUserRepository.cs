@@ -7,6 +7,6 @@ public interface IUserRepository
 {
     Task<IdentityUser?> GetUserById(Guid userId);
     Task<List<IdentityUser>> GetByIds(List<Guid> userIds);
-    Task UpdateUser(IdentityUser user, string oldPassword, string newPassword);
+    Task UpdateUser(IdentityUser user);
     Task<bool> DeleteUserById(Guid userId);
 }
