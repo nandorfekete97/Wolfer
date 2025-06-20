@@ -214,30 +214,33 @@ public class TrainingServiceTest
         TrainingDTO trainingDto = new TrainingDTO
         {
             Id = 1,
-            Date = new DateTime(2025, 06, 05, 14, 45, 00),
+            Date = new DateTime(2025, 6, 21, 14, 45, 00),
             TrainingType = TrainingType.WeightLifting
         };
 
         var existingEntity = new TrainingEntity
         {
             Id = 1,
-            Date = DateTime.Now, TrainingType = TrainingType.WeightLifting
+            Date = new DateTime(2025, 6,19, 14, 45, 00), TrainingType = TrainingType.WeightLifting
         };
+
+        _trainingRepositoryMock.Setup(repository => repository.GetById(trainingDto.Id)).ReturnsAsync(existingEntity);
 
         _trainingRepositoryMock.Setup(repository => repository.UpdateTraining(It.IsAny<TrainingEntity>()))
             .Returns(Task.CompletedTask);
 
-        var trainingServiceMock = new Mock<TrainingService>(_trainingRepositoryMock.Object) { CallBase = true };
+        var trainingServiceMock = new Mock<TrainingService>(_trainingRepositoryMock.Object);
 
         trainingServiceMock.Protected()
-            .Setup<Task<bool>>("IsTrainingTimeOccupied", trainingDto.Date, trainingDto.Id).ReturnsAsync(false);
-
-        trainingServiceMock.Protected().Setup<Task<TrainingEntity>>("GetById", trainingDto.Id)
-            .ReturnsAsync(existingEntity);
+            .Setup<Task<bool>>("IsTrainingTimeOccupied", ItExpr.IsAny<DateTime>(), ItExpr.IsAny<int>())
+            .ReturnsAsync(false);
 
         await trainingServiceMock.Object.UpdateTraining(trainingDto);
         
-        _trainingRepositoryMock.Verify(repository => repository.UpdateTraining(It.Is<TrainingEntity>(entity => entity.Id == trainingDto.Id && entity.Date == trainingDto.Date && entity.TrainingType == trainingDto.TrainingType)), Times.Once);
+        _trainingRepositoryMock.Verify(repository => repository.GetById(It.IsAny<int>()), Times.Once);
+        _trainingRepositoryMock.Verify(repository => repository.UpdateTraining(It.Is<TrainingEntity>(t => t.Id == trainingDto.Id && t.Date == trainingDto.Date && t.TrainingType == trainingDto.TrainingType)), Times.Once);
+        
+        trainingServiceMock.Protected().Verify("IsTrainingTimeOccupied", Times.Once(), ItExpr.Is<DateTime>(date => date == trainingDto.Date), ItExpr.Is<int>(id => id == trainingDto.Id));
     }
 
     [Test]
