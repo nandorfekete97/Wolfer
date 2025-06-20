@@ -10,6 +10,7 @@ public class WolferContext : IdentityDbContext<IdentityUser, IdentityRole, strin
     public DbSet<UserTrainingEntity> UserTrainings { get; set; }
     public DbSet<TrainingEntity> Trainings { get; set; }
     public DbSet<TrainerEntity> Trainers { get; set; }
+    public DbSet<PersonalRecordEntity> PersonalRecords { get; set; }
     
     public WolferContext(DbContextOptions<WolferContext> options) : base(options)
     {
