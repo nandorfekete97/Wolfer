@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import EditUserModal from '../Modals/EditUserModal';
+import './Profile.css';
 
 const Profile = () => {
   const [user, setUser] = useState('');
@@ -59,28 +60,28 @@ const Profile = () => {
   }, []);
 
   return (
-    <div className="col-sm-9">
-      <h2>Profile</h2>
+  <div className="profile-container">
+    <h2>Profile</h2>
 
-      <div className='user-info-group'>
-        <label>Username: {username}</label>
-      </div>
-
-      <div className='user-info-group'>
-        <label>Email: {email}</label>
-      </div>
-
-      <button className="btn btn-primary mt-3" onClick={() => setEditModalOpen(true)}>
-        Edit Profile
-      </button>
-
-      <EditUserModal
-        isOpen={editModalOpen}
-        closeModal={() => setEditModalOpen(false)}
-        user={user}
-        handleUpdate={handleUpdate}
-      />
+    <div className='user-info-group'>
+      <label>Username: {username}</label>
     </div>
+
+    <div className='user-info-group'>
+      <label>Email: {email}</label>
+    </div>
+
+    <button className="edit-profile-button" onClick={() => setEditModalOpen(true)}>
+      Edit Profile
+    </button>
+
+    <EditUserModal
+      isOpen={editModalOpen}
+      closeModal={() => setEditModalOpen(false)}
+      user={user}
+      handleUpdate={handleUpdate}
+    />
+  </div>
   );
 };
 

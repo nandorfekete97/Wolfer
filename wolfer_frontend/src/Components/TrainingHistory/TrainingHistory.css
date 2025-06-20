@@ -29,6 +29,17 @@
   color: white;
 }
 
+.training-filters div {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.training-filters label {
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
 .training-list {
   list-style: none;
   padding-left: 0;
