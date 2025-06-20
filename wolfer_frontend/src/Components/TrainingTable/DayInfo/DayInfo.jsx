@@ -8,7 +8,7 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
   const [signedUpTrainingIdsForDay, setSignedUpTrainingIdsForDay] = useState([]);
 
   const getTrainings = async () => {
-    const dateOnly = date.toISOString().split('T')[0];
+    const dateOnly = date.toLocaleDateString('sv-SE');
     const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`);
     const data = await res.json();
 
@@ -33,12 +33,12 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
   }, [signedUpTrainings]);
 
   const isToday = (trainingDate) => {
-    var dd = String(date.getDate()).padStart(2, '0');
-    var mm = String(date.getMonth() + 1).padStart(2, '0'); 
-    var yyyy = date.getFullYear();
-
-    var today = yyyy + '-' + mm + '-' + dd;
-    return today == trainingDate.split('T')[0];
+    const trainingDay = new Date(trainingDate);
+    return (
+      trainingDay.getDate() === date.getDate() &&
+      trainingDay.getMonth() === date.getMonth() &&
+      trainingDay.getFullYear() === date.getFullYear()
+    );
   }
   
   useEffect(() => {

@@ -1,4 +1,3 @@
-import { data } from 'react-router-dom';
 import './Training.css'
 import React, { useState, useEffect } from 'react';
 import DeleteModal from '../../Modals/DeleteTrainingModal';
@@ -13,6 +12,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
 
   const today = new Date();
+  const isPast = new Date(training.date).getTime() < Date.now();
 
   useEffect(() => {
     if (training) {
@@ -150,7 +150,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
           <button
             className = "btn btn-sm btn-danger col-sm-4"
             onClick = {signOffFromTraining}
-            disabled = {today.toISOString() > training.date}
+            disabled = {isPast}
           >
             Sign Off
           </button>
@@ -158,7 +158,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
           <button
             className = "btn btn-sm btn-success col-sm-4"
             onClick = {signUpForTraining}
-            disabled = {isDisabled || today.toISOString() > training.date}
+            disabled = {isDisabled || isPast}
           >
             Sign Up
           </button>
@@ -167,14 +167,14 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
         <div className = "col-sm-4 d-flex gap-2">
           <button
             className = "btn btn-sm btn-primary"
-            disabled = {today.toISOString() > training.date}
+            disabled = {isPast}
             onClick = {() => setEditModalIsOpen(true)}
           >
             Edit
           </button>
           <button
             className = "btn btn-sm btn-danger"
-            disabled = {today.toISOString() > training.date}
+            disabled = {isPast}
             onClick = {(e) => setDeleteModalIsOpen(true)}
           >
             Delete
