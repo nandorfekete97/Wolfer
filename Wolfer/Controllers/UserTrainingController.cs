@@ -22,7 +22,7 @@ public class UserTrainingController : ControllerBase
     {
         try
         {
-            List<TrainingEntity> trainingEntities = await _userTrainingService.GetByUserId(userId);
+            List<TrainingEntity> trainingEntities = await _userTrainingService.GetFutureTrainingsByUserId(userId);
             return Ok(new { trainingEntities });
         }
         catch (Exception e)
