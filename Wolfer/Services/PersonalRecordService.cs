@@ -16,6 +16,11 @@ public class PersonalRecordService : IPersonalRecordService
 
     public async Task<List<PersonalRecordEntity>> GetByUserId(Guid userId)
     {
+        if (userId == Guid.Empty)
+        {
+            throw new ArgumentException("Invalid user ID.");
+        }
+        
         return await _personalRecordRepository.GetByUserId(userId);
     }
 

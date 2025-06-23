@@ -209,7 +209,7 @@ public class TrainingServiceTest
     }
     
     [Test]
-    public async Task UpdateTraining_SuccessfullyCreatesTraining()
+    public async Task UpdateTraining_SuccessfullyUpdatesTraining()
     {
         TrainingDTO trainingDto = new TrainingDTO
         {
