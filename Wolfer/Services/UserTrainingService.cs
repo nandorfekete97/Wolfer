@@ -17,7 +17,7 @@ public class UserTrainingService : IUserTrainingService
         _trainingRepository = trainingRepository;
     }
 
-    public async Task<List<TrainingEntity>> GetByUserId(Guid userId)
+    public async Task<List<TrainingEntity>> GetFutureTrainingsByUserId(Guid userId)
     {
         IdentityUser user = await _userRepository.GetUserById(userId);
 
@@ -66,7 +66,7 @@ public class UserTrainingService : IUserTrainingService
 
         if (training == null)
         {
-            throw new ArgumentException("Invalid ID.");
+            throw new ArgumentException("Invalid training ID.");
         }
 
         List<UserTrainingEntity> userTrainingEntities = await _userTrainingRepository.GetByTrainingId(trainingId);

@@ -38,7 +38,7 @@ public class TrainingController : ControllerBase
     {
         try
         {
-            var trainings = await _userTrainingService.GetByUserId(userId);
+            var trainings = await _userTrainingService.GetFutureTrainingsByUserId(userId);
             return Ok(trainings);
         }
         catch (Exception ex)
