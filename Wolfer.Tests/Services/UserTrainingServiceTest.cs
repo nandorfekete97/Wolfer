@@ -235,4 +235,102 @@ public class UserTrainingServiceTest
         
         _userTrainingRepoMock.Verify(repository => repository.Create(It.Is<UserTrainingEntity>(entity => entity.UserId == userId && entity.TrainingId == trainingId)));
     }
+
+    [Test]
+    public async Task SignUpUserToTraining_UserNull_ThrowsException()
+    {
+        TrainingEntity training = new TrainingEntity
+            { Id = 1, TrainingType = TrainingType.LegDay, Date = DateTime.Now };
+
+        Guid userId = Guid.NewGuid();
+        
+        _userRepoMock.Setup(repository => repository.GetUserById(userId)).ReturnsAsync((IdentityUser)null);
+
+        _trainingRepoMock.Setup(repository => repository.GetById(It.IsAny<int>()))
+            .ReturnsAsync(training);
+
+        var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
+            await _userTrainingService.SignUpUserToTraining(userId, training.Id));
+        
+        Assert.That(exception.Message, Is.EqualTo("User or Training not found."));
+        _userTrainingRepoMock.Verify(repository => repository.GetByUserIdAndTrainingId(It.IsAny<Guid>(), It.IsAny<int>()), Times.Never);
+        _userTrainingRepoMock.Verify(repository => repository.Create(It.IsAny<UserTrainingEntity>()), Times.Never);
+    }
+    
+    [Test]
+    public async Task SignUpUserToTraining_TrainingNull_ThrowsException()
+    {
+
+        Guid userId = Guid.NewGuid();
+        IdentityUser user = new IdentityUser { Id = userId.ToString() };
+        
+        int trainingId = 99;
+        
+        _userRepoMock.Setup(repository => repository.GetUserById(userId)).ReturnsAsync(user);
+
+        _trainingRepoMock.Setup(repository => repository.GetById(trainingId))
+            .ReturnsAsync((TrainingEntity)null);
+        
+        var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
+            await _userTrainingService.SignUpUserToTraining(userId, trainingId));
+        
+        Assert.That(exception.Message, Is.EqualTo("User or Training not found."));
+        _userTrainingRepoMock.Verify(repository => repository.GetByUserIdAndTrainingId(It.IsAny<Guid>(), It.IsAny<int>()), Times.Never);
+        _userTrainingRepoMock.Verify(repository => repository.Create(It.IsAny<UserTrainingEntity>()), Times.Never);
+    }
+
+    [Test]
+    public async Task SignUpUserForTraining_ExistingUserTraining_ThrowsException()
+    {
+        Guid userId = Guid.NewGuid();
+        IdentityUser user = new IdentityUser { Id = userId.ToString() };
+
+        int trainingId = 1;
+        TrainingEntity training = new TrainingEntity { Id = trainingId, TrainingType = TrainingType.WeightLifting, Date = DateTime.Now};
+
+        _userRepoMock.Setup(repository => repository.GetUserById(userId)).ReturnsAsync(user);
+        _trainingRepoMock.Setup(repository => repository.GetById(trainingId)).ReturnsAsync(training);
+
+        UserTrainingEntity existingUserTrainingEntity =
+            new UserTrainingEntity { TrainingId = trainingId, UserId = userId };
+
+        _userTrainingRepoMock.Setup(repository => repository.GetByUserIdAndTrainingId(userId, trainingId))
+            .ReturnsAsync(existingUserTrainingEntity);
+
+        var exception =
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _userTrainingService.SignUpUserToTraining(userId, trainingId));
+        
+        Assert.That(exception.Message, Is.EqualTo("User already signed up for this training."));
+        _userTrainingRepoMock.Verify(repository => repository.Create(It.IsAny<UserTrainingEntity>()), Times.Never);
+    }
+
+    [Test]
+    public async Task SignOffUserFromTraining_SuccessfullyDeletesUserTraining()
+    {
+        Guid userId = Guid.NewGuid();
+        int trainingId = 1;
+
+        UserTrainingEntity userTrainingEntity = new UserTrainingEntity { TrainingId = trainingId, UserId = userId };
+
+        _userTrainingRepoMock.Setup(repository => repository.GetByUserIdAndTrainingId(userId, trainingId))
+            .ReturnsAsync(userTrainingEntity);
+
+        await _userTrainingService.SignOffUserFromTraining(userId, trainingId);
+        
+        _userTrainingRepoMock.Verify(repository => repository.Delete(userId, trainingId), Times.Once);
+    }
+
+    [Test]
+    public async Task SignOffUserFromTraining_UserTrainingNull_ThrowsException()
+    {
+        _userTrainingRepoMock
+            .Setup(repository => repository.GetByUserIdAndTrainingId(It.IsAny<Guid>(), It.IsAny<int>()))
+            .ReturnsAsync((UserTrainingEntity)null);
+
+        var exception = Assert.ThrowsAsync<ArgumentException>(async () => await _userTrainingService.SignOffUserFromTraining(It.IsAny<Guid>(), It.IsAny<int>()));
+        
+        Assert.That(exception.Message, Is.EqualTo("UserTraining record or Training not found."));
+        _userTrainingRepoMock.Verify(repository => repository.Delete(It.IsAny<Guid>(), It.IsAny<int>()), Times.Never);
+    }
 }
