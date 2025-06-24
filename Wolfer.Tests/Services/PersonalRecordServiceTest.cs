@@ -111,4 +111,21 @@ public class PersonalRecordServiceTest
         
         _personalRecordRepoMock.Verify(repository => repository.UpdatePersonalRecord(It.Is<PersonalRecordEntity>(entity => entity.Id == personalRecordId && entity.UserId == userId && entity.ExerciseType == personalRecordDto.ExerciseType && entity.Weight == personalRecordDto.Weight)), Times.Once);
     }
+
+    [Test]
+    public async Task UpdatePersonalRecord_NullEntity_ThrowsException()
+    {
+        int personalRecordDtoId = 99;
+        Guid userId = Guid.NewGuid();
+        PersonalRecordDTO personalRecordDto = new PersonalRecordDTO
+            { Id = personalRecordDtoId, ExerciseType = ExerciseType.Clean, Weight = 80, UserId = userId };
+
+        _personalRecordRepoMock.Setup(repository => repository.GetById(personalRecordDtoId))
+            .ReturnsAsync((PersonalRecordEntity)null);
+
+        var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
+            await _personalRecordService.UpdatePersonalRecord(personalRecordDto));
+        
+        Assert.That(exception.Message, Is.EqualTo("Personal Record was not found."));
+    }
 }
