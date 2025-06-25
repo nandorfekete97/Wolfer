@@ -15,8 +15,6 @@ public class UserTrainingRepository : IUserTrainingRepository
     
     public async Task<List<UserTrainingEntity>> GetByUserId(Guid userId)
     {
-        // return await _dbContext.UserTrainings.Where(entity => entity.UserId == userId).ToListAsync();
-
         List<UserTrainingEntity> userTrainingEntities = await _dbContext.UserTrainings.ToListAsync();
 
         List<UserTrainingEntity> result = new List<UserTrainingEntity>();

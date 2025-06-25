@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using NUnit.Framework;
 using Wolfer.Data;
 using Wolfer.Data.Context;
@@ -18,7 +19,7 @@ namespace Wolfer.Tests.Repositories;
 public class UserTrainingRepositoryTest
 {
     private WolferContext _dbContext;
-    private UserTrainingRepository _repository;
+    private UserTrainingRepository _userTrainingRepository;
 
     [SetUp]
     public void SetUp()
@@ -28,7 +29,7 @@ public class UserTrainingRepositoryTest
 
         _dbContext = new WolferContext(options);
 
-        _repository = new UserTrainingRepository(_dbContext);
+        _userTrainingRepository = new UserTrainingRepository(_dbContext);
     }
 
     [TearDown]
@@ -108,7 +109,7 @@ public class UserTrainingRepositoryTest
         };
         
         // assert
-        var result = await _repository.GetByUserId(userId);
+        var result = await _userTrainingRepository.GetByUserId(userId);
     
         Assert.That(result, Is.EquivalentTo(expected));
     }
@@ -118,7 +119,7 @@ public class UserTrainingRepositoryTest
     {
         Guid wrongId = Guid.NewGuid();
     
-        var result = await _repository.GetByUserId(wrongId);
+        var result = await _userTrainingRepository.GetByUserId(wrongId);
         
         Assert.That(result, Is.Empty);
     }
@@ -198,7 +199,7 @@ public class UserTrainingRepositoryTest
         };
         
         // assert
-        var result = await _repository.GetByTrainingId(weighLiftingTraining.Id);
+        var result = await _userTrainingRepository.GetByTrainingId(weighLiftingTraining.Id);
 
         Assert.That(result, Is.EquivalentTo(expected));
         Assert.That(result.Select(userTraining => userTraining.UserId), Is.EquivalentTo(new[] { user1Id, user3Id }));
@@ -209,9 +210,87 @@ public class UserTrainingRepositoryTest
     {
         int wrongId = -1;
     
-        var result = await _repository.GetByTrainingId(wrongId);
+        var result = await _userTrainingRepository.GetByTrainingId(wrongId);
         
         Assert.That(result, Is.Empty);
+    }
+
+    [Test]
+    public async Task Create_AddsUserTrainingToDatabase()
+    {
+        Guid userId = Guid.NewGuid();
+
+        IdentityUser user = new IdentityUser
+        {
+            Id = userId.ToString(), Email = "test@email.com"
+        };
+
+        TrainingEntity training = new TrainingEntity
+        {
+            Id = 1, TrainingType = TrainingType.FunctionalBodyBuilding, Date = DateTime.Now
+        };
+
+        await _dbContext.Users.AddAsync(user);
+        await _dbContext.Trainings.AddAsync(training);
+        await _dbContext.SaveChangesAsync();
+
+        UserTrainingEntity userTrainingEntity = new UserTrainingEntity
+        {
+            UserId = userId, TrainingId = training.Id
+        };
+
+        await _userTrainingRepository.Create(userTrainingEntity);
+
+        var userTrainingsInDb = await _dbContext.UserTrainings.ToListAsync();
+        
+        Assert.That(userTrainingsInDb.Count, Is.EqualTo(1));
+        Assert.That(userTrainingsInDb[0].UserId, Is.EqualTo(userTrainingEntity.UserId));
+        Assert.That(userTrainingsInDb[0].TrainingId, Is.EqualTo(userTrainingEntity.TrainingId));
+    }
+
+    [Test]
+    public async Task Create_NullUserTrainingEntity_ThrowsException()
+    {
+        var exception =
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await _userTrainingRepository.Create(null));
+        
+        Assert.That(exception.ParamName, Is.EqualTo("userTrainingEntity"));
+    }
+
+    [Test]
+    public async Task Delete_SuccessfullyDeletesUserTrainingFromDb()
+    {
+        Guid userId = Guid.NewGuid();
+        int trainingId = 1;
+
+        UserTrainingEntity userTrainingEntity = new UserTrainingEntity { UserId = userId, TrainingId = trainingId };
+
+        await _dbContext.UserTrainings.AddAsync(userTrainingEntity);
+        await _dbContext.SaveChangesAsync();
+        
+        var userTrainingsInDb = await _dbContext.UserTrainings.ToListAsync();
+        
+        Assert.That(userTrainingsInDb.Count, Is.EqualTo(1));
+        Assert.That(userTrainingsInDb[0].UserId, Is.EqualTo(userId));
+        Assert.That(userTrainingsInDb[0].TrainingId, Is.EqualTo(trainingId));
+
+        var result = await _userTrainingRepository.Delete(userId, trainingId);
+        
+        var userTrainingsInDbAfterDelete = await _dbContext.UserTrainings.ToListAsync();
+        
+        Assert.That(result, Is.True);
+        Assert.That(userTrainingsInDbAfterDelete.Count, Is.EqualTo(0));
+    }
+
+    [Test]
+    public async Task Delete_NullUserTraining_ReturnsFalse()
+    {
+        Guid nonExistingUserId = Guid.NewGuid();
+        int nonExistingTrainingId = 99;
+        
+        var result = await _userTrainingRepository.Delete(nonExistingUserId, nonExistingTrainingId);
+        
+        Assert.That(result, Is.False);
     }
     
     private void CompareTwoUserTrainings(UserTrainingEntity actualUserTraining, UserTrainingEntity expected)
