@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import { trainingTypeOptions, getTrainingTypeLabel } from '../../Utils/trainingTypes';
 
 const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUpdate, isSelectedDateToday }) => { 
 
   const today = new Date();
-  const availableTrainingTypes = ["FunctionalBodyBuilding", "WeightLifting", "CrossFit", "LegDay"];
+  // const availableTrainingTypes = ["FunctionalBodyBuilding", "WeightLifting", "CrossFit", "LegDay"];
   const allHours = ["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
   const availableMinutes = ["00", "15", "30", "45"];
 
@@ -32,7 +33,7 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
     }
   }, [training, editModalIsOpen]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!type || !date || !hour || !minute) {
@@ -50,9 +51,24 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
       date: formattedDate,
     };
 
-    handleUpdate(updatedTraining);
-    closeEditModal();
+    const result = await handleUpdate(updatedTraining);
+
+    setResponseMessage(result.message);
+    if (result.success)
+    {
+      closeEditModal();
+    }
+  };
+
+  const showInfo = (e) => {
+    console.log("e.target.value: ", e.target.value);
   }
+
+  useEffect(() => {
+    if (editModalIsOpen) {
+      setResponseMessage("");
+    }
+  }, [editModalIsOpen]);
 
   return (
         <div>
@@ -69,10 +85,11 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
                     <select
                       value={type}
                       onChange={(e) => setType(e.target.value)}
+                      onClick={(e) => showInfo(e)}
                     >
                       <option value="">-- Select Training Type --</option>
-                      {availableTrainingTypes.map((t) => (
-                        <option key={t} value={t}>{t}</option>
+                      {Object.entries(trainingTypeOptions).map(([value, label]) => (
+                        <option key={value} value={value}>{label}</option>
                       ))}
                     </select>
                 </div>
