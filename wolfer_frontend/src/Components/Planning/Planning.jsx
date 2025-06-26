@@ -1,9 +1,8 @@
 import React from 'react'
 import { useState, useEffect, useRef } from 'react'
 import TrainingsTable from '../TrainingTable/TrainingsTable';
-// import Training from '../TrainingTable/DayInfo/Training';
-// import DayInfo from '../TrainingTable/DayInfo/DayInfo';
 import ResponseMessageModal from '../Modals/ResponseMessageModal';
+import { trainingTypeOptions, getTrainingTypeLabel } from '../../Utils/trainingTypes';
 import './Planning.css';
 
 const Planning = () => {
@@ -21,7 +20,14 @@ const Planning = () => {
 
     const allHours = ["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
     const availableMinutes = ["00", "15", "30", "45"];
-    const availableTrainingTypes = ["FunctionalBodyBuilding", "WeightLifting", "CrossFit", "LegDay"];
+    // const trainingTypeOptions = {
+    //   FunctionalBodyBuilding: "Functional Body-Building",
+    //   WeightLifting: "Weight Lifting",
+    //   CrossFit: "CrossFit",
+    //   LegDay: "Leg Day",
+    // } ;
+
+    // const availableTrainingTypes = ["FunctionalBodyBuilding", "WeightLifting", "CrossFit", "LegDay"];
     const today = new Date();
     const availableHours = allHours.filter((hour) => hour > today.getHours());
 
@@ -88,8 +94,8 @@ const Planning = () => {
               value={type || ''}
             >
               <option value="">-- Select Training Type --</option>
-              {availableTrainingTypes.map((t) => (
-                <option key={t} value={t}>{t}</option>
+              {Object.entries(trainingTypeOptions).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
               ))}
             </select>
           </div>

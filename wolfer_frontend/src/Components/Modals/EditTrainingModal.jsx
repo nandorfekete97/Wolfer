@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import { trainingTypeOptions, getTrainingTypeLabel } from '../../Utils/trainingTypes';
 
 const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUpdate, isSelectedDateToday }) => { 
 
   const today = new Date();
-  const availableTrainingTypes = ["FunctionalBodyBuilding", "WeightLifting", "CrossFit", "LegDay"];
+  // const availableTrainingTypes = ["FunctionalBodyBuilding", "WeightLifting", "CrossFit", "LegDay"];
   const allHours = ["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
   const availableMinutes = ["00", "15", "30", "45"];
 
@@ -87,8 +88,8 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
                       onClick={(e) => showInfo(e)}
                     >
                       <option value="">-- Select Training Type --</option>
-                      {availableTrainingTypes.map((t) => (
-                        <option key={t} value={t}>{t}</option>
+                      {Object.entries(trainingTypeOptions).map(([value, label]) => (
+                        <option key={value} value={value}>{label}</option>
                       ))}
                     </select>
                 </div>

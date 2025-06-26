@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import DeleteModal from '../../Modals/DeleteTrainingModal';
 import EditTrainingModal from '../../Modals/EditTrainingModal';
 import ResponseMessageModal from '../../Modals/ResponseMessageModal';
+import { trainingTypeOptions, getTrainingTypeLabel } from '../../../Utils/trainingTypes';
 
 const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTrainings, refreshDayTrainings, triggerRefresh, showSignUp = true, isSelectedDateToday }) => {
   const [time, setTime] = useState(null);
@@ -154,7 +155,9 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   return (
     <div className = "training">
       <h5 className = "training-info col-sm-4">{time}</h5>
-      <h5 className = "training-info col-sm-4">{type}</h5>
+      {/* here simply just the type attribute of the training object is displayed, but the same problem is here with the display
+      can the trainingTypes.js be reused here?  */}
+      <h5 className = "training-info col-sm-4">{getTrainingTypeLabel(type)}</h5>
 
       {showSignUp ? (
         signedUpTrainingIdsForDay.includes(training.id) ? (
