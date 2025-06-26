@@ -1,8 +1,9 @@
 import React from 'react'
 import { useState, useEffect, useRef } from 'react'
 import TrainingsTable from '../TrainingTable/TrainingsTable';
-import Training from '../TrainingTable/DayInfo/Training';
-import DayInfo from '../TrainingTable/DayInfo/DayInfo';
+// import Training from '../TrainingTable/DayInfo/Training';
+// import DayInfo from '../TrainingTable/DayInfo/DayInfo';
+import ResponseMessageModal from '../Modals/ResponseMessageModal';
 import './Planning.css';
 
 const Planning = () => {
@@ -14,6 +15,8 @@ const Planning = () => {
     const [responseMessage, setResponseMessage] = useState("");
     const [refreshTrigger, setRefreshTrigger] = useState(false);
     const [isSelectedDateToday, setIsSelectedDateToday] = useState(false);
+    const [responseMessageModalIsOpen, setResponseMessageModalIsOpen] = useState(false);
+    
     const triggerRefresh = () => setRefreshTrigger(prev => !prev);
 
     const allHours = ["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
@@ -54,6 +57,9 @@ const Planning = () => {
       }
     } catch (error) {
       setResponseMessage('An error occurred during adding training.');
+    }
+    finally {
+      setResponseMessageModalIsOpen(true);
     }
   };
 
@@ -134,7 +140,7 @@ const Planning = () => {
           </div>
 
           <button type="submit">Submit Training</button>
-          {responseMessage && <p>{responseMessage}</p>}
+          {/* {responseMessage && <p>{responseMessage}</p>} */}
         </form>
       </div>
 
@@ -147,6 +153,14 @@ const Planning = () => {
           isSelectedDateToday = {isSelectedDateToday}
         />
       </div>
+
+      {responseMessage && (
+        <ResponseMessageModal
+        responseMessageModalIsOpen = {responseMessageModalIsOpen}
+        closeResponseMessageModal = {() => setResponseMessageModalIsOpen(false)}
+        responseMessage = {responseMessage}
+        />
+      )}
     </div>
 );
 

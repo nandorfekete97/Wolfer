@@ -2,6 +2,7 @@ import './Training.css'
 import React, { useState, useEffect } from 'react';
 import DeleteModal from '../../Modals/DeleteTrainingModal';
 import EditTrainingModal from '../../Modals/EditTrainingModal';
+import ResponseMessageModal from '../../Modals/ResponseMessageModal';
 
 const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTrainings, refreshDayTrainings, triggerRefresh, showSignUp = true, isSelectedDateToday }) => {
   const [time, setTime] = useState(null);
@@ -10,8 +11,8 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   const [responseMessage, setResponseMessage] = useState("");
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+  const [responseMessageModalIsOpen, setResponseMessageModalIsOpen] = useState(false);
 
-  const today = new Date();
   const isPast = new Date(training.date).getTime() < Date.now();
 
   useEffect(() => {
@@ -45,13 +46,16 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
 
         if (response.ok) {
             setResponseMessage("Successfully signed up for training.");
-            refreshSignedUpTrainings();
         } else {
             const data = await response.json();
             setResponseMessage(data.message || 'Failed to sign up for training.');
         }
     } catch (error) {
         setResponseMessage('An error occurred during signing up for training.');
+    }
+    finally {
+      setResponseMessageModalIsOpen(true);
+      refreshSignedUpTrainings();
     }
   }
 
@@ -76,6 +80,10 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
         }
     } catch (error) {
         setError('An error occurred during signing off from training.');
+    }
+    finally {
+      setResponseMessageModalIsOpen(true);
+      refreshSignedUpTrainings();
     }
   }
 
@@ -197,9 +205,11 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
       />
 
       {responseMessage && (
-        <div className = "response-message mt-2 text-info col-12">
-          {responseMessage}
-        </div>
+        <ResponseMessageModal
+        responseMessageModalIsOpen = {responseMessageModalIsOpen}
+        closeResponseMessageModal = {() => setResponseMessageModalIsOpen(false)}
+        responseMessage = {responseMessage}
+        />
       )}
     </div>
   );
