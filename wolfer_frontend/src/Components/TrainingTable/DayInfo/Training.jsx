@@ -142,9 +142,12 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
         {
           triggerRefresh();
         };
+        return { success: true, message: "Training updated successfully." };
+      } else {
+        return { success: false, message: data.message || "Failed to update training." };
       }
     } catch (error) {
-      setResponseMessage("An error occurred during update.");
+      return { success: false, message: "An error occured during update." };
     }
   }
 

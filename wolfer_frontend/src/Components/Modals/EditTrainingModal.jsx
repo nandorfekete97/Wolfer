@@ -32,7 +32,7 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
     }
   }, [training, editModalIsOpen]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!type || !date || !hour || !minute) {
@@ -50,9 +50,24 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
       date: formattedDate,
     };
 
-    handleUpdate(updatedTraining);
-    closeEditModal();
+    const result = await handleUpdate(updatedTraining);
+
+    setResponseMessage(result.message);
+    if (result.success)
+    {
+      closeEditModal();
+    }
+  };
+
+  const showInfo = (e) => {
+    console.log("e.target.value: ", e.target.value);
   }
+
+  useEffect(() => {
+    if (editModalIsOpen) {
+      setResponseMessage("");
+    }
+  }, [editModalIsOpen]);
 
   return (
         <div>
@@ -69,6 +84,7 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
                     <select
                       value={type}
                       onChange={(e) => setType(e.target.value)}
+                      onClick={(e) => showInfo(e)}
                     >
                       <option value="">-- Select Training Type --</option>
                       {availableTrainingTypes.map((t) => (
