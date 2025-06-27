@@ -27,12 +27,16 @@ const Layout = ({setSuccessfulLogin}) => {
     navigate('/profile');
   }
 
+  const goToPersonalRecords = () => {
+    navigate('/personal-records');
+  }
+
   return (
       <div className="align-items-start">
           <ul className="list-unstyled">
             <li className="sidebar-item" onClick={(goToTrainings)}>Trainings</li>
             <li className="sidebar-item" onClick={(goToProfile)}>Profile</li>
-            <li className="sidebar-item">PRs</li>
+            <li className="sidebar-item" onClick={(goToPersonalRecords)}>PRs</li>
             <li className="sidebar-item" onClick={(goToTrainingHistory)}>Training History</li>
             <li className="sidebar-item" onClick={(goToPlanning)}>Planning</li>            
             <li>
