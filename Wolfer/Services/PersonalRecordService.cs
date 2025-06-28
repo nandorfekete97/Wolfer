@@ -60,6 +60,7 @@ public class PersonalRecordService : IPersonalRecordService
             Id = personalRecordDto.Id,
             ExerciseType = personalRecordDto.ExerciseType,
             Weight = personalRecordDto.Weight,
+            Date = personalRecordDto.Date,
             UserId = personalRecordDto.UserId
         };
     }

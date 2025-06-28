@@ -4,8 +4,12 @@ import { ExerciseTypes, getExerciseTypeLabel } from '../../Utils/ExerciseTypes';
 
 const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, setRefreshPersonalRecords}) => {
 
+  let today = new Date()
+  today = today.toISOString().split('T')[0];
+
   const [exerciseType, setExerciseType] = useState("");
   const [weight, setWeight] = useState(0);
+  const [prDate, setPrDate] = useState(today);
   const [responseMessage, setResponseMessage] = useState("");
 
   const handleSubmit = async (e) => {
@@ -21,7 +25,8 @@ const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, 
             body: JSON.stringify({
             userId: userId,
             exerciseType: exerciseType,
-            weight: weight
+            weight: weight,
+            date: prDate
             }),
         });
 
@@ -58,6 +63,15 @@ const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, 
             <input
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
+            >
+            </input>
+          </div>
+
+          <div>
+            <input 
+              type='date'
+              value={prDate}
+              onChange={(e) => setPrDate(e.target.value)}
             >
             </input>
           </div>
