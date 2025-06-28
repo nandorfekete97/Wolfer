@@ -6,4 +6,5 @@ public class PersonalRecordEntity
     public Guid UserId { get; set; }
     public ExerciseType ExerciseType { get; set; }
     public int Weight { get; set; }
+    public DateOnly Date { get; set; }
 }
