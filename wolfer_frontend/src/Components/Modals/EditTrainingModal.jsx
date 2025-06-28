@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import { trainingTypeOptions, getTrainingTypeLabel } from '../../Utils/trainingTypes';
+import { TrainingTypes, getTrainingTypeLabel } from '../../Utils/TrainingTypes';
 
 const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUpdate, isSelectedDateToday }) => { 
 
   const today = new Date();
-  // const availableTrainingTypes = ["FunctionalBodyBuilding", "WeightLifting", "CrossFit", "LegDay"];
   const allHours = ["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
   const availableMinutes = ["00", "15", "30", "45"];
 
@@ -60,10 +59,6 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
     }
   };
 
-  const showInfo = (e) => {
-    console.log("e.target.value: ", e.target.value);
-  }
-
   useEffect(() => {
     if (editModalIsOpen) {
       setResponseMessage("");
@@ -85,10 +80,9 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
                     <select
                       value={type}
                       onChange={(e) => setType(e.target.value)}
-                      onClick={(e) => showInfo(e)}
                     >
                       <option value="">-- Select Training Type --</option>
-                      {Object.entries(trainingTypeOptions).map(([value, label]) => (
+                      {Object.entries(TrainingTypes).map(([value, label]) => (
                         <option key={value} value={value}>{label}</option>
                       ))}
                     </select>

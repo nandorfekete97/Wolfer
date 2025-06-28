@@ -7,6 +7,7 @@ import Profile from './Components/Profile/Profile';
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Planning from './Components/Planning/Planning';
 import TrainingHistory from './Components/TrainingHistory/TrainingHistory';
+import PersonalRecords from './Components/PersonalRecords/PersonalRecords';
 
 function App() {
   const [successfulLogin, setSuccessfulLogin] = useState(false);
@@ -38,6 +39,7 @@ function App() {
                 <Route path = "/profile" element={<Profile />} />
                 <Route path = '/planning' element={<Planning/>} />
                 <Route path = '/training-history' element={<TrainingHistory/>} />
+                <Route path = '/personal-records' element={<PersonalRecords/>}/>
               </Routes>
             </div>
           </>

@@ -1,8 +1,8 @@
-export const trainingTypeOptions = {
+export const TrainingTypes = {
   FunctionalBodyBuilding: "Functional Body-Building",
   WeightLifting: "Weight Lifting",
   CrossFit: "CrossFit",
   LegDay: "Leg Day",
 };
 
-export const getTrainingTypeLabel = (key) => trainingTypeOptions[key] || key;
+export const getTrainingTypeLabel = (key) => TrainingTypes[key] || key;

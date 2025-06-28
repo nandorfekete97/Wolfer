@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import DeleteModal from '../../Modals/DeleteTrainingModal';
 import EditTrainingModal from '../../Modals/EditTrainingModal';
 import ResponseMessageModal from '../../Modals/ResponseMessageModal';
-import { trainingTypeOptions, getTrainingTypeLabel } from '../../../Utils/trainingTypes';
+import { TrainingTypes, getTrainingTypeLabel } from '../../../Utils/TrainingTypes';
 
 const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTrainings, refreshDayTrainings, triggerRefresh, showSignUp = true, isSelectedDateToday }) => {
   const [time, setTime] = useState(null);
