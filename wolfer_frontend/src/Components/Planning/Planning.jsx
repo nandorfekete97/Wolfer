@@ -86,7 +86,7 @@ const Planning = () => {
               value={type || ''}
             >
               <option value="">-- Select Training Type --</option>
-              {Object.entries(trainingTypeOptions).map(([value, label]) => (
+              {Object.entries(TrainingTypes).map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
               ))}
             </select>

@@ -1,11 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-const PersonalRecord = ({exerciseType, weight}) => {
+const PersonalRecord = ({exerciseType, prList}) => {
+
+const [maximumPr, setMaximumPr] = useState(0);
+
+useEffect(() => {
+    setMaximumPr(prList.map(pr => pr.weight).max());
+}, [prList]);
 
   return (
     <>
         <span className="record-exercise">{exerciseType}</span>
-        <span className="record-weight">{weight}</span>
+        <span className="record-weight">{maximumPr}</span>
     </>
   )
 }
