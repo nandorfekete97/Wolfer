@@ -5,7 +5,13 @@ const PersonalRecord = ({exerciseType, prList}) => {
 const [maximumPr, setMaximumPr] = useState(0);
 
 useEffect(() => {
-    setMaximumPr(prList.map(pr => pr.weight).max());
+  if (Array.isArray(prList) && prList.length > 0) {
+    const maxWeight = Math.max(...prList.map(pr => pr.weight));
+    setMaximumPr(maxWeight);
+  }
+  else {
+    setMaximumPr(0);
+  }
 }, [prList]);
 
   return (

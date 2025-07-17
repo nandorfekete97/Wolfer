@@ -15,15 +15,15 @@ const PersonalRecords = () => {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/PersonalRecord/GetByUserId/${userId}`);
         const data = await res.json();
 
-        // data.personalRecordEntities.sort((a,b) => (a.exerciseType > b.exerciseType) ? 1 : ((b.exerciseType > a.exerciseType) ? -1 : 0));
+        const newMap = new Map();
+        Object.keys(ExerciseTypes).forEach(exerciseTypeKey => {
+          newMap.set(
+            exerciseTypeKey,
+            data.personalRecordEntities.filter(pr => pr.exerciseType === exerciseTypeKey)
+          );
+        })
 
-        const exerciseTypeKeys = Object.keys(ExerciseTypes);
-        
-        exerciseTypeKeys.forEach(exerciseTypeKey => {
-            personalRecords.set(exerciseTypeKey, data.personalRecordEntities.filter(pr => pr.exerciseType == exerciseTypeKey));
-        });        
-        console.log("personalrecords: ", personalRecords);
-        console.log("exerciseTypeKeys: ", exerciseTypeKeys);
+        setPersonalRecords(newMap);
     }
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const PersonalRecords = () => {
 
   return (
     <div className="personal-records-container">
-        <h2 className="personal-records-header">Personal Records</h2>
+        <h2 className="personal-records-header">Personal Records (KG)</h2>
         <button onClick={() => setAddPersonalRecordModalIsOpen(true)}>
             ADD PR
         </button>
