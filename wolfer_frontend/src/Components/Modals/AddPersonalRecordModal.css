@@ -1,0 +1,77 @@
+/* Modal layout centering and box style */
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: #515151;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 2px solid #343434;
+  color: white;
+
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  outline: none;
+  z-index: 1000;
+}
+
+/* Modal form layout */
+.add-pr-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* Inputs and select */
+.add-pr-form select,
+.add-pr-form input[type="number"],
+.add-pr-form input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #686868;
+  color: white;
+}
+
+/* Primary submit button */
+.add-pr-form button[type="submit"],
+.add-pr-form button:not(.cancel-button) {
+  padding: 10px 16px;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: #ffcc00;
+  color: #343434;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-pr-form button[type="submit"]:hover,
+.add-pr-form button:not(.cancel-button):hover {
+  background-color: #e6b800;
+  transform: scale(1.03);
+}
+
+/* Cancel button */
+.add-pr-form .cancel-button {
+  padding: 10px 16px;
+  font-size: 1rem;
+  background-color: #888;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-pr-form .cancel-button:hover {
+  background-color: #777;
+  transform: scale(1.03);
+}

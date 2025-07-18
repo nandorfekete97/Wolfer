@@ -1,6 +1,8 @@
 import Modal from 'react-modal';
 import React, { useState } from 'react'
 import { ExerciseTypes, getExerciseTypeLabel } from '../../Utils/ExerciseTypes';
+import './AddPersonalRecordModal.css';
+
 
 const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, setRefreshPersonalRecords}) => {
 
@@ -46,7 +48,7 @@ const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, 
   return (
     <div>
       <Modal isOpen={addPersonalRecordModalIsOpen}>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="modal-content add-pr-form">
           <div>
             <select
               value={exerciseType}
@@ -61,8 +63,10 @@ const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, 
         
           <div>
             <input
+              type="number"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
+              placeholder="Weight (kg)"
             >
             </input>
           </div>
@@ -76,7 +80,7 @@ const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, 
             </input>
           </div>
           <button>SUBMIT</button>
-          <button onClick={() => closeAddPrModal()}>CANCEL</button>
+          <button onClick={() => closeAddPrModal()} type="button" className="cancel-button">CANCEL</button>
         </form>
       </Modal>
     </div>

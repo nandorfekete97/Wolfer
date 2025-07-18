@@ -43,3 +43,28 @@
   font-weight: 700;
   font-size: 1rem;
 }
+
+.add-pr-button {
+  display: block;
+  margin: 0 auto 20px auto;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: #ffcc00;
+  color: #343434;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.add-pr-button:hover {
+  background-color: #e6b800;
+  transform: scale(1.05);
+}
+
+.add-pr-button:active {
+  background-color: #cc9900;
+  transform: scale(1);
+}

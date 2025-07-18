@@ -133,6 +133,7 @@ var authenticationSeeder = scope.ServiceProvider.GetRequiredService<Authenticati
 authenticationSeeder.AddRoles();
 
 // Configure the HTTP request pipeline.
+// docker exec -it <container_name> /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "WeWhoWrestleWithGod33$"
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -148,3 +149,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+//./dotnet-install.sh --architecture x64 --install-dir /Users/nandorfekete/.dotnet/ --runtime dotnet --version 8.0.412
