@@ -30,15 +30,10 @@ const PersonalRecords = () => {
     getPersonalRecords();
   }, [refreshPersonalRecords]);
 
-  useEffect(() =>{
-    console.log("ExerciseTypes: ", ExerciseTypes);
-
-  }, [ExerciseTypes]);
-
   return (
     <div className="personal-records-container">
         <h2 className="personal-records-header">Personal Records (KG)</h2>
-        <button onClick={() => setAddPersonalRecordModalIsOpen(true)}>
+        <button className="add-pr-button" onClick={() => setAddPersonalRecordModalIsOpen(true)}>
             ADD PR
         </button>
         <ol className="personal-record-list">
