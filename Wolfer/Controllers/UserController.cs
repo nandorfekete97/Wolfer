@@ -63,4 +63,22 @@ public class UserController : ControllerBase
             return BadRequest(new { message = e.Message });
         }
     }
+
+    [HttpPut("ChangePassword")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new { message = "Model binding failed", errors = ModelState });
+        }
+        try
+        {
+            await _userService.ChangePassword(changePasswordDto);
+            return Ok(new { message = "Password changed."});
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
 }
