@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import EditUserModal from '../Modals/EditUserModal';
+import ChangePasswordModal from '../Modals/ChangePasswordModal';
 import './Profile.css';
 
 const Profile = () => {
@@ -7,6 +8,7 @@ const Profile = () => {
   const [username, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
 
   const getUserInfo = async () => {
     const userId = localStorage.getItem("userId");
@@ -55,6 +57,32 @@ const Profile = () => {
     }
   };
 
+  const handlePasswordChange = async (updatedUser) => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
+    const updatedUserO = {
+      userId: userId,
+      oldPassword: updatedUser.oldPassword,
+      newPassword: updatedUser.newPassword
+    }
+
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/User/ChangePassword`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedUserO)
+    });
+
+    if (res.ok) {
+      await getUserInfo();
+    } else {
+      console.error("Failed to change password. Status:", res.status);
+    } 
+  }
+
   useEffect(() => {
     getUserInfo();
   }, []);
@@ -81,6 +109,18 @@ const Profile = () => {
       user={user}
       handleUpdate={handleUpdate}
     />
+
+    <button className="change-password-button" onClick={() => setChangePasswordModalOpen(true)}>
+      Change Password
+    </button>
+
+    <ChangePasswordModal
+      isOpen={changePasswordModalOpen}
+      closeModal={() => setChangePasswordModalOpen(false)}
+      user={user}
+      handlePasswordChange={handlePasswordChange}
+    />
+
   </div>
   );
 };
