@@ -67,21 +67,29 @@ const Profile = () => {
       newPassword: updatedUser.newPassword
     }
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/User/ChangePassword`, {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/User/ChangePassword`, {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(updatedUserO)
-    });
+      });
 
-    if (res.ok) {
-      await getUserInfo();
-    } else {
-      console.error("Failed to change password. Status:", res.status);
-    } 
-  }
+      if (res.ok) {
+        await getUserInfo();
+        return true;
+      } else {
+        const errorData = await res.json();
+        console.error("Failed to change password. Status:", errorData);
+        return false;
+      } 
+    } catch (err) {
+      console.error("Network error:", err);
+      return false;
+    }
+  };
 
   useEffect(() => {
     getUserInfo();

@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal';
 
-const ChangePasswordModal = ({ isOpen, closeModal, user, handlePasswordChange }) => {
+const ChangePasswordModal = ({ isOpen, closeModal, handlePasswordChange }) => {
 
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [newPasswordAgain, setNewPasswordAgain] = useState("");
     const [responseMessage, setResponseMessage] = useState("");
 
-    const handleSubmit = (e) => {
+    useEffect(() => {
+        if (isOpen) {
+            setOldPassword("");
+            setNewPassword("");
+            setNewPasswordAgain("");
+            setResponseMessage("");
+        }
+    }, [isOpen]);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!oldPassword || !newPassword || !newPasswordAgain) {
@@ -27,8 +36,14 @@ const ChangePasswordModal = ({ isOpen, closeModal, user, handlePasswordChange })
             newPassword
         };
 
-        handlePasswordChange(updatedUser);
-        closeModal();
+        const success = await handlePasswordChange(updatedUser);
+
+        if (success)
+        {
+            closeModal();
+        } else {
+            setResponseMessage("Failed to change password. Please check your original password or try again.");
+        }
     }
 
   return (
