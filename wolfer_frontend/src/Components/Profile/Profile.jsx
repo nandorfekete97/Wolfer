@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import EditUserModal from '../Modals/EditUserModal';
+import ChangePasswordModal from '../Modals/ChangePasswordModal';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Profile.css';
 
 const Profile = () => {
@@ -7,6 +10,7 @@ const Profile = () => {
   const [username, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
 
   const getUserInfo = async () => {
     const userId = localStorage.getItem("userId");
@@ -55,6 +59,41 @@ const Profile = () => {
     }
   };
 
+  const handlePasswordChange = async (updatedUser) => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
+    const updatedUserO = {
+      userId: userId,
+      oldPassword: updatedUser.oldPassword,
+      newPassword: updatedUser.newPassword
+    }
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/User/ChangePassword`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedUserO)
+      });
+
+      if (res.ok) {
+        await getUserInfo();
+        toast.success("Password changed successfully!");
+        return true;
+      } else {
+        const errorData = await res.json();
+        toast.error(errorData.message || "Failed to change password.");
+        return false;
+      } 
+    } catch (err) {
+      toast.error("Network error:", err);
+      return false;
+    }
+  };
+
   useEffect(() => {
     getUserInfo();
   }, []);
@@ -80,6 +119,26 @@ const Profile = () => {
       closeModal={() => setEditModalOpen(false)}
       user={user}
       handleUpdate={handleUpdate}
+    />
+
+    <button className="change-password-button" onClick={() => setChangePasswordModalOpen(true)}>
+      Change Password
+    </button>
+
+    <ChangePasswordModal
+      isOpen={changePasswordModalOpen}
+      closeModal={() => setChangePasswordModalOpen(false)}
+      user={user}
+      handlePasswordChange={handlePasswordChange}
+    />
+
+    <ToastContainer
+      position="bottom-right"
+      autoClose={2000}
+      hideProgressBar
+      closeOnClick
+      pauseOnHover
+      draggable
     />
   </div>
   );

@@ -59,18 +59,18 @@ public class UserService : IUserService
     }
 
     // password change will be in different method for clean responsibilities
-    // public async Task ChangePassword(ChangePasswordDTO dto)
-    // {
-    //     var user = await _userManager.FindByIdAsync(dto.UserId)
-    //                ?? throw new Exception("User not found.");
-    //
-    //     if (dto.OldPassword == dto.NewPassword)
-    //         throw new Exception("New password must be different from the old password.");
-    //
-    //     var result = await _userManager.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
-    //     if (!result.Succeeded)
-    //         throw new Exception(string.Join("; ", result.Errors.Select(e => e.Description)));
-    // }
+    public async Task ChangePassword(ChangePasswordDTO dto)
+    {
+        var user = await _userManager.FindByIdAsync(dto.UserId)
+                   ?? throw new Exception("User not found.");
+    
+        if (dto.OldPassword == dto.NewPassword)
+            throw new Exception("New password must be different from the old password.");
+    
+        var result = await _userManager.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
+        if (!result.Succeeded)
+            throw new Exception(string.Join("; ", result.Errors.Select(e => e.Description)));
+    }
 
     public async Task DeleteUser(Guid userId)
     {

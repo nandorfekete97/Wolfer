@@ -32,8 +32,7 @@ public class UserRepository : IUserRepository
         if (!result.Succeeded)
             throw new Exception(string.Join("; ", result.Errors.Select(e => e.Description)));
     }
-
-
+    
     public async Task<bool> DeleteUserById(Guid userId)
     {
         var userToDelete = await GetUserById(userId);
