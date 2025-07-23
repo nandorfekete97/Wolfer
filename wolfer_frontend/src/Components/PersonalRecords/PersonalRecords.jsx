@@ -3,6 +3,8 @@ import PersonalRecord from './PersonalRecord'
 import './PersonalRecords.css';
 import AddPersonalRecordModal from '../Modals/AddPersonalRecordModal';
 import { ExerciseTypes, getExerciseTypeLabel } from '../../Utils/ExerciseTypes';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PersonalRecords = () => {
     const [personalRecords, setPersonalRecords] = useState(new Map());
@@ -47,6 +49,15 @@ const PersonalRecords = () => {
             addPersonalRecordModalIsOpen = {addPersonalRecordModalIsOpen}
             closeAddPrModal = {() => setAddPersonalRecordModalIsOpen(false)}
             setRefreshPersonalRecords = {setRefreshPersonalRecords}
+        />
+
+        <ToastContainer
+          position="bottom-right"
+          autoClose={2000}
+          hideProgressBar
+          closeOnClick
+          pauseOnHover
+          draggable
         />
     </div>
   );

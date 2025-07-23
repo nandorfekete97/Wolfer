@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import EditUserModal from '../Modals/EditUserModal';
 import ChangePasswordModal from '../Modals/ChangePasswordModal';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Profile.css';
 
 const Profile = () => {
@@ -79,14 +81,15 @@ const Profile = () => {
 
       if (res.ok) {
         await getUserInfo();
+        toast.success("Password changed successfully!");
         return true;
       } else {
         const errorData = await res.json();
-        console.error("Failed to change password. Status:", errorData);
+        toast.error(errorData.message || "Failed to change password.");
         return false;
       } 
     } catch (err) {
-      console.error("Network error:", err);
+      toast.error("Network error:", err);
       return false;
     }
   };
@@ -129,6 +132,14 @@ const Profile = () => {
       handlePasswordChange={handlePasswordChange}
     />
 
+    <ToastContainer
+      position="bottom-right"
+      autoClose={2000}
+      hideProgressBar
+      closeOnClick
+      pauseOnHover
+      draggable
+    />
   </div>
   );
 };

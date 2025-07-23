@@ -1,8 +1,9 @@
 import Modal from 'react-modal';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ExerciseTypes, getExerciseTypeLabel } from '../../Utils/ExerciseTypes';
 import './AddPersonalRecordModal.css';
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, setRefreshPersonalRecords}) => {
 
@@ -12,7 +13,14 @@ const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, 
   const [exerciseType, setExerciseType] = useState("");
   const [weight, setWeight] = useState(0);
   const [prDate, setPrDate] = useState(today);
-  const [responseMessage, setResponseMessage] = useState("");
+
+  useEffect(() => {
+    if (addPersonalRecordModalIsOpen) {
+      setExerciseType("");
+      setWeight(0);
+      setPrDate(today);
+    }
+  }, [addPersonalRecordModalIsOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,15 +41,15 @@ const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, 
         });
 
         if (response.ok) {
-            setResponseMessage("Successfully added Personal Record.");
+            toast.success("Personal Record added successfully.");
             setRefreshPersonalRecords(prev => !prev);
             closeAddPrModal();
         } else {
             const data = await response.json();
-            setResponseMessage(data.message || 'Failed to add Personal Record.');
+            toast.error(data.message || 'Failed to add Personal Record.');
         }
     } catch (error) {
-        setResponseMessage('An error occurred during adding Personal Record.');
+        toast.error('An error occurred during adding Personal Record.');
     }
   }
 
