@@ -39,10 +39,12 @@ const PersonalRecords = () => {
             ADD PR
         </button>
         <ol className="personal-record-list">
-            {personalRecords ? Object.keys(ExerciseTypes).map(exerciseTypeKey => (
-            <li key={exerciseTypeKey} className="personal-record-item">
-                <PersonalRecord exerciseType={exerciseTypeKey} prList={personalRecords.get(exerciseTypeKey)}/>
-            </li>
+            {personalRecords ? Object.keys(ExerciseTypes)
+              .sort((a, b) => getExerciseTypeLabel(a).localeCompare(getExerciseTypeLabel(b)))
+              .map(exerciseTypeKey => (
+                <li key={exerciseTypeKey} className="personal-record-item">
+                    <PersonalRecord exerciseType={exerciseTypeKey} prList={personalRecords.get(exerciseTypeKey)}/>
+                </li>
         )) : <></>}
         </ol>
         <AddPersonalRecordModal
