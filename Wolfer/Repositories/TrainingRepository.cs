@@ -63,4 +63,23 @@ public class TrainingRepository : ITrainingRepository
 
         return false;
     }
+
+    public async Task<bool> DeleteTrainingsByDate(DateOnly date)
+    {
+        DateTime dayStart = date.ToDateTime(TimeOnly.MinValue);
+        DateTime dayEnd = date.ToDateTime(TimeOnly.MaxValue);
+        
+        var trainingsToDelete =
+            await _dbContext.Trainings.Where(training => training.Date >= dayStart && training.Date <= dayEnd).ToListAsync();
+
+        if (trainingsToDelete.Any())
+        {
+            _dbContext.RemoveRange(trainingsToDelete);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
+
 }

@@ -12,5 +12,6 @@ public interface ITrainingRepository
     Task CreateTraining(TrainingEntity training);
     Task UpdateTraining(TrainingEntity training);
     Task<bool> DeleteById(int id);
+    Task<bool> DeleteTrainingsByDate(DateOnly date);
     Task<List<TrainingEntity>> GetByIds(List<int> trainingIds);
 }

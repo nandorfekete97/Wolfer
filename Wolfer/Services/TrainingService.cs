@@ -109,6 +109,16 @@ public class TrainingService : ITrainingService
         await _userTrainingRepository.DeleteByTrainingId(trainingId);
     }
 
+    public async Task DeleteTrainingsByDate(DateOnly date)
+    {
+        if (date == default)
+        {
+            throw new ArgumentException("Date must be provided.");
+        }
+
+        await _trainingRepository.DeleteTrainingsByDate(date);
+    }
+
     private TrainingEntity ConvertDtoToEntity(TrainingDTO trainingDto)
     {
         TrainingEntity trainingEntity = new TrainingEntity
