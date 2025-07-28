@@ -9,4 +9,5 @@ public interface IUserTrainingRepository
     Task<UserTrainingEntity> GetByUserIdAndTrainingId(Guid userId, int trainingId);
     Task Create(UserTrainingEntity userTrainingEntity);
     Task<bool> Delete(Guid userId, int trainingId);
+    Task<bool> DeleteByTrainingId (int trainingId);
 }

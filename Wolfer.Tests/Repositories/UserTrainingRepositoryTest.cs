@@ -293,6 +293,36 @@ public class UserTrainingRepositoryTest
         Assert.That(result, Is.False);
     }
     
+    [Test]
+    public async Task DeleteTrainingById_SuccessfullyDeletesUserTrainings()
+    {
+        DateTime today = DateTime.Today;
+        int trainingId = 5;
+        int trainingId2 = 6;
+        Guid userId1 = Guid.NewGuid();
+        Guid userId2 = Guid.NewGuid();
+        
+        TrainingEntity training = new TrainingEntity { Id = trainingId, Date = today, TrainingType = TrainingType.LegDay };
+        TrainingEntity training2 = new TrainingEntity { Id = trainingId2, Date = today, TrainingType = TrainingType.CrossFit };
+        
+        UserTrainingEntity userTraining1 = new UserTrainingEntity { UserId = userId1, TrainingId = trainingId };
+        UserTrainingEntity userTraining2 = new UserTrainingEntity { UserId = userId1, TrainingId = trainingId2 };
+        UserTrainingEntity userTraining3 = new UserTrainingEntity { UserId = userId2, TrainingId = trainingId };
+
+        await _dbContext.Trainings.AddRangeAsync(training, training2);
+        await _dbContext.UserTrainings.AddRangeAsync(userTraining1, userTraining2, userTraining3);
+        await _dbContext.SaveChangesAsync();
+
+        var userTrainingsBefore = await _dbContext.UserTrainings.ToListAsync();
+        Assert.That(userTrainingsBefore.Count, Is.EqualTo(3));
+
+        await _userTrainingRepository.DeleteByTrainingId(trainingId);
+        
+        var userTrainingsAfterDelete = await _dbContext.UserTrainings.ToListAsync();
+        Assert.That(userTrainingsAfterDelete.Count, Is.EqualTo(1));
+        Assert.That(userTrainingsAfterDelete[0].TrainingId, Is.EqualTo(trainingId2));
+    }    
+    
     private void CompareTwoUserTrainings(UserTrainingEntity actualUserTraining, UserTrainingEntity expected)
     {
         Assert.That(actualUserTraining, Is.Not.Null);

@@ -8,10 +8,12 @@ namespace Wolfer.Services;
 public class TrainingService : ITrainingService
 {
     private ITrainingRepository _trainingRepository;
+    private IUserTrainingRepository _userTrainingRepository;
 
-    public TrainingService(ITrainingRepository trainingRepository)
+    public TrainingService(ITrainingRepository trainingRepository, IUserTrainingRepository userTrainingRepository)
     {
         _trainingRepository = trainingRepository;
+        _userTrainingRepository = userTrainingRepository;
     }
 
     public async Task<TrainingEntity> GetById(int id)
@@ -104,6 +106,7 @@ public class TrainingService : ITrainingService
         }
 
         await _trainingRepository.DeleteById(trainingId);
+        await _userTrainingRepository.DeleteByTrainingId(trainingId);
     }
 
     private TrainingEntity ConvertDtoToEntity(TrainingDTO trainingDto)
