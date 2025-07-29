@@ -12,4 +12,5 @@ public interface ITrainingService
     public Task CreateTraining(TrainingDTO trainingDto);
     public Task UpdateTraining(TrainingDTO trainingDto);
     public Task DeleteTraining(int id);
+    public Task DeleteTrainingsByDate(DateOnly date);
 }

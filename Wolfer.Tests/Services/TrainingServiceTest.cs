@@ -17,13 +17,15 @@ namespace Wolfer.Tests.Services;
 public class TrainingServiceTest
 {
     private Mock<ITrainingRepository> _trainingRepositoryMock;
+    private Mock<IUserTrainingRepository> _userTrainingRepositoryMock;
     private TrainingService _trainingService;
 
     [SetUp]
     public void SetUp()
     {
         _trainingRepositoryMock = new Mock<ITrainingRepository>();
-        _trainingService = new TrainingService(_trainingRepositoryMock.Object);
+        _userTrainingRepositoryMock = new Mock<IUserTrainingRepository>();
+        _trainingService = new TrainingService(_trainingRepositoryMock.Object, _userTrainingRepositoryMock.Object);
     }
     
     [Test]
@@ -275,6 +277,7 @@ public class TrainingServiceTest
         await _trainingService.DeleteTraining(trainingId);
         
         _trainingRepositoryMock.Verify(repository => repository.DeleteById(trainingId), Times.Once);
+        _userTrainingRepositoryMock.Verify(repository => repository.DeleteByTrainingId(trainingId), Times.Once);
     }
 
     [Test]

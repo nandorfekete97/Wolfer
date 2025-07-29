@@ -116,4 +116,18 @@ public class TrainingController : ControllerBase
             return BadRequest(new { message = e.Message });
         }
     }
+
+    [HttpDelete("DeleteTrainingsByDate/{date}")]
+    public async Task<IActionResult> DeleteTrainingsByDate(DateOnly date)
+    {
+        try
+        {
+            await _trainingService.DeleteTrainingsByDate(date);
+            return Ok(new { message = "Trainings deleted."});
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
 }

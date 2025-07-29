@@ -1,4 +1,15 @@
+/* .day-info {
+  margin-top: 30px;
+  padding: 10px;
+  font-size: 1.25rem;
+  background-color: #8f403e;
+  color: #fff;
+  border: 2px solid #6c302f;
+  border-radius: 8px;
+} */
+
 .day-info {
+  position: relative;
   margin-top: 30px;
   padding: 10px;
   font-size: 1.25rem;
@@ -8,3 +19,15 @@
   border: 2px solid #6c302f;
   border-radius: 8px;
 }
+
+.day-info-content {
+  position: relative;
+}
+
+.delete-button {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+

@@ -67,4 +67,18 @@ public class UserTrainingRepository : IUserTrainingRepository
 
         return false;
     }
+
+    public async Task<bool> DeleteByTrainingId(int trainingId)
+    {
+        var usertrainings = await _dbContext.UserTrainings.Where(ut => ut.TrainingId == trainingId).ToListAsync();
+
+        if (usertrainings.Count > 0)
+        {
+            _dbContext.UserTrainings.RemoveRange(usertrainings);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
 }
