@@ -10,6 +10,7 @@ public interface ITrainingRepository
     Task<List<TrainingEntity>> GetTrainingsByDate(DateOnly date);
     Task<List<TrainingEntity>> GetTrainingsByType(TrainingType trainingType);
     Task CreateTraining(TrainingEntity training);
+    Task CreateTrainings(List<TrainingEntity> trainings);
     Task UpdateTraining(TrainingEntity training);
     Task<bool> DeleteById(int id);
     Task<bool> DeleteTrainingsByDate(DateOnly date);

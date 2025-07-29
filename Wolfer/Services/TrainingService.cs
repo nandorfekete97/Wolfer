@@ -73,6 +73,40 @@ public class TrainingService : ITrainingService
         await _trainingRepository.CreateTraining(newTrainingEntity);
     }
 
+    public async Task CreateTrainings(List<TrainingDTO> trainerDtos)
+    {
+        if (trainerDtos == null || trainerDtos.Count == 0)
+        {
+            throw new ArgumentException("No trainings provided.");
+        }
+
+        var trainingEntities = new List<TrainingEntity>();
+
+        foreach (var dto in trainerDtos)
+        {
+            if (dto.Id != 0)
+            {
+                throw new ArgumentException("Training ID must be 0.");
+            }
+            if (dto.Date == default)
+            {
+                throw new ArgumentException("Date must be set.");
+            }
+            if (!Enum.IsDefined(typeof(TrainingType), dto.TrainingType))
+            {
+                throw new ArgumentException("Invalid training type.");
+            }
+            if (await IsTrainingTimeOccupied(dto.Date, dto.Id))
+            {
+                throw new ArgumentException($"Training time {dto.Date} is occupied.");
+            }
+            
+            trainingEntities.Add(ConvertDtoToEntity(dto));
+        }
+
+        await _trainingRepository.CreateTrainings(trainingEntities);
+    }
+
     public async Task UpdateTraining(TrainingDTO trainingDto)
     {
         TrainingEntity trainingToUpdate = await GetById(trainingDto.Id);

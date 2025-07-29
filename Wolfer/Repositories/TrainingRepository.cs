@@ -44,7 +44,13 @@ public class TrainingRepository : ITrainingRepository
         await _dbContext.Trainings.AddAsync(trainingEntity);
         await _dbContext.SaveChangesAsync();
     }
-    
+
+    public async Task CreateTrainings(List<TrainingEntity> trainings)
+    {
+        await _dbContext.Trainings.AddRangeAsync(trainings);
+        await _dbContext.SaveChangesAsync();
+    }
+
     public async Task UpdateTraining(TrainingEntity trainingEntity)
     {
         await _dbContext.SaveChangesAsync();

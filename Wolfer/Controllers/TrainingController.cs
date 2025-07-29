@@ -89,6 +89,20 @@ public class TrainingController : ControllerBase
         }
     }
 
+    [HttpPost("AddTrainings")]
+    public async Task<IActionResult> AddTrainings([FromBody] List<TrainingDTO> trainerDtos)
+    {
+        try
+        {
+            await _trainingService.CreateTrainings(trainerDtos);
+            return Ok(new { message = "Trainings created." });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
     [HttpPut("UpdateTraining")]
     public async Task<IActionResult> UpdateTraining([FromBody] TrainingDTO trainingDto)
     {
