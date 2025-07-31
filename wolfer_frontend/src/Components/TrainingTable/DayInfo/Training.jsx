@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import DeleteModal from '../../Modals/DeleteTrainingModal';
 import EditTrainingModal from '../../Modals/EditTrainingModal';
 import ResponseMessageModal from '../../Modals/ResponseMessageModal';
+import UsersByTrainingModal from '../../Modals/UsersByTrainingModal';
 import { TrainingTypes, getTrainingTypeLabel } from '../../../Utils/TrainingTypes';
 
 const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTrainings, refreshDayTrainings, triggerRefresh, showSignUp = true, isSelectedDateToday }) => {
@@ -13,6 +14,8 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [responseMessageModalIsOpen, setResponseMessageModalIsOpen] = useState(false);
+  const [usersByTrainingModalIsOpen, setUsersByTrainingModalIsOpen] = useState(false);
+  const [usersByTraining, setUsersByTraining] = useState([]);
 
   const isPast = new Date(training.date).getTime() < Date.now();
 
@@ -87,6 +90,29 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
       refreshSignedUpTrainings();
     }
   }
+  
+  const showUsersByTraining = async (training) => {
+
+    try{
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetUsersByTrainingId/${training.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok)
+      {
+        const data = await response.json();
+        setUsersByTraining(data.userEntities);
+        setUsersByTrainingModalIsOpen(true);
+      } else {
+        setResponseMessage(data.message || 'Failed to show users for training.');
+      }
+    } catch (error) {
+      setError('An error occurred during showing users for training.');
+    }
+  }
 
   const handleDelete = async (e) => {
     e.preventDefault();
@@ -155,9 +181,9 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   return (
     <div className = "training">
       <h5 className = "training-info col-sm-4">{time}</h5>
-      {/* here simply just the type attribute of the training object is displayed, but the same problem is here with the display
-      can the trainingTypes.js be reused here?  */}
-      <h5 className = "training-info col-sm-4">{getTrainingTypeLabel(type)}</h5>
+      <h5 className = "training-info col-sm-4" onClick={() => showUsersByTraining(training)}>
+        {getTrainingTypeLabel(type)}
+      </h5>
 
       {showSignUp ? (
         signedUpTrainingIdsForDay.includes(training.id) ? (
@@ -195,6 +221,15 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
           </button>
         </div>
       )}
+
+      <UsersByTrainingModal
+        training={training}
+        trainingTime = {time}
+        trainingType = {type}
+        usersByTraining = {usersByTraining}
+        usersByTrainingModalIsOpen = {usersByTrainingModalIsOpen}
+        closeUsersByTrainingModal = {() => setUsersByTrainingModalIsOpen(false)}
+      />
 
       <DeleteModal
         deleteModalIsOpen = {deleteModalIsOpen}

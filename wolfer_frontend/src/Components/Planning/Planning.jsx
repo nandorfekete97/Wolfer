@@ -270,7 +270,6 @@ const Planning = () => {
                     ]);
                     setHour('');
                     setMinute('');
-                    // setMultipleDateInput('');
                   }
                 }
               }}
