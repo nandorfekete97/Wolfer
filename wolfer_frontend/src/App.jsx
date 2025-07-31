@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import Planning from './Components/Planning/Planning';
 import TrainingHistory from './Components/TrainingHistory/TrainingHistory';
 import PersonalRecords from './Components/PersonalRecords/PersonalRecords';
+import Register from './Components/Register/Register';
 
 function App() {
   const [successfulLogin, setSuccessfulLogin] = useState(false);
@@ -46,7 +47,9 @@ function App() {
         ) : (
           <div className="col-sm-12">
             <Routes>
-              <Route path="*" element={<Login setSuccessfulLogin={setSuccessfulLogin} />} />
+              <Route path="/login" element={<Login setSuccessfulLogin={setSuccessfulLogin} />} />
+              <Route path='/register' element={<Register/>}/>
+              <Route path="*" element={<Navigate to="/login" />}/>
             </Routes>
           </div>
         )}

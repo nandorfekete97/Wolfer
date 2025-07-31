@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import './Login.css'; // Make sure this import exists
+import './Login.css'; 
+import Register from '../Register/Register';
+import { useNavigate } from 'react-router-dom';
 
 const Login = ({ setSuccessfulLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+
+  const goToRegister = () => {
+    navigate('/register');
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -62,14 +70,16 @@ const Login = ({ setSuccessfulLogin }) => {
 
         {error && <div className="login-error">{error}</div>}
 
-        <button type="submit" className="login-button">
+        <button 
+          type="submit" 
+          className="login-button">
           LOG IN
         </button>
       </form>
 
       <div className="login-footer">
         <small>Don't have a profile?</small>
-        <p className="register-link">Register here</p>
+        <p className="register-link" onClick={goToRegister}>Register here</p>
       </div>
     </div>
   );
