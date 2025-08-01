@@ -13,6 +13,7 @@ const UsersByTrainingModal = ({training, trainingTime, trainingType, usersByTrai
         //const time = new Date(training.date).toISOString().split('T')[1].split('.')[0];
 
         setLocalUsers(usersByTraining || []);
+        setTime(trainingTime);
         setDate(date);
     }, [usersByTraining]);
 
@@ -24,7 +25,7 @@ const UsersByTrainingModal = ({training, trainingTime, trainingType, usersByTrai
             contentLabel="Show Users By Training Modal" 
             ariaHideApp={false}>
             <h2>
-                Users for {getTrainingTypeLabel(trainingType)} on {date} at {time}
+                Attending {getTrainingTypeLabel(trainingType)} on {date} at {time}
             </h2>
             <ul>
                 {localUsers.map((user, index) => (
