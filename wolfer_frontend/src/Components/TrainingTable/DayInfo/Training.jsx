@@ -36,6 +36,34 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
     e.preventDefault();
     const userId = localStorage.getItem("userId");
 
+    // part where we find out how many are signed up to training
+    try{
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetUsersByTrainingId/${training.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok)
+      {
+        const data = await response.json();
+        const currentUsers = data.userEntities || [];
+
+        if (currentUsers.length >= 15)
+        {
+          toast.error("This training is full.");
+          return;
+        }
+      } else {
+        toast.error("Failed to fetch current training signups.");
+        return;
+      }
+    } catch (error) {
+      toast.error('An error occurred fetching data for training.');
+    }
+
+    // part that existed before, functional, responsible for signing up to training
     try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/SignUserUpForTraining/users/${userId}/trainings/${training.id}`, {
             method: 'POST',
@@ -49,16 +77,17 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
         });
 
         if (response.ok) {
-            setResponseMessage("Successfully signed up for training.");
+          console.log("Signup response:", response.status, await response.text());
+
+            toast.success("Successfully signed up for training.");
         } else {
             const data = await response.json();
-            setResponseMessage(data.message || 'Failed to sign up for training.');
+            toast.error(data.message || 'Failed to sign up for training.');
         }
     } catch (error) {
-        setResponseMessage('An error occurred during signing up for training.');
+        toast.error('An error occurred during signing up for training.');
     }
     finally {
-      setResponseMessageModalIsOpen(true);
       refreshSignedUpTrainings();
     }
   }
@@ -128,7 +157,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
       });
 
       if (response.ok) {
-        setResponseMessage("Training was deleted successfully.");
+        toast.success("Training was deleted successfully.");
         if (refreshSignedUpTrainings) 
         {
           refreshSignedUpTrainings();
@@ -139,10 +168,10 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
         }
       } else {
         const data = await response.json();
-        setResponseMessage(data.message || 'Training could not be deleted.');
+        toast.error(data.message || 'Training could not be deleted.');
       }
     } catch (error) {
-      setResponseMessage('An error occurred during deleting training.');
+      toast.error('An error occurred during deleting training.');
     }
   }
 
@@ -155,7 +184,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
       });
 
       const data = await response.json();
-      setResponseMessage(response.ok ? "Training updated successfully." : data.message || "Failed to update training.");
+      toast.info(response.ok ? "Training updated successfully." : data.message || "Failed to update training.");
       if (response.ok) {
         if (refreshSignedUpTrainings) 
         {

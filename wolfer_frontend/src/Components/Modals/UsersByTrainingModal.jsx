@@ -10,8 +10,6 @@ const UsersByTrainingModal = ({training, trainingTime, trainingType, usersByTrai
 
     useEffect(() => {
         const date = new Date(training.date).toISOString().split('T')[0];
-        //const time = new Date(training.date).toISOString().split('T')[1].split('.')[0];
-
         setLocalUsers(usersByTraining || []);
         setTime(trainingTime);
         setDate(date);

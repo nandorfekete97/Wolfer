@@ -2,8 +2,7 @@ import Modal from 'react-modal';
 import React, { useEffect, useState } from 'react'
 import { ExerciseTypes, getExerciseTypeLabel } from '../../Utils/ExerciseTypes';
 import './AddPersonalRecordModal.css';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, setRefreshPersonalRecords}) => {
 
