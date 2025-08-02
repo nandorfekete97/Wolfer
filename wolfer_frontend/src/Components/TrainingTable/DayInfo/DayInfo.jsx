@@ -5,11 +5,15 @@ import DeleteTrainingsByDateModal from '../../Modals/DeleteTrainingsByDateModal'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp = true, refreshTrigger, triggerRefresh, isSelectedDateToday }) => {
+const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp = true, refreshTrigger, triggerRefresh, isSelectedDateToday, isPlanning }) => {
   
   const [trainings, setTrainings] = useState([]);
   const [signedUpTrainingIdsForDay, setSignedUpTrainingIdsForDay] = useState([]);
   const [deleteTrainingsByDateModalIsOpen, setDeleteTrainingsByDateModalIsOpen] = useState(false);
+  const [isTrainingDatePast, setIsTrainingDatePast] = useState(false);
+
+  const trainingDateOnly = date.toISOString().split("T")[0];
+  const todayDateOnly = new Date().toISOString().split("T")[0];
 
   const getTrainings = async () => {
     const dateOnly = date.toLocaleDateString('sv-SE');
@@ -48,16 +52,15 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
   useEffect(() => {
     if (date) {
       getTrainings();
+      setIsTrainingDatePast(trainingDateOnly <= todayDateOnly);
     }
   }, [date, refreshTrigger]);
 
   const handleDeleteAll = async (e) => {
   e.preventDefault();
 
-  const dateOnly = date.toISOString().split("T")[0];
-
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/DeleteTrainingsByDate/${dateOnly}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/DeleteTrainingsByDate/${trainingDateOnly}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -82,13 +85,19 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
         <h3 className="day-info">
           <div>
             {date ? `${date.toDateString()}` : ""} 
-            <button
-              className = "btn btn-sm btn-danger delete-button"
-              // disabled = {isPast}
-              onClick = {(e) => setDeleteTrainingsByDateModalIsOpen(true)}
-            >
-              Delete All
-            </button>
+
+            {isPlanning ? 
+              <button
+                className = "btn btn-sm btn-danger delete-button"
+                disabled = {isTrainingDatePast}
+                onClick = {(e) => setDeleteTrainingsByDateModalIsOpen(true)}
+              >
+                Delete All
+              </button>
+              :
+              ""
+            }
+            
           </div> 
         </h3>
         {trainings.map((training) => (

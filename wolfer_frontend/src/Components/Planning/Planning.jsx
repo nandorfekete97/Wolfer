@@ -312,6 +312,7 @@ const Planning = () => {
           refreshTrigger={refreshTrigger}
           triggerRefresh={triggerRefresh}
           isSelectedDateToday={isSelectedDateToday}
+          isPlanning={true}
         />
       </div>
 

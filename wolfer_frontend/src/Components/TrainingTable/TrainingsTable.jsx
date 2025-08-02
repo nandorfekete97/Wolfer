@@ -2,7 +2,7 @@ import './TrainingTable.css';
 import DayInfo from './DayInfo/DayInfo';
 import React, { useState, useEffect } from 'react';
 
-const TrainingsTable = ({ showSignUp=true, refreshTrigger, triggerRefresh, isSelectedDateToday }) => {
+const TrainingsTable = ({ showSignUp=true, refreshTrigger, triggerRefresh, isSelectedDateToday, isPlanning=false }) => {
   const [weekDates, setWeekDates] = useState([]);
   const [signedUpTrainings, setSignedUpTrainings] = useState([]);
   const [dataIsLoaded, setDataIsLoaded] = useState(false);
@@ -51,6 +51,7 @@ const TrainingsTable = ({ showSignUp=true, refreshTrigger, triggerRefresh, isSel
             refreshTrigger = {refreshTrigger}
             triggerRefresh = {triggerRefresh}
             isSelectedDateToday = {isSelectedDateToday}
+            isPlanning = {isPlanning}
           />
         )) :
       <h5>Loading</h5>
