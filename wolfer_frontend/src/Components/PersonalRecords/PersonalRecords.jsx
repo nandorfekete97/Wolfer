@@ -3,7 +3,7 @@ import PersonalRecord from './PersonalRecord'
 import './PersonalRecords.css';
 import AddPersonalRecordModal from '../Modals/AddPersonalRecordModal';
 import { ExerciseTypes, getExerciseTypeLabel } from '../../Utils/ExerciseTypes';
-import { toast } from 'react-toastify';
+//import { toast } from 'react-toastify';
 
 const PersonalRecords = () => {
     const [personalRecords, setPersonalRecords] = useState(new Map());
