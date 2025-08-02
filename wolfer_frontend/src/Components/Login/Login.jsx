@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Login.css'; 
 import Register from '../Register/Register';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Login = ({ setSuccessfulLogin }) => {
   const [email, setEmail] = useState("");

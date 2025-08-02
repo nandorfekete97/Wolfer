@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import EditUserModal from '../Modals/EditUserModal';
 import ChangePasswordModal from '../Modals/ChangePasswordModal';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import './Profile.css';
 
 const Profile = () => {
@@ -130,15 +129,6 @@ const Profile = () => {
       closeModal={() => setChangePasswordModalOpen(false)}
       user={user}
       handlePasswordChange={handlePasswordChange}
-    />
-
-    <ToastContainer
-      position="bottom-right"
-      autoClose={2000}
-      hideProgressBar
-      closeOnClick
-      pauseOnHover
-      draggable
     />
   </div>
   );

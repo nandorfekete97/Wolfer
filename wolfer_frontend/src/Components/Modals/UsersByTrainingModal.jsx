@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { TrainingTypes, getTrainingTypeLabel } from '../../Utils/TrainingTypes';
 
-const UsersByTrainingModal = ({training, trainingTime, trainingType, usersByTraining, usersByTrainingModalIsOpen, closeUsersByTrainingModal}) => {
+const UsersByTrainingModal = ({training, trainingTime, trainingType, usersByTraining, usersByTrainingModalIsOpen, closeUsersByTrainingModal, isFull}) => {
 
     const [localUsers, setLocalUsers] = useState(usersByTraining || []);
     const [date, setDate] = useState('');
@@ -10,8 +10,6 @@ const UsersByTrainingModal = ({training, trainingTime, trainingType, usersByTrai
 
     useEffect(() => {
         const date = new Date(training.date).toISOString().split('T')[0];
-        //const time = new Date(training.date).toISOString().split('T')[1].split('.')[0];
-
         setLocalUsers(usersByTraining || []);
         setTime(trainingTime);
         setDate(date);
@@ -24,6 +22,7 @@ const UsersByTrainingModal = ({training, trainingTime, trainingType, usersByTrai
             onRequestClose={closeUsersByTrainingModal}
             contentLabel="Show Users By Training Modal" 
             ariaHideApp={false}>
+            {isFull && <h2 style={{ color: 'red' }} className="training-full-message"> TRAINING IS FULL </h2>}
             <h2>
                 Attending {getTrainingTypeLabel(trainingType)} on {date} at {time}
             </h2>

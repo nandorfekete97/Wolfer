@@ -9,6 +9,8 @@ import Planning from './Components/Planning/Planning';
 import TrainingHistory from './Components/TrainingHistory/TrainingHistory';
 import PersonalRecords from './Components/PersonalRecords/PersonalRecords';
 import Register from './Components/Register/Register';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [successfulLogin, setSuccessfulLogin] = useState(false);
@@ -54,6 +56,15 @@ function App() {
           </div>
         )}
       </div>
+      <ToastContainer
+          position="bottom-right"
+          autoClose={2000}
+          hideProgressBar
+          closeOnClick
+          pauseOnHover
+          pauseOnFocusLoss={false}
+          draggable
+      />
     </Router>
   );
 }
