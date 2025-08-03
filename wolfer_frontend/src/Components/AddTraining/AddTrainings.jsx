@@ -21,8 +21,8 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, triggerRefres
         }
 
         const trainingList = trainings.map((d) => ({
-        Date: `${trainingDate}T${trainingHour.padStart(2, '0')}:${trainingMinute.padStart(2, '0')}:00`,
-        TrainingType: trainingType
+        Date: d.Date,
+        TrainingType: d.TrainingType
         }));
 
         try {
@@ -51,7 +51,7 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, triggerRefres
     // const isTrainingSlotOccupied = (existingTraining) => {
     //     if (existingTraining.Hour > trainingHour)
     //     {
-    //         return (existingTraining.Mi)
+    //         return (existingTraining.)
     //     }
     // }
 
