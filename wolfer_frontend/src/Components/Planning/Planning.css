@@ -38,11 +38,52 @@ button[type='submit'] {
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
-  font-size: 1rem;
+  font-size: 1.1rem;
   cursor: pointer;
   align-self: center;
 }
 
 button[type='submit']:hover {
   background-color: #218838;
+}
+
+.add-training-to-list {
+  background-color: #2459f9;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  align-self: center;
+}
+
+.add-training-to-list:hover {
+  background-color: #0130bf;
+}
+
+.remove-training-from-list {
+  background-color: #fe4444;
+  color: white;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  align-self: center;
+}
+
+.remove-training-from-list:hover {
+  background-color: #c72323;
+}
+
+.training-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  background-color: #3f3f3f;
 }

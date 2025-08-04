@@ -3,10 +3,9 @@ import { TrainingTypes, getTrainingTypeLabel } from '../../Utils/TrainingTypes';
 import { AllHours, AllMinutes } from '../../Utils/AllTimes';
 import { toast } from "react-toastify";
 
-const AddTrainings = ({availableHours, today, isSelectedDateToday, triggerRefresh }) => {
+const AddTrainings = ({availableHours, today, isSelectedDateToday, trainingDate, setTrainingDate, triggerRefresh }) => {
 
     const [trainingType, setTrainingType] = useState('');
-    const [trainingDate, setTrainingDate] = useState('');
     const [trainingHour, setTrainingHour] = useState('');
     const [trainingMinute, setTrainingMinute] = useState('');
     const [trainings, setTrainings] = useState([]);
@@ -138,6 +137,7 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, triggerRefres
             <div className="form-group">
                 <button
                 type="button"
+                className="add-training-to-list"
                 onClick={() => addTrainingToList()}
                 >
                 Add Training To List
@@ -149,10 +149,11 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, triggerRefres
                 <label>Selected Training Times:</label>
                 <ul className="selected-dates-list">
                     {trainings.map((t, index) => (
-                    <li key={index}>
+                    <li key={index} className="training-list-item">
                         {t.Date}, {t.TrainingType}
                         <button
                         type="button"
+                        className="remove-training-from-list"
                         onClick={() =>
                             setTrainings(
                             trainings.filter((_, i) => i !== index)

@@ -24,14 +24,14 @@ const UsersByTrainingModal = ({training, trainingTime, trainingType, usersByTrai
             ariaHideApp={false}>
             {isFull && <h2 style={{ color: 'red' }} className="training-full-message"> TRAINING IS FULL </h2>}
             <h2>
-                Attending {getTrainingTypeLabel(trainingType)} on {date} at {time}
+                Users for {getTrainingTypeLabel(trainingType)} on {date} at {time}
             </h2>
             <ul>
                 {localUsers.map((user, index) => (
                     <li key={index}>{user.userName}</li>
                 ))}
             </ul>
-            <button onClick={closeUsersByTrainingModal}>Close</button>
+            <button onClick={closeUsersByTrainingModal}>CLOSE</button>
         </Modal>
     );
 };

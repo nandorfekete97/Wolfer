@@ -1,22 +1,16 @@
 import React from 'react'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import TrainingsTable from '../TrainingTable/TrainingsTable';
 import AddTraining from '../AddTraining/AddTraining';
 import AddTrainings from '../AddTraining/AddTrainings';
-import ResponseMessageModal from '../Modals/ResponseMessageModal';
-import { TrainingTypes, getTrainingTypeLabel } from '../../Utils/TrainingTypes';
-import { AllHours, AllMinutes } from '../../Utils/AllTimes';
+import { AllHours } from '../../Utils/AllTimes';
 import './Planning.css';
 
 const Planning = () => {
 
-  const [type, setType] = useState(null);
-  const [date, setDate] = useState('');
-  const [hour, setHour] = useState('');
-  const [minute, setMinute] = useState('');
-  const [responseMessage, setResponseMessage] = useState("");
   const [refreshTrigger, setRefreshTrigger] = useState(false);
   const [isSelectedDateToday, setIsSelectedDateToday] = useState(false);
+  const [trainingDate, setTrainingDate] = useState('');
 
   const triggerRefresh = () => setRefreshTrigger(prev => !prev);
 
@@ -24,16 +18,16 @@ const Planning = () => {
   const availableHours = AllHours.filter((hour) => hour > today.getHours());
 
   useEffect(() => {
-    if (!date) {
+    if (!trainingDate) {
       setIsSelectedDateToday(false);
       return;
     }
 
-    const selectedDateString = new Date(date).toISOString().split('T')[0];
+    const selectedDateString = new Date(trainingDate).toISOString().split('T')[0];
     const todayDateString = today.toISOString().split('T')[0];
 
     setIsSelectedDateToday(selectedDateString === todayDateString);
-  }, [date]);
+  }, [trainingDate]);
 
   return (
     <div className="planning-container">
@@ -42,6 +36,8 @@ const Planning = () => {
           availableHours={availableHours}
           today={today}
           isSelectedDateToday={isSelectedDateToday}
+          trainingDate={trainingDate}
+          setTrainingDate={setTrainingDate}
           triggerRefresh={triggerRefresh}
         />
       </div>
@@ -51,6 +47,8 @@ const Planning = () => {
           availableHours={availableHours}
           today={today}
           isSelectedDateToday={isSelectedDateToday}
+          trainingDate={trainingDate}
+          setTrainingDate={setTrainingDate}
           triggerRefresh={triggerRefresh}
         />
       </div>
