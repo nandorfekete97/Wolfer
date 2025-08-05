@@ -20,8 +20,8 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, trainingDate,
         }
 
         const trainingList = trainings.map((d) => ({
-        Date: d.Date,
-        TrainingType: d.TrainingType
+            Date: `${d.Date}T${d.Hour.padStart(2, '0')}:${d.Minute.padStart(2, '0')}:00`,
+            TrainingType: d.TrainingType
         }));
 
         try {
@@ -47,23 +47,35 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, trainingDate,
         } 
     };
 
-    // const isTrainingSlotOccupied = (existingTraining) => {
-    //     if (existingTraining.Hour > trainingHour)
-    //     {
-    //         return (existingTraining.)
-    //     }
-    // }
+    const isTrainingSlotOccupied = (existingTraining) => {
+        if (existingTraining.Hour > trainingHour)
+        {
+            return (existingTraining.Minute < trainingMinute);
+        }
+        if (existingTraining.Hour < trainingHour)
+        {
+            return (existingTraining.Minute > trainingMinute);
+        }
+        return true;
+    }
 
     const addTrainingToList = () => {
 
-        // TODO: filtering needed for frontend to not allow users to add trainings to list with conflicting times
-        //trainings.filter(training => training.Date == trainingDate).filter(training => Math.abs(training.Hour - trainingHour) <= 1).any(training => )
+        const isConflictInTrainingTimes = trainings.filter(training => training.Date == trainingDate).filter(training => Math.abs(training.Hour - trainingHour) <= 1).some(training => isTrainingSlotOccupied(training))
 
-        setTrainings(([
-            ...trainings,
-            { Date: `${trainingDate}T${trainingHour.padStart(2, '0')}:${trainingMinute.padStart(2, '0')}:00`,
-                TrainingType: trainingType },
-        ]));
+        if (!isConflictInTrainingTimes) {
+            setTrainings(([
+                ...trainings,
+                // { Date: `${trainingDate}T${trainingHour.padStart(2, '0')}:${trainingMinute.padStart(2, '0')}:00`,
+                {  Date: `${trainingDate}`, 
+                    Hour: `${trainingHour}`,
+                    Minute: `${trainingMinute}`,
+                    TrainingType: trainingType
+                },
+            ]));
+        } else {
+            toast.warning("There's a time conflict ");
+        }
     }
 
     return (
@@ -150,7 +162,7 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, trainingDate,
                 <ul className="selected-dates-list">
                     {trainings.map((t, index) => (
                     <li key={index} className="training-list-item">
-                        {t.Date}, {t.TrainingType}
+                        {t.Date} {t.Hour}:{t.Minute}, {getTrainingTypeLabel(t.TrainingType)}
                         <button
                         type="button"
                         className="remove-training-from-list"

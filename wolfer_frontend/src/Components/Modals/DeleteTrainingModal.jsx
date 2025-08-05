@@ -1,4 +1,3 @@
-//import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import './DeleteModal.css';
 import { getTrainingTypeLabel } from '../../Utils/TrainingTypes';
