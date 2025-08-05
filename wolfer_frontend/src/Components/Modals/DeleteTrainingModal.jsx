@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+//import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import './DeleteModal.css';
-import { TrainingTypes, getTrainingTypeLabel } from '../../Utils/TrainingTypes';
+import { getTrainingTypeLabel } from '../../Utils/TrainingTypes';
 
 const DeleteModal = ({training, date, deleteModalIsOpen, closeDeleteModal, handleDelete}) => {
 

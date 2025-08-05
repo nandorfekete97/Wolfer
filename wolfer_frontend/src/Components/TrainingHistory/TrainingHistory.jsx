@@ -1,7 +1,6 @@
-import React from 'react'
 import { useState, useEffect } from 'react';
-import { data } from 'react-router-dom';
 import './TrainingHistory.css';
+import { getTrainingTypeLabel } from '../../Utils/TrainingTypes';
 
 const TrainingHistory = () => {
 
@@ -110,7 +109,7 @@ const getUniqueYears = () => {
                 <ul className="training-list">
                     {filteredTrainings.map((training) => (
                     <li key={training.id}>
-                        {training.trainingType} | {training.date.split("T")[0]}
+                        {getTrainingTypeLabel(training.trainingType)} | {training.date.split("T")[0]}
                     </li>
                     ))}
                 </ul>
@@ -120,8 +119,8 @@ const getUniqueYears = () => {
                 <h3>Your favourite trainings:</h3>
                 <ul>
                     {trainingTypeStats.map((stat) => (
-                    <li key={stat.trainingType}>
-                        {stat.trainingType}: {stat.percentage}%
+                    <li key={getTrainingTypeLabel(stat.trainingType)}>
+                        {getTrainingTypeLabel(stat.trainingType)}: {getTrainingTypeLabel(stat.percentage)}%
                     </li>
                     ))}
                 </ul>

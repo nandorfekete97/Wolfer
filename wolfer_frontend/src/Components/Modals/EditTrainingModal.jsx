@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { TrainingTypes, getTrainingTypeLabel } from '../../Utils/TrainingTypes';
 import { AllHours, AllMinutes } from '../../Utils/AllTimes';
+import './EditTrainingModal.css';
 
 const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, date, handleUpdate, isSelectedDateToday }) => { 
 
