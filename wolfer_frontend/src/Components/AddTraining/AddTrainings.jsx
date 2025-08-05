@@ -3,10 +3,9 @@ import { TrainingTypes, getTrainingTypeLabel } from '../../Utils/TrainingTypes';
 import { AllHours, AllMinutes } from '../../Utils/AllTimes';
 import { toast } from "react-toastify";
 
-const AddTrainings = ({availableHours, today, isSelectedDateToday, triggerRefresh }) => {
+const AddTrainings = ({availableHours, today, isSelectedDateToday, trainingDate, setTrainingDate, triggerRefresh }) => {
 
     const [trainingType, setTrainingType] = useState('');
-    const [trainingDate, setTrainingDate] = useState('');
     const [trainingHour, setTrainingHour] = useState('');
     const [trainingMinute, setTrainingMinute] = useState('');
     const [trainings, setTrainings] = useState([]);
@@ -21,8 +20,8 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, triggerRefres
         }
 
         const trainingList = trainings.map((d) => ({
-        Date: `${trainingDate}T${trainingHour.padStart(2, '0')}:${trainingMinute.padStart(2, '0')}:00`,
-        TrainingType: trainingType
+            Date: `${d.Date}T${d.Hour.padStart(2, '0')}:${d.Minute.padStart(2, '0')}:00`,
+            TrainingType: d.TrainingType
         }));
 
         try {
@@ -48,23 +47,35 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, triggerRefres
         } 
     };
 
-    // const isTrainingSlotOccupied = (existingTraining) => {
-    //     if (existingTraining.Hour > trainingHour)
-    //     {
-    //         return (existingTraining.Mi)
-    //     }
-    // }
+    const isTrainingSlotOccupied = (existingTraining) => {
+        if (existingTraining.Hour > trainingHour)
+        {
+            return (existingTraining.Minute < trainingMinute);
+        }
+        if (existingTraining.Hour < trainingHour)
+        {
+            return (existingTraining.Minute > trainingMinute);
+        }
+        return true;
+    }
 
     const addTrainingToList = () => {
 
-        // TODO: filtering needed for frontend to not allow users to add trainings to list with conflicting times
-        //trainings.filter(training => training.Date == trainingDate).filter(training => Math.abs(training.Hour - trainingHour) <= 1).any(training => )
+        const isConflictInTrainingTimes = trainings.filter(training => training.Date == trainingDate).filter(training => Math.abs(training.Hour - trainingHour) <= 1).some(training => isTrainingSlotOccupied(training))
 
-        setTrainings(([
-            ...trainings,
-            { Date: `${trainingDate}T${trainingHour.padStart(2, '0')}:${trainingMinute.padStart(2, '0')}:00`,
-                TrainingType: trainingType },
-        ]));
+        if (!isConflictInTrainingTimes) {
+            setTrainings(([
+                ...trainings,
+                // { Date: `${trainingDate}T${trainingHour.padStart(2, '0')}:${trainingMinute.padStart(2, '0')}:00`,
+                {  Date: `${trainingDate}`, 
+                    Hour: `${trainingHour}`,
+                    Minute: `${trainingMinute}`,
+                    TrainingType: trainingType
+                },
+            ]));
+        } else {
+            toast.warning("There's a time conflict ");
+        }
     }
 
     return (
@@ -138,6 +149,7 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, triggerRefres
             <div className="form-group">
                 <button
                 type="button"
+                className="add-training-to-list"
                 onClick={() => addTrainingToList()}
                 >
                 Add Training To List
@@ -149,10 +161,11 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, triggerRefres
                 <label>Selected Training Times:</label>
                 <ul className="selected-dates-list">
                     {trainings.map((t, index) => (
-                    <li key={index}>
-                        {t.Date}, {t.TrainingType}
+                    <li key={index} className="training-list-item">
+                        {t.Date} {t.Hour}:{t.Minute}, {getTrainingTypeLabel(t.TrainingType)}
                         <button
                         type="button"
+                        className="remove-training-from-list"
                         onClick={() =>
                             setTrainings(
                             trainings.filter((_, i) => i !== index)

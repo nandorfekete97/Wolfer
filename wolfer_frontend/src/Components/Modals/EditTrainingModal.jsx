@@ -1,52 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { TrainingTypes, getTrainingTypeLabel } from '../../Utils/TrainingTypes';
+import { AllHours, AllMinutes } from '../../Utils/AllTimes';
+import './EditTrainingModal.css';
 
-const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUpdate, isSelectedDateToday }) => { 
+const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, date, handleUpdate, isSelectedDateToday }) => { 
 
   const today = new Date();
-  const allHours = ["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
-  const availableMinutes = ["00", "15", "30", "45"];
 
-  const [type, setType] = useState('');
-  const [date, setDate] = useState('');
-  const [hour, setHour] = useState('');
-  const [minute, setMinute] = useState('');
+  const [trainingType, setTrainingType] = useState('');
+  const [trainingDate, setTrainingDate] = useState('');
+  const [trainingHour, setTrainingHour] = useState('');
+  const [trainingMinute, setTrainingMinute] = useState('');
   const [responseMessage, setResponseMessage] = useState("");
 
   const getFilteredHours = () => {
-    if (!isSelectedDateToday) return allHours;
+    if (!isSelectedDateToday) return AllHours;
 
     const currentHour = today.getHours();
-    return allHours.filter(h => Number(h) > currentHour);
-  }
 
+    return AllHours.filter(h => Number(h) > currentHour);
+  }
+  
   useEffect(() => {
     if (training) {
-      setType(training.trainingType || '');
+      setTrainingType(training.trainingType || '');
 
       const dt = new Date(training.date);
-      setDate(dt.toISOString().split('T')[0]);
-      setHour(dt.getHours().toString().padStart(2, '0'));
-      setMinute(dt.getMinutes().toString().padStart(2, '0'));
+      setTrainingDate(dt.toISOString().split('T')[0]);
+      setTrainingHour(dt.getHours().toString().padStart(2, '0'));
+      setTrainingMinute(dt.getMinutes().toString().padStart(2, '0'));
     }
   }, [training, editModalIsOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!type || !date || !hour || !minute) {
+    if (!trainingType || !trainingDate || !trainingHour || !trainingMinute) {
       setResponseMessage("Please fill in all fields.");
       return;
     }
 
-    const [year, month, day] = date.split("-").map(Number);
-    const utcDate = new Date(Date.UTC(year, month - 1, day, Number(hour), Number(minute), 0, 0));
+    const [year, month, day] = trainingDate.split("-").map(Number);
+    const utcDate = new Date(Date.UTC(year, month - 1, day, Number(trainingHour), Number(trainingMinute), 0, 0));
     const formattedDate = utcDate.toISOString();
 
     const updatedTraining = {
       id: training.id,
-      trainingType: type,
+      trainingType: trainingType,
       date: formattedDate,
     };
 
@@ -73,13 +74,13 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
             contentLabel="Training Modification"
             ariaHideApp={false}
           >
-            <h2>UPDATE TRAINING</h2>
+            <h2>UPDATE {getTrainingTypeLabel(training.trainingType)} for date: <br></br> {date.toDateString()}</h2>
             <form className="training-modification-form" onSubmit = {handleSubmit}>
                 <div className="form-group">
                     <label>Training Type:</label>
                     <select
-                      value={type}
-                      onChange={(e) => setType(e.target.value)}
+                      value={trainingType}
+                      onChange={(e) => setTrainingType(e.target.value)}
                     >
                       <option value="">-- Select Training Type --</option>
                       {Object.entries(TrainingTypes).map(([value, label]) => (
@@ -93,17 +94,17 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
                     <input
                       type = "date"
                       min = {today.toISOString().split('T')[0]}
-                      value = {date}
+                      value = {trainingDate}
                       className = "training-date-input"
-                      onChange = {(e) => setDate(e.target.value)}
+                      onChange = {(e) => setTrainingDate(e.target.value)}
                     />
                 </div>
 
                 <div className = "form-group">
                     <label>Training Hour:</label>
                     <select
-                      value = {hour}
-                      onChange = {(e) => setHour(e.target.value)}
+                      value = {trainingHour}
+                      onChange = {(e) => setTrainingHour(e.target.value)}
                     >
                       <option value = "">-- Select Hour --</option>
                       {getFilteredHours().map((h) => (
@@ -115,21 +116,21 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, handleUp
                 <div className = "form-group">
                     <label>Training Minute:</label>
                     <select
-                      value = {minute}
-                      onChange = {(e) => setMinute(e.target.value)}
+                      value = {trainingMinute}
+                      onChange = {(e) => setTrainingMinute(e.target.value)}
                     >
                       <option value="">-- Select Minute --</option>
-                      {availableMinutes.map((m) => (
+                      {AllMinutes.map((m) => (
                           <option key={m} value={m}>{m}</option>
                       ))}
                     </select>
                 </div>
 
-                <button type = "submit" className = 'btn btn-primary'>Submit Training</button>
+                <button type = "submit" className = 'btn btn-primary'>UPDATE</button>
                 {responseMessage && <p>{responseMessage}</p>}
                 </form>
 
-            <button className="modal-btn btn btn-secondary" onClick={() => closeEditModal()}>Cancel</button>
+            <button className="modal-btn btn btn-secondary" onClick={() => closeEditModal()}>CANCEL</button>
           </Modal>
         </div>
       );

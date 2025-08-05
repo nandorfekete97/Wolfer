@@ -3,10 +3,9 @@ import { TrainingTypes, getTrainingTypeLabel } from '../../Utils/TrainingTypes';
 import { AllHours, AllMinutes } from '../../Utils/AllTimes';
 import { toast } from "react-toastify";
 
-const AddTraining = ({availableHours, today, isSelectedDateToday, triggerRefresh}) => {
+const AddTraining = ({availableHours, today, isSelectedDateToday, trainingDate, setTrainingDate, triggerRefresh}) => {
 
     const [trainingType, setTrainingType] = useState('');
-    const [trainingDate, setTrainingDate] = useState('');
     const [trainingHour, setTrainingHour] = useState('');
     const [trainingMinute, setTrainingMinute] = useState('');
 

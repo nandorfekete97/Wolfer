@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
 import Modal from 'react-modal';
 import './DeleteModal.css';
+import { getTrainingTypeLabel } from '../../Utils/TrainingTypes';
 
-const DeleteModal = ({deleteModalIsOpen, closeDeleteModal, handleDelete}) => {
+const DeleteModal = ({training, date, deleteModalIsOpen, closeDeleteModal, handleDelete}) => {
 
   return (
         <div>
@@ -12,9 +12,9 @@ const DeleteModal = ({deleteModalIsOpen, closeDeleteModal, handleDelete}) => {
             contentLabel="Training Deletion"
             ariaHideApp={false}
           >
-            <h2>DELETE TRAINING</h2>
-            <button className="modal-btn btn btn-danger" onClick={(e) => handleDelete(e)}>Delete</button>
-            <button className="modal-btn btn btn-secondary" onClick={() => closeDeleteModal()}>Cancel</button>
+            <h2>DELETE {getTrainingTypeLabel(training.trainingType)} for date: <br></br> {date.toDateString()} </h2>
+            <button className="modal-btn btn btn-danger" onClick={(e) => handleDelete(e)}>DELETE</button>
+            <button className="modal-btn btn btn-secondary" onClick={() => closeDeleteModal()}>CANCEL</button>
           </Modal>
         </div>
       );

@@ -4,8 +4,6 @@ import './DeleteModal.css';
 
 const DeleteTrainingsByDateModal = ({deleteTrainingsByDateModalIsOpen, closeDeleteModal, handleDeleteAll, date}) => {
 
-  const dateOnly = date.toISOString().split("T")[0];
-
   return (
         <div>
           <Modal
@@ -14,9 +12,9 @@ const DeleteTrainingsByDateModal = ({deleteTrainingsByDateModalIsOpen, closeDele
             contentLabel="Training Deletion"
             ariaHideApp={false}
           >
-            <h2>DELETE ALL TRAININGS FOR DATE: {dateOnly}</h2>
-            <button className="modal-btn btn btn-danger" onClick={(e) => handleDeleteAll(e)}>Delete</button>
-            <button className="modal-btn btn btn-secondary" onClick={() => closeDeleteModal()}>Cancel</button>
+            <h2>DELETE all trainings for date: <br></br> {date.toDateString()}</h2>
+            <button className="modal-btn btn btn-danger" onClick={(e) => handleDeleteAll(e)}>DELETE</button>
+            <button className="modal-btn btn btn-secondary" onClick={() => closeDeleteModal()}>CANCEL</button>
           </Modal>
         </div>
       );

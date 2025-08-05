@@ -1,0 +1,29 @@
+/* Override only the UPDATE button (first button) */
+.modal-content .btn-primary {
+  background-color: #2f55fa !important;
+  color: white !important;
+}
+
+.modal-content .btn-primary:hover {
+  background-color: #2345c7 !important;
+}
+
+/* Optional: make sure CANCEL stays gray (if it's a secondary button) */
+.modal-content .btn-secondary {
+  background-color: #6c757d !important;
+  color: white !important;
+}
+
+.modal-content .btn-secondary:hover {
+  background-color: #5a6268 !important;
+}
+
+.modal-content button {
+  display: block;       /* makes button take full width */
+  width: 100%;          /* stretch button full container width */
+  max-width: 250px;     /* optional: limit max width so buttons aren’t too wide */
+  margin: 4px auto;     /* vertical spacing and center horizontally */
+  padding: 10px 0;      /* vertical padding, horizontal auto due to width */
+  box-sizing: border-box;
+  cursor: pointer;
+}

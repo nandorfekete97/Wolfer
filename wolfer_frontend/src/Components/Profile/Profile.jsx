@@ -52,9 +52,10 @@ const Profile = () => {
     });
 
     if (res.ok) {
+      toast.success("Profile updated successfully!");
       await getUserInfo();
     } else {
-      console.error("Failed to update user. Status:", res.status);
+      toast.error("Failed to update user. Status:", res.status);
     }
   };
 

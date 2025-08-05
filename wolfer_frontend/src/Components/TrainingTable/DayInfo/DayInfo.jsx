@@ -17,6 +17,7 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
 
   const getTrainings = async () => {
     const dateOnly = date.toLocaleDateString('sv-SE');
+
     const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`);
     const data = await res.json();
 
@@ -111,6 +112,7 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
               triggerRefresh = {triggerRefresh}
               showSignUp = {showSignUp}
               isSelectedDateToday = {isSelectedDateToday} 
+              date = {date}
             />
           </h5>
         ))}

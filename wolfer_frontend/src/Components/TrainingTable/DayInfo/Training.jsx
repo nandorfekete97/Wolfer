@@ -1,12 +1,12 @@
 import './Training.css'
 import React, { useState, useEffect } from 'react';
-import DeleteModal from '../../Modals/DeleteTrainingModal';
+import DeleteTrainingModal from '../../Modals/DeleteTrainingModal';
 import EditTrainingModal from '../../Modals/EditTrainingModal';
 import UsersByTrainingModal from '../../Modals/UsersByTrainingModal';
 import { TrainingTypes, getTrainingTypeLabel } from '../../../Utils/TrainingTypes';
 import { toast } from 'react-toastify';
 
-const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTrainings, refreshDayTrainings, triggerRefresh, showSignUp = true, isSelectedDateToday }) => {
+const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTrainings, refreshDayTrainings, triggerRefresh, showSignUp = true, isSelectedDateToday, date }) => {
   const [time, setTime] = useState(null);
   const [type, setType] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
@@ -274,7 +274,9 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
         isFull = {isFull}
       />
 
-      <DeleteModal
+      <DeleteTrainingModal
+        training = {training}
+        date = {date}
         deleteModalIsOpen = {deleteModalIsOpen}
         closeDeleteModal = {() => setDeleteModalIsOpen(false)}
         handleDelete = {handleDelete}
@@ -284,6 +286,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
         editModalIsOpen = {editModalIsOpen}
         closeEditModal = {() => setEditModalIsOpen(false)}
         training = {training}
+        date = {date}
         handleUpdate = {handleUpdate}
         isSelectedDateToday = {isSelectedDateToday}
       />
