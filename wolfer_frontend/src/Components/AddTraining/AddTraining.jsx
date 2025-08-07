@@ -19,12 +19,14 @@ const AddTraining = ({availableHours, today, isSelectedDateToday, trainingDate, 
 
         const trainingTime = trainingHour + ":" + trainingMinute;
         const localDateTimeString = `${trainingDate}T${trainingTime}`;
+        const token = localStorage.getItem("token");
 
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/AddTraining`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
+                "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
                 Date: localDateTimeString,

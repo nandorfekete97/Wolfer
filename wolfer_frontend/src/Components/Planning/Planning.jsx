@@ -65,7 +65,6 @@ const Planning = () => {
       </div>
     </div>
   );
-
 }
 
 export default Planning;

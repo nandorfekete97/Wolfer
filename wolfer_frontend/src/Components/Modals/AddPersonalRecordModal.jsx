@@ -24,12 +24,14 @@ const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
     try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/PersonalRecord/AddPersonalRecord/`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({
             userId: userId,

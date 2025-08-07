@@ -36,6 +36,14 @@ const Login = ({ setSuccessfulLogin }) => {
         const data = await response.json();
         localStorage.setItem('token', data.token);
         localStorage.setItem('userId', data.userId);
+
+        const token = localStorage.getItem("token");
+
+        const payloadBase64 = token.split('.')[1];
+        const decodedPayload = JSON.parse(atob(payloadBase64));
+        const role = decodedPayload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+        localStorage.setItem('role', role);
+
         setSuccessfulLogin(true);
       } else {
         const data = await response.json();

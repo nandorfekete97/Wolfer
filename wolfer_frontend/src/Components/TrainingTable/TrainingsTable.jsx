@@ -9,7 +9,17 @@ const TrainingsTable = ({ showSignUp=true, refreshTrigger, triggerRefresh, isSel
 
   const getSignedUpTrainings = async () => {
     const userId = localStorage.getItem("userId");
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetUpcomingTrainingsByUserId/${userId}`);
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetUpcomingTrainingsByUserId/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      }
+    );
     const data = await res.json();
     setSignedUpTrainings(data.trainingEntities); 
     setDataIsLoaded(true);

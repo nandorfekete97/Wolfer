@@ -18,7 +18,7 @@ public class UserController : ControllerBase
         _userService = userService;
     }
     
-    [HttpGet("GetUserById/{userId}"), Authorize(Roles="User")]
+    [HttpGet("GetUserById/{userId}"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> GetUserById(Guid userId)
     {
         try
@@ -32,7 +32,7 @@ public class UserController : ControllerBase
         }
     }
     
-    [HttpPut("UpdateUser"), Authorize(Roles="User")]
+    [HttpPut("UpdateUser"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> UpdateUser([FromBody] UserInfoUpdateDTO userInfoUpdateDto)
     {
         if (!ModelState.IsValid)
@@ -50,7 +50,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpDelete("DeleteUser/{id}"), Authorize(Roles="User")]
+    [HttpDelete("DeleteUser"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteUser(Guid userId)
     {
         try
@@ -64,7 +64,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPut("ChangePassword")]
+    [HttpPut("ChangePassword"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDto)
     {
         if (!ModelState.IsValid)

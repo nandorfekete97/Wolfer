@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ public class UserTrainingController : ControllerBase
         _userTrainingService = userTrainingService;
     }
 
-    [HttpGet("GetUpcomingTrainingsByUserId/{userId}")]
+    [HttpGet("GetUpcomingTrainingsByUserId/{userId}"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> GetUpcomingTrainingsByUserId(Guid userId)
     {
         try
@@ -31,7 +32,7 @@ public class UserTrainingController : ControllerBase
         }
     }
     
-    [HttpGet("GetPastTrainingsForUser/{userId}")]
+    [HttpGet("GetPastTrainingsForUser/{userId}"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> GetPastTrainingsForUser(Guid userId)
     {
         try
@@ -45,7 +46,7 @@ public class UserTrainingController : ControllerBase
         }
     }
 
-    [HttpGet("GetUsersByTrainingId/{trainingId}")]
+    [HttpGet("GetUsersByTrainingId/{trainingId}"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> GetUsersByTrainingId(int trainingId)
     {
         try
@@ -59,7 +60,7 @@ public class UserTrainingController : ControllerBase
         }
     }
 
-    [HttpPost("SignUserUpForTraining/users/{userId}/trainings/{trainingId}")]
+    [HttpPost("SignUserUpForTraining/users/{userId}/trainings/{trainingId}"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> SignUserUpForTraining(Guid userId, int trainingId)
     {
         try
@@ -73,7 +74,7 @@ public class UserTrainingController : ControllerBase
         }
     }
 
-    [HttpDelete("SignUserOffFromTraining/users/{userId}/trainings/{trainingId}")]
+    [HttpDelete("SignUserOffFromTraining/users/{userId}/trainings/{trainingId}"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> SignUserOffFromTraining(Guid userId, int trainingId)
     {
         try

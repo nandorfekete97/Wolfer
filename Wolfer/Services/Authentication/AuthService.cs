@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Wolfer.Data.Entities;
+using Microsoft.Extensions.Configuration;
 
 namespace Wolfer.Services.Authentication;
 
@@ -7,17 +8,24 @@ public class AuthService : IAuthService
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly ITokenService _tokenService;
+    private readonly string _adminCode;
 
-    public AuthService(UserManager<IdentityUser> userManager, ITokenService tokenService)
+    public AuthService(UserManager<IdentityUser> userManager, ITokenService tokenService, IConfiguration config)
     {
         _userManager = userManager;
         _tokenService = tokenService;
+        _adminCode = config["AdminSettings:AdminCode"];
     }
 
-    public async Task<AuthResult> RegisterAsync(string email, string username, string password, string role)
+    public async Task<AuthResult> RegisterAsync(string email, string username, string password, string role, string? adminCode = null)
     {
+        if (role == "Admin" && adminCode != _adminCode)
+        {
+            return new AuthResult(null, false, email, username, "Invalid admin code.");
+        }
+        
         var user = new IdentityUser { UserName = username, Email = email };
-        var result = await _userManager.CreateAsync(new IdentityUser { UserName = username, Email = email }, password);
+        var result = await _userManager.CreateAsync(user, password);
 
         if (!result.Succeeded)
         {

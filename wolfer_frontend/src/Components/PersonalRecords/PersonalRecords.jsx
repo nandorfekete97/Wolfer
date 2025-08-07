@@ -3,7 +3,6 @@ import PersonalRecord from './PersonalRecord'
 import './PersonalRecords.css';
 import AddPersonalRecordModal from '../Modals/AddPersonalRecordModal';
 import { ExerciseTypes, getExerciseTypeLabel } from '../../Utils/ExerciseTypes';
-//import { toast } from 'react-toastify';
 
 const PersonalRecords = () => {
     const [personalRecords, setPersonalRecords] = useState(new Map());
@@ -13,7 +12,16 @@ const PersonalRecords = () => {
     const userId = localStorage.getItem("userId");
 
     const getPersonalRecords = async () => {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/PersonalRecord/GetByUserId/${userId}`);
+      const token = localStorage.getItem("token");
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/PersonalRecord/GetByUserId/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+          }
+        );
         const data = await res.json();
 
         const newMap = new Map();

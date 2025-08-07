@@ -13,7 +13,18 @@ const [selectedMonth, setSelectedMonth] = useState("all");
 
 const getpastTrainings = async () => {
     const userId = localStorage.getItem("userId");
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetPastTrainingsForUser/${userId}`);
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetPastTrainingsForUser/${userId}`,
+        {
+            method: "GET",
+            headers: {
+            "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+        }
+    );
+    
     const data = await res.json();
     const trainings = data.trainingEntities;
     setPastTrainings(trainings); 

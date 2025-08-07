@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wolfer.Data.DTOs;
 using Wolfer.Data.Entities;
@@ -16,7 +17,7 @@ public class PersonalRecordController : ControllerBase
         _personalRecordService = personalRecordService;
     }
 
-    [HttpGet("GetByUserId/{userId}")]
+    [HttpGet("GetByUserId/{userId}"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> GetByUserId(Guid userId)
     {
         try
@@ -30,7 +31,7 @@ public class PersonalRecordController : ControllerBase
         }
     }
 
-    [HttpPost("AddPersonalRecord")]
+    [HttpPost("AddPersonalRecord"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> AddPersonalRecord([FromBody] PersonalRecordDTO personalRecordDto)
     {
         try
@@ -44,7 +45,7 @@ public class PersonalRecordController : ControllerBase
         }
     }
 
-    [HttpPut("UpdatePersonalRecord")]
+    [HttpPut("UpdatePersonalRecord"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> UpdatePersonalRecord([FromBody] PersonalRecordDTO personalRecordDto)
     {
         try

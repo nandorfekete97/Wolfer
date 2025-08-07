@@ -17,8 +17,17 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
 
   const getTrainings = async () => {
     const dateOnly = date.toLocaleDateString('sv-SE');
+    const token = localStorage.getItem("token");
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`);
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`,
+      {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+      }
+    );
     const data = await res.json();
 
     // sorting trainings should (perhaps) be on backend 
@@ -58,13 +67,16 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
   }, [date, refreshTrigger]);
 
   const handleDeleteAll = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
+
+    const token = localStorage.getItem("token");
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/DeleteTrainingsByDate/${trainingDateOnly}`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         }
       });
 

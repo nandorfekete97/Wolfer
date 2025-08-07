@@ -1,8 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Register.css'; 
+import './Register.css';
+import { toast } from "react-toastify";
 
 const Register = () => {
+  
+  const [formData, setFormData] = useState({
+    email: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+    role: '',
+    adminCode: '',
+  });
+
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const navigate = useNavigate();
 
@@ -13,16 +26,10 @@ const Register = () => {
   const goToLogin = () => {
     navigate('/login');
   }
-  
-  const [formData, setFormData] = useState({
-    email: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
-  });
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  useEffect(() => {
+    console.log("role: ", formData.role);
+  })
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,7 +43,22 @@ const Register = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords don't match");
+      toast.error("Passwords don't match");
+      return;
+    }
+
+    if (
+      formData.email == "" || 
+      formData.username == "" || 
+      formData.password == "" || 
+      formData.confirmPassword == "" || 
+      formData.role == "-- Select Role --"
+    ) {
+      toast.error("All fields are required.");
+    }
+
+    if (formData.role === "Admin" && !formData.adminCode) {
+      toast.error("Admin code is required for Admin registration.");
       return;
     }
 
@@ -50,6 +72,8 @@ const Register = () => {
           email: formData.email,
           userName: formData.username,
           password: formData.password,
+          role: formData.role,
+          ...(formData.role === "Admin" && { adminCode: formData.adminCode }),
         }),
       });
 
@@ -114,6 +138,37 @@ const Register = () => {
             onChange={handleChange} required 
           />
         </div>
+
+        <div className="form-group">
+          <label>Wolfer Role:</label>
+          <select
+            onChange={handleChange} required 
+            value={formData.role}
+            name="role"
+            >
+              <option>-- Select Role --</option>
+              <option>
+                User
+              </option>
+              <option>
+                Admin
+              </option>
+            </select>
+        </div>
+
+        {formData.role === "Admin" && (
+          <div className="form-group">
+            <label>Admin Code:</label>
+            <input
+              type="text"
+              name="adminCode"
+              className="register-input"
+              value={formData.adminCode || ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        )}
 
         {error && <p className="register-error" style={{ color: 'red' }}>{error}</p>}
         {success && <p style={{ color: 'green' }}>{success}</p>}
