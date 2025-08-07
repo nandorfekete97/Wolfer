@@ -17,7 +17,7 @@ public class AuthService : IAuthService
     public async Task<AuthResult> RegisterAsync(string email, string username, string password, string role)
     {
         var user = new IdentityUser { UserName = username, Email = email };
-        var result = await _userManager.CreateAsync(new IdentityUser { UserName = username, Email = email }, password);
+        var result = await _userManager.CreateAsync(user, password);
 
         if (!result.Succeeded)
         {

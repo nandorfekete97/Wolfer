@@ -17,8 +17,17 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
 
   const getTrainings = async () => {
     const dateOnly = date.toLocaleDateString('sv-SE');
+    const token = localStorage.getItem("token");
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`);
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`,
+      {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+      }
+    );
     const data = await res.json();
 
     // sorting trainings should (perhaps) be on backend 

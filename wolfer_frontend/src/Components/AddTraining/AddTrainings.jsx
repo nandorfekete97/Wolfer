@@ -29,6 +29,7 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, trainingDate,
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
+            "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify(trainingList),
         });

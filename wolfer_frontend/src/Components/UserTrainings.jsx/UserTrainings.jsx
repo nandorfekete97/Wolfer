@@ -7,8 +7,18 @@ const UserTrainings = ({ userId }) => {
 
   useEffect(() => {
     const fetchPastTrainings = async () => {
+      const token = localStorage.getItem("token");
+
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetPastTrainingsForUser/${userId}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetPastTrainingsForUser/${userId}`,
+          {
+            method: "GET",
+            headers: {
+            "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+          }
+        );
         setTrainings(response.data);
       } catch (err) {
         setError('Failed to fetch past trainings.');

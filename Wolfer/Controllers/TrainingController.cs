@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wolfer.Data;
 using Wolfer.Data.DTOs;
@@ -19,7 +20,7 @@ public class TrainingController : ControllerBase
         _userTrainingService = userTrainingService;
     }
 
-    [HttpGet("GetTrainingById/{id}")]
+    [HttpGet("GetTrainingById/{id}"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> GetTrainingById(int id)
     {
         try
@@ -33,7 +34,7 @@ public class TrainingController : ControllerBase
         }
     }
     
-    [HttpGet("GetTrainingsForUser/{userId}")]
+    [HttpGet("GetTrainingsForUser/{userId}"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> GetTrainingsForUser(Guid userId)
     {
         try
@@ -47,7 +48,7 @@ public class TrainingController : ControllerBase
         }
     }
 
-    [HttpGet("GetTrainingsByDate/{date}")]
+    [HttpGet("GetTrainingsByDate/{date}"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> GetTrainingsByDate(DateOnly date)
     {
         try
@@ -61,7 +62,7 @@ public class TrainingController : ControllerBase
         }
     }
     
-    [HttpGet("GetTrainingsByType/{type}")]
+    [HttpGet("GetTrainingsByType/{type}"), Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> GetTrainingsByType(TrainingType trainingType)
     {
         try
@@ -75,7 +76,7 @@ public class TrainingController : ControllerBase
         }
     }
 
-    [HttpPost("AddTraining")]
+    [HttpPost("AddTraining"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddTraining([FromBody] TrainingDTO trainingDto)
     {
         try
@@ -89,7 +90,7 @@ public class TrainingController : ControllerBase
         }
     }
 
-    [HttpPost("AddTrainings")]
+    [HttpPost("AddTrainings"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddTrainings([FromBody] List<TrainingDTO> trainerDtos)
     {
         try
@@ -103,7 +104,7 @@ public class TrainingController : ControllerBase
         }
     }
 
-    [HttpPut("UpdateTraining")]
+    [HttpPut("UpdateTraining"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateTraining([FromBody] TrainingDTO trainingDto)
     {
         try
@@ -117,7 +118,7 @@ public class TrainingController : ControllerBase
         }
     }
 
-    [HttpDelete("DeleteTraining/{id}")]
+    [HttpDelete("DeleteTraining/{id}"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteTraining(int id)
     {
         try
@@ -131,7 +132,7 @@ public class TrainingController : ControllerBase
         }
     }
 
-    [HttpDelete("DeleteTrainingsByDate/{date}")]
+    [HttpDelete("DeleteTrainingsByDate/{date}"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteTrainingsByDate(DateOnly date)
     {
         try

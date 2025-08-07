@@ -1,4 +1,4 @@
-import './Training.css'
+import './Training.css';
 import React, { useState, useEffect } from 'react';
 import DeleteTrainingModal from '../../Modals/DeleteTrainingModal';
 import EditTrainingModal from '../../Modals/EditTrainingModal';
@@ -38,8 +38,18 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   }, [training]);
 
   const checkTrainingCapacity = async () => {
+    const token = localStorage.getItem("token");
+
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetUsersByTrainingId/${training.id}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetUsersByTrainingId/${training.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+        }
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setCurrentUsersCount((data.userEntities || []).length);
@@ -52,12 +62,14 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   const signUpForTraining = async (e) =>{
     e.preventDefault();
     const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
     try{
       const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetUsersByTrainingId/${training.id}`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
+            "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
         }
       });
 
@@ -84,7 +96,8 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
         const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/SignUserUpForTraining/users/${userId}/trainings/${training.id}`, {
             method: 'POST',
             headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({
             userId: userId,
@@ -111,12 +124,14 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   const signOffFromTraining = async (e) =>{
     e.preventDefault();
     const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
     try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/SignUserOffFromTraining/users/${userId}/trainings/${training.id}`, {
             method: 'DELETE',
             headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
             },
         });
 
@@ -136,11 +151,14 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   }
   
   const showUsersByTraining = async (training) => {
+    const token = localStorage.getItem("token");
+
     try{
       const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetUsersByTrainingId/${training.id}`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
+            "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
         }
       });
 
@@ -159,12 +177,14 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
 
   const handleDelete = async (e) => {
     e.preventDefault();
+    const token = localStorage.get("token");
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/DeleteTraining/${training.id}`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json',
+            "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
         }
       });
 
@@ -188,10 +208,15 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
   }
 
   const handleUpdate = async (updatedTraining) => {
+    const token = localStorage.getItem("token");
+
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/UpdateTraining/`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(updatedTraining),
       });
 
