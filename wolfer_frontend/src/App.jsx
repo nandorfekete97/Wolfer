@@ -11,6 +11,7 @@ import PersonalRecords from './Components/PersonalRecords/PersonalRecords';
 import Register from './Components/Register/Register';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AdminRoute from './Components/AdminRoute/AdminRoute';
 
 function App() {
   const [successfulLogin, setSuccessfulLogin] = useState(false);
@@ -40,9 +41,13 @@ function App() {
                 <Route path = "*" element={<Navigate to="/trainings" />} />
                 <Route path = "/trainings" element={<TrainingsTable />} />
                 <Route path = "/profile" element={<Profile />} />
-                <Route path = '/planning' element={<Planning/>} />
                 <Route path = '/training-history' element={<TrainingHistory/>} />
                 <Route path = '/personal-records' element={<PersonalRecords/>}/>
+                <Route path='/planning' 
+                  element={<AdminRoute>
+                            <Planning/>
+                          </AdminRoute>}
+                />
               </Routes>
             </div>
           </>

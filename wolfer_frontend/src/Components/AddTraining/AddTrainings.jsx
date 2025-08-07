@@ -13,6 +13,8 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, trainingDate,
     const handleMultipleSubmit = async (e) => {
         e.preventDefault();
 
+        const token = localStorage.getItem("token");
+
         if (trainingType == null || trainingHour == null || trainingMinute == null || trainings.length === 0) {
         setResponseMessage("Training type, time and at least one date must be selected.");
         setResponseMessageModalIsOpen(true);

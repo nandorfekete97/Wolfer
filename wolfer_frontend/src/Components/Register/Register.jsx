@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Register.css';
 import { toast } from "react-toastify";
@@ -11,6 +11,7 @@ const Register = () => {
     password: '',
     confirmPassword: '',
     role: '',
+    adminCode: '',
   });
 
   const [error, setError] = useState('');
@@ -25,6 +26,10 @@ const Register = () => {
   const goToLogin = () => {
     navigate('/login');
   }
+
+  useEffect(() => {
+    console.log("role: ", formData.role);
+  })
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,9 +47,19 @@ const Register = () => {
       return;
     }
 
-    if (formData.email == "" || formData.username == "" || formData.password == "" || formData.confirmPassword == "" || formData.role == "-- Select Role --")
-    {
+    if (
+      formData.email == "" || 
+      formData.username == "" || 
+      formData.password == "" || 
+      formData.confirmPassword == "" || 
+      formData.role == "-- Select Role --"
+    ) {
       toast.error("All fields are required.");
+    }
+
+    if (formData.role === "Admin" && !formData.adminCode) {
+      toast.error("Admin code is required for Admin registration.");
+      return;
     }
 
     try {
@@ -58,6 +73,7 @@ const Register = () => {
           userName: formData.username,
           password: formData.password,
           role: formData.role,
+          ...(formData.role === "Admin" && { adminCode: formData.adminCode }),
         }),
       });
 
@@ -139,6 +155,20 @@ const Register = () => {
               </option>
             </select>
         </div>
+
+        {formData.role === "Admin" && (
+          <div className="form-group">
+            <label>Admin Code:</label>
+            <input
+              type="text"
+              name="adminCode"
+              className="register-input"
+              value={formData.adminCode || ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        )}
 
         {error && <p className="register-error" style={{ color: 'red' }}>{error}</p>}
         {success && <p style={{ color: 'green' }}>{success}</p>}

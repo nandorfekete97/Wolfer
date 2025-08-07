@@ -67,13 +67,16 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
   }, [date, refreshTrigger]);
 
   const handleDeleteAll = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
+
+    const token = localStorage.getItem("token");
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/DeleteTrainingsByDate/${trainingDateOnly}`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         }
       });
 
