@@ -6,7 +6,7 @@ import UsersByTrainingModal from '../../Modals/UsersByTrainingModal';
 import { TrainingTypes, getTrainingTypeLabel } from '../../../Utils/TrainingTypes';
 import { toast } from 'react-toastify';
 
-const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTrainings, refreshDayTrainings, triggerRefresh, showSignUp = true, isSelectedDateToday, date }) => {
+const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTrainings, refreshDayTrainings, triggerRefresh, showSignUp = true, isSelectedDateToday, formattedDate }) => {
   const [time, setTime] = useState(null);
   const [type, setType] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
@@ -106,8 +106,6 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
         });
 
         if (response.ok) {
-          console.log("Signup response:", response.status, await response.text());
-
             toast.success("Successfully signed up for training.");
         } else {
             const data = await response.json();
@@ -301,7 +299,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
 
       <DeleteTrainingModal
         training = {training}
-        date = {date}
+        formattedDate = {formattedDate}
         deleteModalIsOpen = {deleteModalIsOpen}
         closeDeleteModal = {() => setDeleteModalIsOpen(false)}
         handleDelete = {handleDelete}
@@ -311,7 +309,7 @@ const Training = ({ training, signedUpTrainingIdsForDay, refreshSignedUpTraining
         editModalIsOpen = {editModalIsOpen}
         closeEditModal = {() => setEditModalIsOpen(false)}
         training = {training}
-        date = {date}
+        formattedDate = {formattedDate}
         handleUpdate = {handleUpdate}
         isSelectedDateToday = {isSelectedDateToday}
       />

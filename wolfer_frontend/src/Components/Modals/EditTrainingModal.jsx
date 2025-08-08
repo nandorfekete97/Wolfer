@@ -4,7 +4,7 @@ import { TrainingTypes, getTrainingTypeLabel } from '../../Utils/TrainingTypes';
 import { AllHours, AllMinutes } from '../../Utils/AllTimes';
 import './EditTrainingModal.css';
 
-const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, date, handleUpdate, isSelectedDateToday }) => { 
+const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, formattedDate, handleUpdate, isSelectedDateToday }) => { 
 
   const today = new Date();
 
@@ -74,7 +74,7 @@ const EditTrainingModal = ({ editModalIsOpen, closeEditModal, training, date, ha
             contentLabel="Training Modification"
             ariaHideApp={false}
           >
-            <h2>UPDATE {getTrainingTypeLabel(training.trainingType)} for date: <br></br> {date.toDateString()}</h2>
+            <h2>UPDATE {getTrainingTypeLabel(training.trainingType)} for date: <br></br> {formattedDate}</h2>
             <form className="training-modification-form" onSubmit = {handleSubmit}>
                 <div className="form-group">
                     <label>Training Type:</label>

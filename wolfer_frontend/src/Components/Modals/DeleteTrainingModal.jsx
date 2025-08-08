@@ -2,7 +2,7 @@ import Modal from 'react-modal';
 import './DeleteModal.css';
 import { getTrainingTypeLabel } from '../../Utils/TrainingTypes';
 
-const DeleteModal = ({training, date, deleteModalIsOpen, closeDeleteModal, handleDelete}) => {
+const DeleteTrainingModal = ({training, formattedDate, deleteModalIsOpen, closeDeleteModal, handleDelete}) => {
 
   return (
         <div>
@@ -12,7 +12,7 @@ const DeleteModal = ({training, date, deleteModalIsOpen, closeDeleteModal, handl
             contentLabel="Training Deletion"
             ariaHideApp={false}
           >
-            <h2>DELETE {getTrainingTypeLabel(training.trainingType)} for date: <br></br> {date.toDateString()} </h2>
+            <h2>DELETE {getTrainingTypeLabel(training.trainingType)} for date: <br></br> {formattedDate} </h2>
             <button className="modal-btn btn btn-danger" onClick={(e) => handleDelete(e)}>DELETE</button>
             <button className="modal-btn btn btn-secondary" onClick={() => closeDeleteModal()}>CANCEL</button>
           </Modal>
@@ -20,4 +20,4 @@ const DeleteModal = ({training, date, deleteModalIsOpen, closeDeleteModal, handl
       );
 }
 
-export default DeleteModal;
+export default DeleteTrainingModal;

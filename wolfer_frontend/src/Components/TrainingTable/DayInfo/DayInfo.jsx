@@ -14,9 +14,11 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
 
   const trainingDateOnly = date.toISOString().split("T")[0];
   const todayDateOnly = new Date().toISOString().split("T")[0];
+  const formattedDate = formatDateString(date);
 
   const getTrainings = async () => {
     const dateOnly = date.toLocaleDateString('sv-SE');
+
     const token = localStorage.getItem("token");
 
     const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`,
@@ -93,11 +95,22 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
     }
   }
 
+  function formatDateString(dateString) {
+    const date = new Date(dateString);
+
+    const weekDay = date.toLocaleString("en-GB", {weekday: "short"});
+    const day = date.getDate();
+    const month = date.toLocaleString("en-GB", {month: "short"});
+    const year = date.getFullYear();
+
+    return `${weekDay} ${day} ${month} ${year}`;
+  }
+
   return (
     <>
         <h3 className="day-info">
           <div>
-            {date ? `${date.toDateString()}` : ""} 
+            {date ? `${formatDateString(date)}` : ""} 
 
             {isPlanning ? 
               <button
@@ -124,7 +137,7 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
               triggerRefresh = {triggerRefresh}
               showSignUp = {showSignUp}
               isSelectedDateToday = {isSelectedDateToday} 
-              date = {date}
+              formattedDate = {formattedDate}
             />
           </h5>
         ))}
@@ -133,7 +146,7 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
           deleteTrainingsByDateModalIsOpen = {deleteTrainingsByDateModalIsOpen}
           closeDeleteModal = {() => setDeleteTrainingsByDateModalIsOpen(false)}
           handleDeleteAll = {handleDeleteAll}
-          date = {date}
+          formattedDate = {formattedDate}
         />
     </>
   )
