@@ -16,7 +16,9 @@
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5166",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__WolferDb": "Server=localhost,1433;Database=Wolfer;User Id=sa;Password=WeWhoWrestleWithGod33$;Encrypt=false;",
+        "AdminSettings__AdminCode": "WOLFER2025"
       }
     },
     "https": {
@@ -26,7 +28,9 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7250;http://localhost:5166",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__WolferDb": "Server=localhost,1433;Database=Wolfer;User Id=sa;Password=WeWhoWrestleWithGod33$;Encrypt=false;",
+        "AdminSettings__AdminCode": "WOLFER2025"
       }
     },
     "IIS Express": {
@@ -34,7 +38,9 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__WolferDb": "Server=localhost,1433;Database=Wolfer;User Id=sa;Password=WeWhoWrestleWithGod33$;Encrypt=false;",
+        "AdminSettings__AdminCode": "WOLFER2025"
       }
     }
   }
