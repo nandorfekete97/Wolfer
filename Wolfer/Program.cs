@@ -60,6 +60,8 @@ builder.Services.AddScoped<IUserTrainingRepository, UserTrainingRepository>();
 builder.Services.AddScoped<IUserTrainingService, UserTrainingService>();
 builder.Services.AddScoped<IPersonalRecordRepository, PersonalRecordRepository>();
 builder.Services.AddScoped<IPersonalRecordService, PersonalRecordService>();
+builder.Services.AddScoped<IProfilePhotoRepository, ProfilePhotoRepository>();
+builder.Services.AddScoped<IProfilePhotoService, ProfilePhotoService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<AuthenticationSeeder>();
