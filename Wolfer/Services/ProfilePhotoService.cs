@@ -86,17 +86,6 @@ public class ProfilePhotoService : IProfilePhotoService
 
         await _profilePhotoRepository.DeleteProfilePhoto(userId);
     }
-
-    private ProfilePhotoEntity ConvertDtoToEntity(ProfilePhotoDTO dto)
-    {
-        ProfilePhotoEntity entity = new ProfilePhotoEntity
-        {
-            UserId = dto.UserId,
-            Photo = dto.Photo,
-            ContentType = dto.ContentType
-        };
-        return entity;
-    }
     
     private async Task<byte[]> ConvertFormFileToByteArray(IFormFile file)
     {

@@ -43,4 +43,18 @@ public class ProfilePhotoController : ControllerBase
             return BadRequest(new { message = e.Message });
         }
     }
+
+    [HttpDelete("DeleteProfilePhoto/${userId}")]
+    public async Task<IActionResult> DeleteProfilePhoto(string userId)
+    {
+        try
+        {
+            await _profilePhotoService.DeleteProfilePhoto(userId);
+            return Ok(new { message = "Profile photo deleted." });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
 }

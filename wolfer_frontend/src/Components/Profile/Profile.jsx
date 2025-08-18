@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import EditUserModal from '../Modals/EditUserModal';
 import ChangePasswordModal from '../Modals/ChangePasswordModal';
+import ProfilePhoto from './ProfilePhoto';
 import { toast } from 'react-toastify';
 import './Profile.css';
 
@@ -101,6 +102,10 @@ const Profile = () => {
   return (
   <div className="profile-container">
     <h2>Profile</h2>
+    
+    <div>
+      <ProfilePhoto/>
+    </div>
 
     <div className='user-info-group'>
       <label>Username: {username}</label>
