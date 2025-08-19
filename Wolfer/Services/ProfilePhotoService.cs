@@ -35,12 +35,11 @@ public class ProfilePhotoService : IProfilePhotoService
             throw new ArgumentException("Photo data is required.");
         }
 
-        // isn't this an unnecessary duplicate check for an already existing photo for a user?
         var existingPhoto = await _profilePhotoRepository.GetByUserId(profilePhoto.UserId);
 
         if (existingPhoto != null)
         {
-            throw new InvalidOperationException("A profile photo already exists for this user.");
+            await _profilePhotoRepository.DeleteProfilePhoto(existingPhoto.UserId);
         }
 
         var entity = new ProfilePhotoEntity
@@ -53,29 +52,29 @@ public class ProfilePhotoService : IProfilePhotoService
         await _profilePhotoRepository.AddProfilePhoto(entity);
     }
 
-    public async Task UpdateProfilePhoto(ProfilePhotoUploadDTO profilePhoto)
-    {
-        if (string.IsNullOrWhiteSpace(profilePhoto.UserId))
-        {
-            throw new ArgumentException("Invalid user ID.");
-        }
-
-        if (profilePhoto.Photo == null || profilePhoto.Photo.Length == 0)
-        {
-            throw new ArgumentException("Photo data is required.");
-        }
-
-        var existingPhoto = await _profilePhotoRepository.GetByUserId(profilePhoto.UserId);
-        if (existingPhoto == null)
-        {
-            throw new InvalidOperationException("No existing photo found for this user.");
-        }
-
-        existingPhoto.Photo = await ConvertFormFileToByteArray(profilePhoto.Photo);
-        existingPhoto.ContentType = profilePhoto.Photo.ContentType;
-        
-        await _profilePhotoRepository.UpdateProfilePhoto(existingPhoto);
-    }
+    // public async Task UpdateProfilePhoto(ProfilePhotoUploadDTO profilePhoto)
+    // {
+    //     if (string.IsNullOrWhiteSpace(profilePhoto.UserId))
+    //     {
+    //         throw new ArgumentException("Invalid user ID.");
+    //     }
+    //
+    //     if (profilePhoto.Photo == null || profilePhoto.Photo.Length == 0)
+    //     {
+    //         throw new ArgumentException("Photo data is required.");
+    //     }
+    //
+    //     var existingPhoto = await _profilePhotoRepository.GetByUserId(profilePhoto.UserId);
+    //     if (existingPhoto == null)
+    //     {
+    //         throw new InvalidOperationException("No existing photo found for this user.");
+    //     }
+    //
+    //     existingPhoto.Photo = await ConvertFormFileToByteArray(profilePhoto.Photo);
+    //     existingPhoto.ContentType = profilePhoto.Photo.ContentType;
+    //     
+    //     await _profilePhotoRepository.UpdateProfilePhoto(existingPhoto);
+    // }
 
     public async Task DeleteProfilePhoto(string userId)
     {
