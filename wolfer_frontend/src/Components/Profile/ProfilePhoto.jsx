@@ -1,9 +1,11 @@
-import React from "react";
 import DefaultProfilePhoto from '../../Images/profile-photo-default.jpg';
 
-const ProfilePhoto = ({ src, alt = "User profile photo" }) => {
+const ProfilePhoto = ({ src, alt = "User profile photo", onClick }) => {
     return (
-        <div>
+        <div
+            onClick={onClick}
+            style={{ cursor: "pointer", display: "inline-block" }}
+        >
             <img
                 src={src || DefaultProfilePhoto}
                 alt={alt}

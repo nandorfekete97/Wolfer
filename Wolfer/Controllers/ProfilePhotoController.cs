@@ -44,7 +44,7 @@ public class ProfilePhotoController : ControllerBase
         }
     }
 
-    [HttpDelete("DeleteProfilePhoto/${userId}")]
+    [HttpDelete("DeleteProfilePhoto/{userId}")]
     public async Task<IActionResult> DeleteProfilePhoto(string userId)
     {
         try
