@@ -1,0 +1,19 @@
+.file-input-wrapper {
+  display: flex;
+  justify-content: center; /* centers horizontally */
+  margin-bottom: 0.5rem;   /* spacing under it */
+}
+
+.file-input::-webkit-file-upload-button {
+  background-color: green;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.file-input::-webkit-file-upload-button:hover {
+  background-color: darkgreen;
+}
