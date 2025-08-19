@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import EditUserModal from '../Modals/EditUserModal';
 import ChangePasswordModal from '../Modals/ChangePasswordModal';
+import EditProfilePhotoModal from '../Modals/EditProfilePhotoModal';
+import ProfilePhoto from './ProfilePhoto';
 import { toast } from 'react-toastify';
 import './Profile.css';
 
@@ -10,10 +12,13 @@ const Profile = () => {
   const [email, setEmail] = useState('');
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
+  const [editProfilePhotoModalOpen, setEditProfilePhotoModalOpen] = useState(false);
+  const [profilepPhoto, setProfilePhoto] = useState("");
+
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
 
   const getUserInfo = async () => {
-    const userId = localStorage.getItem("userId");
-    const token = localStorage.getItem("token");
 
     const res = await fetch(`${import.meta.env.VITE_API_URL}/User/GetUserById/${userId}`, {
       headers: {
@@ -31,6 +36,28 @@ const Profile = () => {
       console.error("Failed to fetch user data. Status:", res.status);
     }
   };
+
+  const getUserProfilePhoto = async () => {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/ProfilePhoto/GetByUserId/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+
+    if (res.ok) {
+      const blob = await res.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      setProfilePhoto(imageUrl);
+    } else {
+      setProfilePhoto("");
+      console.error("Failed to fetch user profile photo. Status:", res.status);
+    }
+  };
+
+  const refreshUserData = async () => {
+    getUserInfo();
+    getUserProfilePhoto();
+  }
 
   const handleUpdate = async (updatedUser) => {
     const token = localStorage.getItem("token");
@@ -95,12 +122,19 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    getUserInfo();
+    refreshUserData();
   }, []);
 
   return (
   <div className="profile-container">
     <h2>Profile</h2>
+    
+    <div>
+      <ProfilePhoto 
+        src={profilepPhoto} 
+        onClick={() => setEditProfilePhotoModalOpen(true)}
+      />
+    </div>
 
     <div className='user-info-group'>
       <label>Username: {username}</label>
@@ -131,6 +165,16 @@ const Profile = () => {
       user={user}
       handlePasswordChange={handlePasswordChange}
     />
+
+    <EditProfilePhotoModal
+      isOpen={editProfilePhotoModalOpen}
+      closeModal={() => setEditProfilePhotoModalOpen(false)}
+      userId={userId}
+      token={token}
+      src={profilepPhoto}
+      refreshUserData={refreshUserData}
+    />
+
   </div>
   );
 };
