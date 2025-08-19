@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ProfilePhoto from "../Profile/ProfilePhoto";
+import './EditProfilePhotoModal.css';
 import Modal from 'react-modal';
 import { toast } from "react-toastify";
 
@@ -79,12 +80,14 @@ const EditProfilePhotoModal = ({isOpen, closeModal, userId, token, src, refreshU
                 <h2>Edit Profile Photo</h2>
                 <ProfilePhoto src={src}/>
 
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="mb-2"
-                />
+                <div className="file-input-wrapper">
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="file-input"
+                    />
+                </div>
 
                 <button 
                     className='btn btn-primary mb-2' 

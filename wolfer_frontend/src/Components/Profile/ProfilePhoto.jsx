@@ -9,7 +9,7 @@ const ProfilePhoto = ({ src, alt = "User profile photo", onClick }) => {
             <img
                 src={src || DefaultProfilePhoto}
                 alt={alt}
-                style={{ width: "96px", height: "96px", borderRadius: "50%", objectFit: "cover", marginBottom: "16px"}}
+                style={{ width: "96px", height: "96px", borderRadius: "50%", objectFit: "cover", marginBottom: "16px", marginRight: "16px"}}
             />
         </div>
     );
