@@ -4,6 +4,7 @@ import './DayInfo.css'
 import DeleteTrainingsByDateModal from '../../Modals/DeleteTrainingsByDateModal';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp = true, refreshTrigger, triggerRefresh, isSelectedDateToday, isPlanning }) => {
   
@@ -16,30 +17,38 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
   const todayDateOnly = new Date().toISOString().split("T")[0];
   const formattedDate = formatDateString(date);
 
+  const dateOnly = date.toLocaleDateString('sv-SE');
+  const token = localStorage.getItem("token");
+
   const getTrainings = async () => {
-    const dateOnly = date.toLocaleDateString('sv-SE');
+    
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`,
+        {
+          headers: {
+              "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+              }
+        }
+      );
 
-    const token = localStorage.getItem("token");
+      // sorting trainings should (perhaps) be on backend 
+      const sortedTrainings = res.data.trainingEntities.sort((a, b) => {
+        const timeA = new Date(a.date).getTime();
+        const timeB = new Date(b.date).getTime();
+        return timeA - timeB;
+      });
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/Training/GetTrainingsByDate/${dateOnly}`,
+      setTrainings(sortedTrainings);
+    } catch (err)
+    {
+      if (err.response)
       {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
-            }
+        toast.error(`Failed to fetch trainings for date. Status: ${err.response.status}`);
+      } else {
+        toast.error(`Network error while fetching trainings for date. Status: ${err.message}`);
       }
-    );
-    const data = await res.json();
-
-    // sorting trainings should (perhaps) be on backend 
-    const sortedTrainings = data.trainingEntities.sort((a, b) => {
-      const timeA = new Date(a.date).getTime();
-      const timeB = new Date(b.date).getTime();
-      return timeA - timeB;
-    });
-
-    setTrainings(sortedTrainings);
+    }
   };
 
   const getTodaysTrainingIds = () => {
@@ -74,25 +83,24 @@ const DayInfo = ({ date, signedUpTrainings, refreshSignedUpTrainings, showSignUp
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/DeleteTrainingsByDate/${trainingDateOnly}`, {
-        method: 'DELETE',
+      await axios.delete(`${import.meta.env.VITE_API_URL}/Training/DeleteTrainingsByDate/${trainingDateOnly}`, {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
 
-      if (response.ok) {
-        toast.success("Trainings were deleted successfully.");
-        setDeleteTrainingsByDateModalIsOpen(false);
-        getTrainings();
-      } else {
-        const data = await response.json();
-        toast.error(data.message || 'Trainings could not be deleted.');
-      }
-    } catch (error) {
-      toast.error('An error occurred during deleting trainings.');
-    }
+      toast.success("Trainings were deleted successfully.");
+      setDeleteTrainingsByDateModalIsOpen(false);
+      getTrainings();
+
+    } catch (err) {
+        if (err.response) {
+          toast.error(`Failed to delete trainings. Status: ${err.response.status}`);
+        } else {
+          toast.error(`Network error while deleting trainings. Status: ${err.message}`);
+        }
+    } 
   }
 
   function formatDateString(dateString) {

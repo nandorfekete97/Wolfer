@@ -1,27 +1,36 @@
 import React, { useState, useEffect } from 'react';
+import axios from "axios";
+import { toast } from 'react-toastify';
 
 const UserTrainings = ({ userId }) => {
   const [trainings, setTrainings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchPastTrainings = async () => {
-      const token = localStorage.getItem("token");
 
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetPastTrainingsForUser/${userId}`,
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/UserTraining/GetPastTrainingsForUser/${userId}`,
           {
-            method: "GET",
             headers: {
             "Content-Type": "application/json",
               "Authorization": `Bearer ${token}`
             }
           }
         );
+
         setTrainings(response.data);
-      } catch (err) {
-        setError('Failed to fetch past trainings.');
+      } 
+        catch (err) {
+          if (err.response)
+          {
+            toast.error("Failed to fetch past trainings. Status:", err.response.status);
+          } else {
+            toast.error("Network error while fetching past trainings.");
+          }
       } finally {
         setLoading(false);
       }

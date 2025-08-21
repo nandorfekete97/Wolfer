@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Register.css';
 import { toast } from "react-toastify";
+import axios from 'axios';
 
 const Register = () => {
   
@@ -63,32 +64,36 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/Auth/Register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/Auth/Register`, 
+        {
           email: formData.email,
           userName: formData.username,
           password: formData.password,
           role: formData.role,
-          ...(formData.role === "Admin" && { adminCode: formData.adminCode }),
-        }),
-      });
+          ...(formData.role === "Admin" && { adminCode: formData.adminCode })
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-      if (response.ok) {
-        setSuccess('Registration successful!');
-        setError('');
-        goToTrainings();
-      } else {
-        const data = await response.json();
-        setError(data.message || 'Registration failed');
-        setSuccess('');
-      }
-    } catch (error) {
-      setError('An error occurred during registration');
+      setSuccess('Registration successful!');
+      setError('');
+      goToTrainings();
     }
+      catch (err) 
+      {
+        if (err.response)
+        {
+          toast.error(`Registration failed: ${err.response.status}`);
+          setSuccess('');
+        } else {
+          toast.error(`Network error occured during registration: ${err.message}`);
+        }
+      }
   };
 
   return (
