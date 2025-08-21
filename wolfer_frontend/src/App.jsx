@@ -17,10 +17,29 @@ function App() {
   const [successfulLogin, setSuccessfulLogin] = useState(false);
 
   useEffect(() => {
+
     const token = localStorage.getItem('token');
+
     if (token) {
       setSuccessfulLogin(true);
     }
+    else {
+      setSuccessfulLogin(false);
+    }
+
+    const handleTokenChange = (event) => {
+      if (event.key === "token")
+      {
+            console.log("token: ", token);
+
+        if (!localStorage.getItem("token"))
+        {
+          setSuccessfulLogin(false);
+        }
+      }
+    }
+
+    window.addEventListener('storage', handleTokenChange);
   }, []);
 
   return (

@@ -5,6 +5,7 @@ import EditProfilePhotoModal from '../Modals/EditProfilePhotoModal';
 import ProfilePhoto from './ProfilePhoto';
 import { toast } from 'react-toastify';
 import './Profile.css';
+import axios from "axios";
 
 const Profile = () => {
   const [user, setUser] = useState('');
@@ -20,20 +21,23 @@ const Profile = () => {
 
   const getUserInfo = async () => {
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/User/GetUserById/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    });
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/User/GetUserById/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
-    if (res.ok) {
-      const data = await res.json();
+      const data = res.data;
       setUser(data.userEntity);
       setUserName(data.userEntity.userName);
       setEmail(data.userEntity.email);
-    } else {
-      console.error("Failed to fetch user data. Status:", res.status);
+    }
+     catch (err) {
+      if (err.response) {
+        console.error("Failed to fetch user data. Status:", err.response.status);
+      }
     }
   };
 
