@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { ExerciseTypes, getExerciseTypeLabel } from '../../Utils/ExerciseTypes';
 import './AddPersonalRecordModal.css';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, setRefreshPersonalRecords}) => {
 
@@ -12,6 +13,8 @@ const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, 
   const [exerciseType, setExerciseType] = useState("");
   const [weight, setWeight] = useState(0);
   const [prDate, setPrDate] = useState(today);
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (addPersonalRecordModalIsOpen) {
@@ -23,35 +26,36 @@ const AddPersonalRecordModal = ({addPersonalRecordModalIsOpen, closeAddPrModal, 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const userId = localStorage.getItem("userId");
-    const token = localStorage.getItem("token");
 
     try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/PersonalRecord/AddPersonalRecord/`, {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/PersonalRecord/AddPersonalRecord/`, 
+          {
             userId: userId,
             exerciseType: exerciseType,
             weight: weight,
-            date: prDate
-            }),
-        });
-
-        if (response.ok) {
-            toast.success("Personal Record added successfully.");
-            setRefreshPersonalRecords(prev => !prev);
-            closeAddPrModal();
-        } else {
-            const data = await response.json();
-            toast.error(data.message || 'Failed to add Personal Record.');
-        }
-    } catch (error) {
-        toast.error('An error occurred during adding Personal Record.');
+            date: prDate,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+     
+      toast.success("Personal Record added successfully.");
+      setRefreshPersonalRecords(prev => !prev);
+      closeAddPrModal();
     }
+      catch (err)
+      {
+        if (err.response)
+        {
+          toast.error(`Failed to add personal record. Status: ${err.response.status}`);
+        } else {
+          toast.error(`Network error while adding personal record: ${err.message}`);
+        }
+      }
   }
 
   return (

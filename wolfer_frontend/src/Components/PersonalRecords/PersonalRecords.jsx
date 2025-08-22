@@ -3,6 +3,8 @@ import PersonalRecord from './PersonalRecord'
 import './PersonalRecords.css';
 import AddPersonalRecordModal from '../Modals/AddPersonalRecordModal';
 import { ExerciseTypes, getExerciseTypeLabel } from '../../Utils/ExerciseTypes';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const PersonalRecords = () => {
     const [personalRecords, setPersonalRecords] = useState(new Map());
@@ -10,29 +12,36 @@ const PersonalRecords = () => {
     const [refreshPersonalRecords, setRefreshPersonalRecords] = useState(false);
 
     const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
     const getPersonalRecords = async () => {
-      const token = localStorage.getItem("token");
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/PersonalRecord/GetByUserId/${userId}`,
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/PersonalRecord/GetByUserId/${userId}`,
           {
-            method: "GET",
             headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
+              Authorization: `Bearer ${token}`
             }
           }
         );
-        const data = await res.json();
 
         const newMap = new Map();
         Object.keys(ExerciseTypes).forEach(exerciseTypeKey => {
           newMap.set(
             exerciseTypeKey,
-            data.personalRecordEntities.filter(pr => pr.exerciseType === exerciseTypeKey)
+            res.data.personalRecordEntities.filter(pr => pr.exerciseType === exerciseTypeKey)
           );
         })
 
         setPersonalRecords(newMap);
+      } catch (err) {
+        if (err.response)
+        {
+          toast.error(`Failed to get personal records. Status: ${err.response.status}`);
+        } else {
+          toast.error(`Network error getting personal records: ${err.message}`);
+        }
+      }  
     }
 
   useEffect(() => {
