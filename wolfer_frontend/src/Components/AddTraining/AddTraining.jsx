@@ -2,12 +2,17 @@ import { useState, useEffect } from "react";
 import { TrainingTypes, getTrainingTypeLabel } from '../../Utils/TrainingTypes';
 import { AllHours, AllMinutes } from '../../Utils/AllTimes';
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const AddTraining = ({availableHours, today, isSelectedDateToday, trainingDate, setTrainingDate, triggerRefresh}) => {
 
     const [trainingType, setTrainingType] = useState('');
     const [trainingHour, setTrainingHour] = useState('');
     const [trainingMinute, setTrainingMinute] = useState('');
+
+    const trainingTime = trainingHour + ":" + trainingMinute;
+    const localDateTimeString = `${trainingDate}T${trainingTime}`;
+    const token = localStorage.getItem("token");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,32 +22,31 @@ const AddTraining = ({availableHours, today, isSelectedDateToday, trainingDate, 
         return;
         }
 
-        const trainingTime = trainingHour + ":" + trainingMinute;
-        const localDateTimeString = `${trainingDate}T${trainingTime}`;
-        const token = localStorage.getItem("token");
-
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/AddTraining`, {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                Date: localDateTimeString,
-                TrainingType: trainingType
-                }),
-            });
+            await axios.post(
+                `${import.meta.env.VITE_API_URL}/Training/AddTraining`, 
+                    {
+                        Date: localDateTimeString,
+                        TrainingType: trainingType 
+                    },
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+            );
 
-            if (response.ok) {
-                toast.success("Training was added successfully.");
-                triggerRefresh();
+            toast.success("Training was added successfully.");
+            triggerRefresh();
+        } catch (err)
+        {
+            if (err.response)
+            {
+                toast.error(`Failed to add training. Status: ${err.response.status}`);
             } else {
-                const data = await response.json();
-                toast.error(data.message || 'Training could not be added.');
+                toast.error(`Network error during adding training: ${err.message}`);
             }
-        } catch (error) {
-            toast.error('An error occurred during adding training.');
         }
     };
 

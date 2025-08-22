@@ -3,6 +3,7 @@ import ProfilePhoto from "../Profile/ProfilePhoto";
 import './EditProfilePhotoModal.css';
 import Modal from 'react-modal';
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const EditProfilePhotoModal = ({isOpen, closeModal, userId, token, src, refreshUserData}) => {
 
@@ -10,28 +11,30 @@ const EditProfilePhotoModal = ({isOpen, closeModal, userId, token, src, refreshU
 
     const deleteProfilePhoto = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/ProfilePhoto/DeleteProfilePhoto/${userId}`, {
-                    method: 'DELETE',
+            await axios.delete(
+                `${import.meta.env.VITE_API_URL}/ProfilePhoto/DeleteProfilePhoto/${userId}`, 
+                {
                     headers: {
                     "Authorization": `Bearer ${token}`,
-                }
-            });
+                    }
+                });
+            
+            toast.success("Successfully deleted profile photo.");
+            closeModal();
 
-            if (res.ok) {
-                toast.success("Successfully deleted profile photo.");
-                closeModal();
+        } catch (err) 
+        {
+            if (err.response) 
+            {
+                toast.error(`Failed to delete profile photo. Status: ${err.response.status}`);
             } else {
-                toast.error("Failed to delete profile photo. Status:", res.status);
+                toast.error(`Network error while deleting photo: ${err.message}`);
             }
-        } catch (error) {
-            toast.error('An error occurred during deleting profile photo.');
         }
-        finally {
-            refreshUserData();
-        }
-    }
+    };
 
     const updateProfilePhoto = async () => {
+
         if (!selectedFile) {
             toast.error("Please select a file first.");
             return;
@@ -43,23 +46,28 @@ const EditProfilePhotoModal = ({isOpen, closeModal, userId, token, src, refreshU
             formData.append("Photo", selectedFile);
             formData.append("ContentType", selectedFile.type);
 
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/ProfilePhoto/Upload/`, {
-                    method: 'POST',
-                    headers: {
-                    "Authorization": `Bearer ${token}`,
-                    },
-                    body: formData
-            });
+            await axios.post(
+                `${import.meta.env.VITE_API_URL}/ProfilePhoto/Upload/`, 
+                    formData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+            );
 
-            if (res.ok) {
-                toast.success("Successfully added new profile photo.");
-                closeModal();
+            toast.success("Successfully added new profile photo.");
+            closeModal();
+
+        } catch (err)
+        {
+            if (err.response)
+            {
+                toast.error(`Failed to add new profile photo. Status: ${err.response.status}`);
             } else {
-                const error = await res.json();
-                toast.error("Failed to upload profile photo: " + (error.message || res.status));
+                toast.error(`Network error while adding profile photo: ${err.message}`);
             }
-        } catch (error) {
-            toast.error('An error occurred during uploading profile photo.');
         }
         finally {
             refreshUserData();

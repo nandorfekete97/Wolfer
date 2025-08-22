@@ -3,6 +3,7 @@ import './Login.css';
 import Register from '../Register/Register';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const Login = ({ setSuccessfulLogin }) => {
   const [email, setEmail] = useState("");
@@ -24,33 +25,39 @@ const Login = ({ setSuccessfulLogin }) => {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/Auth/Login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/Auth/Login`, 
+        {
+          email,
+          password,
         },
-        body: JSON.stringify({ email, password }),
-      });
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('userId', data.userId);
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.userId);
 
-        const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
-        const payloadBase64 = token.split('.')[1];
-        const decodedPayload = JSON.parse(atob(payloadBase64));
-        const role = decodedPayload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-        localStorage.setItem('role', role);
+      const payloadBase64 = token.split('.')[1];
+      const decodedPayload = JSON.parse(atob(payloadBase64));
+      const role = decodedPayload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      localStorage.setItem('role', role);
 
-        setSuccessfulLogin(true);
+      setSuccessfulLogin(true);
+
+    } catch (err)
+    {
+      if (err.response)
+      {
+        toast.error(`Login failed. Status: ${err.response.status}`);
       } else {
-        const data = await response.json();
-        setError(data.message || 'Login failed');
+        toast.error(`Network error during login: ${err.message}`);
       }
-    } catch (error) {
-      setError('An error occurred during login');
     }
   };
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { TrainingTypes, getTrainingTypeLabel } from '../../Utils/TrainingTypes';
 import { AllHours, AllMinutes } from '../../Utils/AllTimes';
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const AddTrainings = ({availableHours, today, isSelectedDateToday, trainingDate, setTrainingDate, triggerRefresh }) => {
 
@@ -10,10 +11,10 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, trainingDate,
     const [trainingMinute, setTrainingMinute] = useState('');
     const [trainings, setTrainings] = useState([]);
 
+    const token = localStorage.getItem("token");
+
     const handleMultipleSubmit = async (e) => {
         e.preventDefault();
-
-        const token = localStorage.getItem("token");
 
         if (trainingType == null || trainingHour == null || trainingMinute == null || trainings.length === 0) {
         setResponseMessage("Training type, time and at least one date must be selected.");
@@ -27,27 +28,30 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, trainingDate,
         }));
 
         try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/Training/AddTrainings`, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(trainingList),
-        });
+        await axios.post(
+            `${import.meta.env.VITE_API_URL}/Training/AddTrainings`, 
+                trainingList,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+        );
 
-        if (response.ok) {
-            toast.success("Trainings were added successfully.");
-            setTrainings([]);
-            triggerRefresh();
-        } else {
-            const data = await response.json();
-            toast.error(data.message || "Trainings could not be added.");
+        toast.success("Trainings were added successfully.");
+        setTrainings([]);
+        triggerRefresh();
+
+        } catch (err)
+        {
+            if (err.response)
+            {
+                toast.error(`Failed to add trainings. Status: ${err.response.status}`);
+            } else {
+                toast.error(`Network error while adding trainings: ${err.message}`);
+            }
         }
-        }
-        catch {
-        toast.error("An error occured during adding trainings.");
-        } 
     };
 
     const isTrainingSlotOccupied = (existingTraining) => {
@@ -69,7 +73,6 @@ const AddTrainings = ({availableHours, today, isSelectedDateToday, trainingDate,
         if (!isConflictInTrainingTimes) {
             setTrainings(([
                 ...trainings,
-                // { Date: `${trainingDate}T${trainingHour.padStart(2, '0')}:${trainingMinute.padStart(2, '0')}:00`,
                 {  Date: `${trainingDate}`, 
                     Hour: `${trainingHour}`,
                     Minute: `${trainingMinute}`,

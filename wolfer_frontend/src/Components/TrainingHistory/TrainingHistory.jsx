@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import './TrainingHistory.css';
 import { getTrainingTypeLabel } from '../../Utils/TrainingTypes';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const TrainingHistory = () => {
 
@@ -15,34 +17,42 @@ const getpastTrainings = async () => {
     const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetPastTrainingsForUser/${userId}`,
-        {
-            method: "GET",
-            headers: {
-            "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
+    try {
+        const res = await axios.get(
+            `${import.meta.env.VITE_API_URL}/UserTraining/GetPastTrainingsForUser/${userId}`,
+            {
+                headers: {
+                Authorization: `Bearer ${token}`
+                }
             }
+        );
+
+        const trainings = res.data?.trainingEntities || [];
+        setPastTrainings(trainings); 
+        setFilteredTrainings(trainings);
+
+        const counts = {};
+        trainings.forEach(training => {
+            counts[training.trainingType] = (counts[training.trainingType] || 0) + 1;
+        });
+        const total = trainings.length;
+
+        const percentages = Object.entries(counts).map(([type, count]) => ({
+            trainingType: type,
+            percentage: ((count / total) * 100).toFixed(1),
+        })).sort((a, b) => b.percentage - a.percentage);
+
+        setTrainingTypeStats(percentages);
+        setDataIsLoaded(true);
+    } catch (err)
+    {
+        if (err.response)
+        {
+            toast.error(`Failed to get past trainings for user. Status: ${err.response.status}`);
+        } else {
+            toast.error(`Network error while getting past trainings for user. Status: ${err.message}`);
         }
-    );
-    
-    const data = await res.json();
-    const trainings = data.trainingEntities;
-    setPastTrainings(trainings); 
-    setFilteredTrainings(trainings);
-
-    const counts = {};
-    data.trainingEntities.forEach(training => {
-        counts[training.trainingType] = (counts[training.trainingType] || 0) + 1;
-    });
-    const total = data.trainingEntities.length;
-
-    const percentages = Object.entries(counts).map(([type, count]) => ({
-        trainingType: type,
-        percentage: ((count / total) * 100).toFixed(1),
-    })).sort((a, b) => b.percentage - a.percentage);
-
-    setTrainingTypeStats(percentages);
-    setDataIsLoaded(true);
+    }
 }
 
 useEffect(() => {
@@ -64,84 +74,84 @@ const getUniqueYears = () => {
     return Array.from(years).sort();
 };
 
-    return (
-        <div className="training-history-container">
-            <h1 className="training-history-header">TRAINING HISTORY</h1>
-            {dataIsLoaded ? (
-            <>
-                <div className="training-summary">
-                <h3>
-                    Number of all trainings:
-                    <h1 className="training-counter">{pastTrainings.length}</h1>
-                </h3>
-                </div>
+return (
+    <div className="training-history-container">
+        <h1 className="training-history-header">TRAINING HISTORY</h1>
+        {dataIsLoaded ? (
+        <>
+            <div className="training-summary">
+            <h3>
+                Number of all trainings:
+                <h1 className="training-counter">{pastTrainings.length}</h1>
+            </h3>
+            </div>
 
-                <div className="training-filters">
-                <div>
-                    <label htmlFor="year-select">Year:</label>
-                    <select
-                    id="year-select"
-                    onChange={(e) => setSelectedYear(e.target.value)}
-                    value={selectedYear}
-                    >
-                    <option value="all">All</option>
-                    {getUniqueYears().map((year) => (
-                        <option key={year} value={year}>
-                        {year}
-                        </option>
-                    ))}
-                    </select>
-                </div>
+            <div className="training-filters">
+            <div>
+                <label htmlFor="year-select">Year:</label>
+                <select
+                id="year-select"
+                onChange={(e) => setSelectedYear(e.target.value)}
+                value={selectedYear}
+                >
+                <option value="all">All</option>
+                {getUniqueYears().map((year) => (
+                    <option key={year} value={year}>
+                    {year}
+                    </option>
+                ))}
+                </select>
+            </div>
 
-                <div>
-                    <label htmlFor="month-select">Month:</label>
-                    <select
-                    id="month-select"
-                    onChange={(e) => setSelectedMonth(e.target.value)}
-                    value={selectedMonth}
-                    >
-                    <option value="all">All</option>
-                    {Array.from({ length: 12 }, (_, i) => {
-                        const monthNum = String(i + 1).padStart(2, "0");
-                        const monthName = new Date(0, i).toLocaleString("default", {
-                        month: "long",
-                        });
-                        return (
-                        <option key={monthNum} value={monthNum}>
-                            {monthName}
-                        </option>
-                        );
-                    })}
-                    </select>
-                </div>
-                </div>
+            <div>
+                <label htmlFor="month-select">Month:</label>
+                <select
+                id="month-select"
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                value={selectedMonth}
+                >
+                <option value="all">All</option>
+                {Array.from({ length: 12 }, (_, i) => {
+                    const monthNum = String(i + 1).padStart(2, "0");
+                    const monthName = new Date(0, i).toLocaleString("default", {
+                    month: "long",
+                    });
+                    return (
+                    <option key={monthNum} value={monthNum}>
+                        {monthName}
+                    </option>
+                    );
+                })}
+                </select>
+            </div>
+            </div>
 
-                <div className="past-trainings">
-                <ul className="training-list">
-                    {filteredTrainings.map((training) => (
-                    <li key={training.id}>
-                        {getTrainingTypeLabel(training.trainingType)} | {training.date.split("T")[0]}
-                    </li>
-                    ))}
-                </ul>
-                </div>
+            <div className="past-trainings">
+            <ul className="training-list">
+                {filteredTrainings.map((training) => (
+                <li key={training.id}>
+                    {getTrainingTypeLabel(training.trainingType)} | {training.date.split("T")[0]}
+                </li>
+                ))}
+            </ul>
+            </div>
 
-                <div className="training-stats">
-                <h3>Your favourite trainings:</h3>
-                <ul>
-                    {trainingTypeStats.map((stat) => (
-                    <li key={getTrainingTypeLabel(stat.trainingType)}>
-                        {getTrainingTypeLabel(stat.trainingType)}: {getTrainingTypeLabel(stat.percentage)}%
-                    </li>
-                    ))}
-                </ul>
-                </div>
-            </>
-            ) : (
-            "Loading"
-            )}
-        </div>
-        );
+            <div className="training-stats">
+            <h3>Your favourite trainings:</h3>
+            <ul>
+                {trainingTypeStats.map((stat) => (
+                <li key={getTrainingTypeLabel(stat.trainingType)}>
+                    {getTrainingTypeLabel(stat.trainingType)}: {getTrainingTypeLabel(stat.percentage)}%
+                </li>
+                ))}
+            </ul>
+            </div>
+        </>
+        ) : (
+        "Loading"
+        )}
+    </div>
+    );
 }
 
 export default TrainingHistory;

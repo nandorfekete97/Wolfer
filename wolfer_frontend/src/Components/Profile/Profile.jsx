@@ -42,19 +42,25 @@ const Profile = () => {
   };
 
   const getUserProfilePhoto = async () => {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/ProfilePhoto/GetByUserId/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    });
 
-    if (res.ok) {
-      const blob = await res.blob();
-      const imageUrl = URL.createObjectURL(blob);
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/ProfilePhoto/GetByUserId/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: "blob",
+      });
+
+      const imageUrl = URL.createObjectURL(res.data);
       setProfilePhoto(imageUrl);
-    } else {
-      setProfilePhoto("");
-      console.error("Failed to fetch user profile photo. Status:", res.status);
+    }
+      catch (err) {
+        if (err.response) {
+          setProfilePhoto("");
+          console.error("Failed to fetch user profile photo. Status:", res.status);
+        } else {
+          console.error("Network error:", err.message);
+        }
     }
   };
 
@@ -73,20 +79,26 @@ const Profile = () => {
       email: updatedUser.email
     };
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/User/UpdateUser`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(updatedUserO)
-    });
+    try {
+      await axios.put(`${import.meta.env.VITE_API_URL}/User/UpdateUser`, 
+        updatedUserO,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+        }
+      );
 
-    if (res.ok) {
       toast.success("Profile updated successfully!");
       await getUserInfo();
-    } else {
-      toast.error("Failed to update user. Status:", res.status);
+    } catch (err) {
+      if (err.response)
+      {
+        toast.error(`Failed to update user. Status: ${err.response.status}`);
+      } else {
+        toast.error("Network error while updating user.");
+      }
     }
   };
 
@@ -101,26 +113,26 @@ const Profile = () => {
     }
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/User/ChangePassword`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(updatedUserO)
-      });
+      await axios.put(`${import.meta.env.VITE_API_URL}/User/ChangePassword`, 
+        updatedUserO,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+        }
+      );
 
-      if (res.ok) {
-        await getUserInfo();
-        toast.success("Password changed successfully!");
-        return true;
-      } else {
-        const errorData = await res.json();
-        toast.error(errorData.message || "Failed to change password.");
-        return false;
-      } 
+      toast.success("Password changed successfully!");
+      await getUserInfo();
+      return true;
     } catch (err) {
-      toast.error("Network error:", err);
+      if (err.response)
+      {
+        toast.error(`Failed to change password. Status: ${err.response.status}`);
+      } else {
+        toast.error("Network error while changing password.");
+      }
       return false;
     }
   };

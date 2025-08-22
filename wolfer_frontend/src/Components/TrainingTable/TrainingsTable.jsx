@@ -1,28 +1,39 @@
 import './TrainingTable.css';
 import DayInfo from './DayInfo/DayInfo';
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const TrainingsTable = ({ showSignUp=true, refreshTrigger, triggerRefresh, isSelectedDateToday, isPlanning=false }) => {
   const [weekDates, setWeekDates] = useState([]);
   const [signedUpTrainings, setSignedUpTrainings] = useState([]);
   const [dataIsLoaded, setDataIsLoaded] = useState(false);
 
-  const getSignedUpTrainings = async () => {
-    const userId = localStorage.getItem("userId");
-    const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/UserTraining/GetUpcomingTrainingsByUserId/${userId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+  const getSignedUpTrainings = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/UserTraining/GetUpcomingTrainingsByUserId/${userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
         }
+      );
+
+      setSignedUpTrainings(res.data.trainingEntities); 
+      setDataIsLoaded(true);
+
+    } catch (err) {
+      if (err.response)
+      {
+        toast.error(`Failed to fetch upcoming trainings. Status: ${err.response.status}`);
+      } else {
+        toast.error(`Network error while fetching upcoming trainings: ${err.message}`);
       }
-    );
-    const data = await res.json();
-    setSignedUpTrainings(data.trainingEntities); 
-    setDataIsLoaded(true);
+    } 
   }
 
   useEffect(() => {
